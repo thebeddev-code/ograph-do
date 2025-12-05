@@ -2,15 +2,24 @@
 import { useEffect, useRef, useState } from "react";
 import { calcRadiansFrom } from "./lib/utils/math";
 import { mockDays } from "./lib/utils/mockData";
+import { drawTodos } from "./lib/draw";
+import { mock } from "node:test";
 
 export default function Home() {
-  const [viewerString, setViewerString] = useState("6:00");
+  const [viewableString, setViewableString] = useState("6:00");
   const cancasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
-    const [n, n1] = viewerString.split(":");
-    const parsedN = parseInt(n);
-    const parsedN1 = parseInt(n1);
+    const [hours, minutes] = viewableString.split(":");
+    const viewableStartHours = parseInt(hours);
+    const viewableStartMinutes = parseInt(minutes);
+    if (
+      !(
+        Number.isInteger(viewableStartHours) &&
+        Number.isInteger(viewableStartMinutes)
+      )
+    )
+      return;
 
     const canvas = cancasRef.current;
     if (!canvas) return;
@@ -36,27 +45,15 @@ export default function Home() {
     ctx.lineWidth = 1;
     ctx.stroke();
 
-    if (Number.isInteger(parsedN) && Number.isInteger(parsedN1)) {
-      for (const day of mockDays) {
-        for (const todo of day) {
-          const { start, end } = todo;
-          const offset = calcRadiansFrom(90);
-
-          ctx.beginPath();
-          ctx.arc(
-            rect.width / 2,
-            rect.height / 2,
-            200,
-            calcRadiansFrom(start.hour + start.minutes / 60, "hours") - offset,
-            calcRadiansFrom(end.hour + end.minutes / 60, "hours") - offset
-          );
-          ctx.strokeStyle = todo.color;
-          ctx.lineWidth = 10;
-          ctx.stroke();
-        }
-      }
-    }
-  }, [viewerString]);
+    drawTodos({
+      canvas,
+      days: mockDays,
+      viewableStart: {
+        hour: viewableStartHours,
+        minutes: viewableStartMinutes,
+      },
+    });
+  }, [viewableString]);
 
   return (
     <main className="bg-white flex">
@@ -64,8 +61,8 @@ export default function Home() {
       <input
         className="bg-white w-20 h-10 absolute bottom-0 left-[45%]"
         type="text"
-        value={viewerString}
-        onChange={(e) => setViewerString(e.currentTarget.value)}
+        value={viewableString}
+        onChange={(e) => setViewableString(e.currentTarget.value)}
       />
     </main>
   );

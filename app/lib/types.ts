@@ -8,3 +8,5 @@ type Todo = {
   end: TodoTime;
   color: string;
 };
+
+type Days = Todo[][];
