@@ -46,6 +46,8 @@ export function TimeViewAdjuster({
         "relative flex justify-center items-center",
         containerClassName
       )}
+      onMouseUp={() => setMouseDown(false)}
+      onMouseLeave={() => setMouseDown(false)}
       onMouseMove={handleMouseMove}
     >
       <div
@@ -54,11 +56,12 @@ export function TimeViewAdjuster({
           transformOrigin: "50% 50%",
           width: `${clockGraphRadius * 2 + 20}px`,
         }}
-        onMouseDown={() => setMouseDown(true)}
-        onMouseUp={() => setMouseDown(false)}
         className="absolute flex justify-end items-center h-1"
       >
-        <div className=" h-5 w-5 bg-gray-500 rounded-full"></div>
+        <div
+          onMouseDown={() => setMouseDown(true)}
+          className="h-5 w-5 bg-white border-2 border-gray-400 rounded-full shadow-sm hover:shadow-md active:scale-95 transition-all duration-150 cursor-grab"
+        />
       </div>
       {children}
     </div>
