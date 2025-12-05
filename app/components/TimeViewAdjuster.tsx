@@ -11,6 +11,7 @@ interface Props {
   viewableTimeDegrees: number;
 }
 
+const HANDLE_BUTTON_SIZE_PX = 21;
 export function TimeViewAdjuster({
   children,
   containerClassName = "",
@@ -54,13 +55,17 @@ export function TimeViewAdjuster({
         style={{
           transform: `rotate(${viewableTimeDegrees}deg)`,
           transformOrigin: "50% 50%",
-          width: `${clockGraphRadius * 2 + 20}px`,
+          width: `${clockGraphRadius * 2 + HANDLE_BUTTON_SIZE_PX}px`,
         }}
         className="absolute flex justify-end items-center h-1"
       >
         <div
           onMouseDown={() => setMouseDown(true)}
-          className="h-5 w-5 bg-white border-2 border-gray-400 rounded-full shadow-sm hover:shadow-md active:scale-95 transition-all duration-150 cursor-grab"
+          style={{
+            width: `${HANDLE_BUTTON_SIZE_PX}px`,
+            height: `${HANDLE_BUTTON_SIZE_PX}px`,
+          }}
+          className="bg-white border-2 border-gray-400 rounded-full shadow-sm hover:shadow-md active:scale-95 transition-all duration-150 cursor-grab"
         />
       </div>
       {children}
