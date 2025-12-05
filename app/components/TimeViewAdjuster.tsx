@@ -7,17 +7,19 @@ interface Props {
   children: ReactNode;
   containerClassName?: string;
   clockGraphRadius: number;
+  onViewableTimeDegreesChange: (degrees: number) => void;
+  viewableTimeDegrees: number;
 }
 
 export function TimeViewAdjuster({
   children,
   containerClassName = "",
   clockGraphRadius,
+  onViewableTimeDegreesChange,
+  viewableTimeDegrees,
 }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [containerWidth, setContainerWidth] = useState(0);
   const [mouseDown, setMouseDown] = useState(false);
-  const [degrees, setDegrees] = useState(0);
 
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
     if (!mouseDown) return;
@@ -32,11 +34,9 @@ export function TimeViewAdjuster({
     const dy = e.clientY - centerY;
     const angleRadians = Math.atan2(dy, dx);
     let angleDeg = calcDegreesFrom(angleRadians);
-    console.log(
-      `Mouse x: ${e.clientX}\nMouse y: ${e.clientY}\nCentered x: ${dx}\nCentered y:${dy}`
-    );
+
     if (angleDeg < 0) angleDeg += 360;
-    setDegrees(angleDeg);
+    onViewableTimeDegreesChange(angleDeg);
   };
 
   return (
@@ -50,7 +50,7 @@ export function TimeViewAdjuster({
     >
       <div
         style={{
-          transform: `rotate(${degrees}deg)`,
+          transform: `rotate(${viewableTimeDegrees}deg)`,
           transformOrigin: "50% 50%",
           width: `${clockGraphRadius * 2 + 20}px`,
         }}

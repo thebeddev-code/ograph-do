@@ -5,22 +5,11 @@ import { drawTodos } from "~/lib/draw";
 import { TimeViewAdjuster } from "~/components/TimeViewAdjuster";
 
 export function ClockGraph() {
-  const [viewableString, setViewableString] = useState("6:00");
+  const [viewableTimeDegreesStart, setViewableTimeDegreesStart] = useState(90);
   const cancasRef = useRef<HTMLCanvasElement | null>(null);
   const radius = 150;
 
   useEffect(() => {
-    const [hours, minutes] = viewableString.split(":");
-    const viewableStartHours = parseInt(hours);
-    const viewableStartMinutes = parseInt(minutes);
-    if (
-      !(
-        Number.isInteger(viewableStartHours) &&
-        Number.isInteger(viewableStartMinutes)
-      )
-    )
-      return;
-
     const canvas = cancasRef.current;
     if (!canvas) return;
 
@@ -50,18 +39,20 @@ export function ClockGraph() {
       canvas,
       days: mockDays,
       viewableStart: {
-        hour: viewableStartHours,
-        minutes: viewableStartMinutes,
+        hour: viewableTimeDegreesStart,
+        minutes: viewableTimeDegreesStart,
       },
       radius,
     });
-  }, [viewableString]);
+  }, [viewableTimeDegreesStart]);
 
   return (
     <div className="bg-white flex justify-center items-center h-dvh w-dvw">
       <TimeViewAdjuster
         clockGraphRadius={radius}
         containerClassName="w-[400px] h-[400px]"
+        onViewableTimeDegreesChange={(d) => setViewableTimeDegreesStart(d)}
+        viewableTimeDegrees={viewableTimeDegreesStart}
       >
         <canvas className="w-full h-full bg-amber-300" ref={cancasRef} />
       </TimeViewAdjuster>
