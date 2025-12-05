@@ -8,9 +8,13 @@ export function calcRadiansFrom(
   if (type == "hours") degrees = value * 30;
   // 360/2*Math.Pi = degrees/x
   // using cross multiplication to solve the proportion
-  return (degrees * 2 * Math.PI) / 360;
+  return (degrees * Math.PI) / 180;
 }
 
-export function calcDegreesFrom(radians: number) {
-  return (radians * 180) / Math.PI; // Simplified conversion to degrees
+export function calcDegreesFrom(
+  value: number,
+  type: "hours" | "radians" = "radians"
+) {
+  if (type == "hours") return value * 30;
+  return (value * 180) / Math.PI; // Simplified conversion to degrees
 }

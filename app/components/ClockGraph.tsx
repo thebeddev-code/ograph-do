@@ -38,10 +38,7 @@ export function ClockGraph() {
     drawTodos({
       canvas,
       days: mockDays,
-      viewableStart: {
-        hour: viewableTimeDegreesStart,
-        minutes: viewableTimeDegreesStart,
-      },
+      viewableTimeDegreesStart,
       radius,
     });
   }, [viewableTimeDegreesStart]);
