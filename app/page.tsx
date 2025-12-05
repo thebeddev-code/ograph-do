@@ -10,6 +10,7 @@ type TodoTime = {
 type Todo = {
   start: TodoTime;
   end: TodoTime;
+  color: string;
 };
 
 const days: Todo[][] = [
@@ -24,6 +25,7 @@ const days: Todo[][] = [
         hour: 8,
         minutes: 0,
       },
+      color: "purple",
     },
     {
       start: {
@@ -34,6 +36,7 @@ const days: Todo[][] = [
         hour: 10,
         minutes: 0,
       },
+      color: "green",
     },
   ],
   [],
@@ -87,7 +90,8 @@ export default function Home() {
             calcRadiansFrom(start.hour + start.minutes / 60, "hours") - offset,
             calcRadiansFrom(end.hour + end.minutes / 60, "hours") - offset
           );
-          ctx.strokeStyle = "white";
+          ctx.strokeStyle = todo.color;
+          ctx.lineWidth = 10;
           ctx.stroke();
         }
       }
