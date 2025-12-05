@@ -7,6 +7,7 @@ import { ViewableHandler } from "~/components/ViewableHandler";
 export function ClockGraph() {
   const [viewableString, setViewableString] = useState("6:00");
   const cancasRef = useRef<HTMLCanvasElement | null>(null);
+  const radius = 150;
 
   useEffect(() => {
     const [hours, minutes] = viewableString.split(":");
@@ -37,7 +38,6 @@ export function ClockGraph() {
 
     // Draw circle
     ctx.beginPath();
-    const radius = 200;
     const diameter = radius * 2;
     ctx.arc(rect.width / 2, rect.height / 2, radius, 0, 2 * Math.PI);
     ctx.rect(rect.width / 2 - radius, rect.height / 2, diameter, 1);
@@ -59,7 +59,10 @@ export function ClockGraph() {
 
   return (
     <div className="bg-white flex justify-center items-center h-dvh w-dvw">
-      <ViewableHandler containerClassName="w-[400px] h-[400px]">
+      <ViewableHandler
+        clockGraphRadius={radius}
+        containerClassName="w-[400px] h-[400px]"
+      >
         <canvas className="w-full h-full bg-amber-300" ref={cancasRef} />
       </ViewableHandler>
     </div>
