@@ -10,3 +10,7 @@ export function calcRadiansFrom(
   // using cross multiplication to solve the proportion
   return (degrees * 2 * Math.PI) / 360;
 }
+
+export function calcDegreesFrom(radians: number) {
+  return (radians * 180) / Math.PI; // Simplified conversion to degrees
+}
