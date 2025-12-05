@@ -62,11 +62,6 @@ export function drawTodos({
       const drawRadiansEnd = calcRadiansFrom(
         Math.min(drawDegreesEnd, viewableTimeDegreesEnd)
       );
-      console.log(
-        correctedViewableTimeDegreesStart,
-        drawDegreesStart,
-        drawDegreesEnd
-      );
       if (correctedViewableTimeDegreesStart < drawDegreesEnd)
         drawArc(drawRadiansStart, drawRadiansEnd, offsetRadians, todo.color);
     }

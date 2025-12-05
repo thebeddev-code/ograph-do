@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { mockDays } from "~/lib/utils/mockData";
 import { drawTodos } from "~/lib/draw";
 import { TimeViewAdjuster } from "~/components/TimeViewAdjuster";
+import { calcRadiansFrom } from "../lib/utils/math";
 
 export function ClockGraph() {
   const [viewableTimeDegreesStart, setViewableTimeDegreesStart] = useState(90);
@@ -34,6 +35,20 @@ export function ClockGraph() {
     ctx.strokeStyle = "black";
     ctx.lineWidth = 1;
     ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(rect.width / 2, rect.height / 2);
+    ctx.arc(
+      rect.width / 2,
+      rect.height / 2,
+      radius,
+      calcRadiansFrom(90),
+      calcRadiansFrom(viewableTimeDegreesStart),
+      false
+    );
+    ctx.lineTo(rect.width / 2, rect.height / 2);
+    ctx.fillStyle = "#3b82f680";
+    ctx.fill();
 
     drawTodos({
       canvas,
