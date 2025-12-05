@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { calcRadiansFrom } from "./lib/math";
 
 type TodoTime = {
   hour: number;
@@ -65,23 +66,34 @@ export default function Home() {
     // Draw circle
     ctx.beginPath();
     ctx.arc(rect.width / 2, rect.height / 2, 200, 0, 2 * Math.PI);
-    ctx.strokeStyle = "white";
+    ctx.rect(rect.width / 2 - 200, rect.height / 2, 200 * 2, 1);
+    ctx.rect(rect.width / 2, rect.height / 2 - 200, 1, 200 * 2);
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 1;
     ctx.stroke();
 
     if (Number.isInteger(parsedN) && Number.isInteger(parsedN1)) {
-      for (const t of todos[1]) {
-        const { hour, minutes } = t.start;
-        const { hour: endHour, minutes: endMinutes } = t.end;
-        // const totalHours = endHour - hour;
-        // ctx.beginPath();
-        // ctx.arc(rect.width / 2, rect.height / 2, 200, 0, 2 * Math.PI);
-        // ctx.strokeStyle = "white";
-        // ctx.stroke();
-      }
+      const t = todos[1][0];
+      const { start, end } = t;
+
+      const totalHours = end.hour - start.hour;
+      const offset = calcRadiansFrom(90);
+      const hoursOffset = calcRadiansFrom(start.hour, "hours");
+
+      ctx.beginPath();
+      ctx.arc(
+        rect.width / 2,
+        rect.height / 2,
+        200,
+        calcRadiansFrom(hoursOffset - offset),
+        calcRadiansFrom(totalHours, "hours")
+      );
+      ctx.strokeStyle = "white";
+      ctx.stroke();
     }
   }, [viewerString]);
   return (
-    <main className="bg-black flex">
+    <main className="bg-white flex">
       <canvas className="w-dvw h-dvh" ref={cancasRef}></canvas>
       <input
         className="bg-white w-20 h-10 absolute bottom-0 left-[45%]"
