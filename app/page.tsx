@@ -12,7 +12,7 @@ type Todo = {
   end: TodoTime;
 };
 
-const todos: Todo[][] = [
+const days: Todo[][] = [
   [],
   [
     {
@@ -73,25 +73,27 @@ export default function Home() {
     ctx.stroke();
 
     if (Number.isInteger(parsedN) && Number.isInteger(parsedN1)) {
-      const t = todos[1][0];
-      const { start, end } = t;
+      for (const day of days) {
+        for (const todo of day) {
+          const { start, end } = todo;
 
-      const totalHours = end.hour - start.hour;
-      const offset = calcRadiansFrom(90);
-      const hoursOffset = calcRadiansFrom(start.hour, "hours");
+          const offset = calcRadiansFrom(90);
 
-      ctx.beginPath();
-      ctx.arc(
-        rect.width / 2,
-        rect.height / 2,
-        200,
-        calcRadiansFrom(hoursOffset - offset),
-        calcRadiansFrom(totalHours, "hours")
-      );
-      ctx.strokeStyle = "white";
-      ctx.stroke();
+          ctx.beginPath();
+          ctx.arc(
+            rect.width / 2,
+            rect.height / 2,
+            200,
+            calcRadiansFrom(start.hour + start.minutes / 60, "hours") - offset,
+            calcRadiansFrom(end.hour + end.minutes / 60, "hours") - offset
+          );
+          ctx.strokeStyle = "white";
+          ctx.stroke();
+        }
+      }
     }
   }, [viewerString]);
+
   return (
     <main className="bg-white flex">
       <canvas className="w-dvw h-dvh" ref={cancasRef}></canvas>
