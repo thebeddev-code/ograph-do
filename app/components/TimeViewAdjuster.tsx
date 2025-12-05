@@ -1,12 +1,5 @@
-import {
-  EventHandler,
-  ReactNode,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import { ReactNode, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
-import { useCallback } from "react";
 import { MouseEvent } from "react";
 import { calcDegreesFrom } from "../lib/utils/math";
 
@@ -16,7 +9,7 @@ interface Props {
   clockGraphRadius: number;
 }
 
-export function ViewableHandler({
+export function TimeViewAdjuster({
   children,
   containerClassName = "",
   clockGraphRadius,

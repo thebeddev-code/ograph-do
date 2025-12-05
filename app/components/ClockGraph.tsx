@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { mockDays } from "~/lib/utils/mockData";
 import { drawTodos } from "~/lib/draw";
-import { ViewableHandler } from "~/components/ViewableHandler";
+import { TimeViewAdjuster } from "~/components/TimeViewAdjuster";
 
 export function ClockGraph() {
   const [viewableString, setViewableString] = useState("6:00");
@@ -59,12 +59,12 @@ export function ClockGraph() {
 
   return (
     <div className="bg-white flex justify-center items-center h-dvh w-dvw">
-      <ViewableHandler
+      <TimeViewAdjuster
         clockGraphRadius={radius}
         containerClassName="w-[400px] h-[400px]"
       >
         <canvas className="w-full h-full bg-amber-300" ref={cancasRef} />
-      </ViewableHandler>
+      </TimeViewAdjuster>
     </div>
   );
 }
