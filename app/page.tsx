@@ -1,46 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { calcRadiansFrom } from "./lib/math";
-
-type TodoTime = {
-  hour: number;
-  minutes: number;
-};
-
-type Todo = {
-  start: TodoTime;
-  end: TodoTime;
-  color: string;
-};
-
-const days: Todo[][] = [
-  [],
-  [
-    {
-      start: {
-        hour: 6,
-        minutes: 30,
-      },
-      end: {
-        hour: 8,
-        minutes: 0,
-      },
-      color: "purple",
-    },
-    {
-      start: {
-        hour: 8,
-        minutes: 30,
-      },
-      end: {
-        hour: 10,
-        minutes: 0,
-      },
-      color: "green",
-    },
-  ],
-  [],
-];
+import { calcRadiansFrom } from "./lib/utils/math";
+import { mockDays } from "./lib/utils/mockData";
 
 export default function Home() {
   const [viewerString, setViewerString] = useState("6:00");
@@ -76,10 +37,9 @@ export default function Home() {
     ctx.stroke();
 
     if (Number.isInteger(parsedN) && Number.isInteger(parsedN1)) {
-      for (const day of days) {
+      for (const day of mockDays) {
         for (const todo of day) {
           const { start, end } = todo;
-
           const offset = calcRadiansFrom(90);
 
           ctx.beginPath();
