@@ -4,14 +4,19 @@ import { mockDays } from "~/lib/utils/mockData";
 import { drawTodos } from "~/lib/draw";
 import { TimeViewAdjuster } from "~/components/TimeViewAdjuster";
 import { calcRadiansFrom } from "../lib/utils/math";
+import { Clock } from "./Clock";
 
 export function ClockGraph() {
   const [timeWindowStartDeg, setTimeWindowStartDeg] = useState(90);
-  const cancasRef = useRef<HTMLCanvasElement | null>(null);
+  const [timeWindowStartDegOffset, setTimeWindowStartDegOffset] = useState(0);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const radius = 150;
 
+  if (timeWindowStartDeg >= 180 && timeWindowStartDegOffset < 180)
+    setTimeWindowStartDegOffset(180);
+
   useEffect(() => {
-    const canvas = cancasRef.current;
+    const canvas = canvasRef.current;
     if (!canvas) return;
 
     const ctx = canvas.getContext("2d");
@@ -26,16 +31,22 @@ export function ClockGraph() {
     // Scale drawing context
     ctx.scale(dpr, dpr);
 
-    // Draw circle
+    // Day
     ctx.beginPath();
-    const diameter = radius * 2;
-    ctx.arc(rect.width / 2, rect.height / 2, radius, 0, 2 * Math.PI);
-    ctx.rect(rect.width / 2 - radius, rect.height / 2, diameter, 1);
-    ctx.rect(rect.width / 2, rect.height / 2 - radius, 1, diameter);
-    ctx.strokeStyle = "black";
-    ctx.lineWidth = 1;
-    ctx.stroke();
+    ctx.moveTo(rect.width / 2, rect.height / 2);
+    ctx.arc(
+      rect.width / 2,
+      rect.height / 2,
+      radius,
+      calcRadiansFrom(0),
+      calcRadiansFrom(360),
+      false
+    );
+    ctx.lineTo(rect.width / 2, rect.height / 2);
+    ctx.fillStyle = "oklch(100% 0.12 90)";
+    ctx.fill();
 
+    // Draw circle
     ctx.beginPath();
     ctx.moveTo(rect.width / 2, rect.height / 2);
     ctx.arc(
@@ -47,13 +58,13 @@ export function ClockGraph() {
       false
     );
     ctx.lineTo(rect.width / 2, rect.height / 2);
-    ctx.fillStyle = "#3b82f680";
+    ctx.fillStyle = "#E6E6FA";
     ctx.fill();
 
     drawTodos({
       canvas,
       days: mockDays,
-      viewableTimeWindowDegrees: timeWindowStartDeg,
+      viewableTimeWindowDegrees: timeWindowStartDeg + timeWindowStartDegOffset,
       radius,
     });
   }, [timeWindowStartDeg]);
@@ -62,11 +73,10 @@ export function ClockGraph() {
     <div className="bg-white flex justify-center items-center h-dvh w-dvw">
       <TimeViewAdjuster
         clockGraphRadius={radius}
-        containerClassName="w-[400px] h-[400px]"
         onViewableTimeDegreesChange={(d) => setTimeWindowStartDeg(d)}
         viewableTimeDegrees={timeWindowStartDeg}
       >
-        <canvas className="w-full h-full bg-amber-300" ref={cancasRef} />
+        <Clock canvasRef={canvasRef} />
       </TimeViewAdjuster>
     </div>
   );
