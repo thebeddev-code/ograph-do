@@ -7,7 +7,7 @@ interface DrawTodos {
   x?: number;
   y?: number;
   radius?: number;
-  viewableTimeDegreesStart: number;
+  viewableTimeWindowDegrees: number;
 }
 export function drawTodos({
   canvas,
@@ -15,7 +15,7 @@ export function drawTodos({
   x,
   y,
   radius,
-  viewableTimeDegreesStart,
+  viewableTimeWindowDegrees,
 }: DrawTodos) {
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
@@ -45,7 +45,7 @@ export function drawTodos({
   const offsetRadians = calcRadiansFrom(90);
 
   const visibleTimeWindowStart =
-    (viewableTimeDegreesStart + 90) / DEGREES_PER_HOUR;
+    (viewableTimeWindowDegrees + 90) / DEGREES_PER_HOUR;
   const visibleTimeWindowEnd =
     visibleTimeWindowStart + TIME_WINDOW_VISIBLE_HOURS;
 
