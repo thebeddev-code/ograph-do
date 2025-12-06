@@ -1,3 +1,4 @@
+import { DEGREES_PER_HOUR, TIME_WINDOW_VISIBLE_HOURS } from "./utils/constants";
 import { calcDegreesFrom, calcRadiansFrom } from "./utils/math";
 
 interface DrawTodos {
@@ -20,7 +21,7 @@ export function drawTodos({
   if (!ctx) return;
   const rect = canvas.getBoundingClientRect();
 
-  function drawArc(
+  function drawTodo(
     drawRadiansStart: number,
     drawRadiansEnd: number,
     offset: number,
@@ -36,34 +37,47 @@ export function drawTodos({
       drawRadiansEnd - offset
     );
     ctx.strokeStyle = color;
+    ctx.fillStyle = color;
     ctx.lineWidth = 10;
     ctx.stroke();
   }
+
   const offsetRadians = calcRadiansFrom(90);
-  const correctedViewableTimeDegreesStart = viewableTimeDegreesStart + 90;
-  const viewableTimeDegreesEnd =
-    correctedViewableTimeDegreesStart + calcDegreesFrom(12, "hours");
+
+  const visibleTimeWindowStart =
+    (viewableTimeDegreesStart + 90) / DEGREES_PER_HOUR;
+  const visibleTimeWindowEnd =
+    visibleTimeWindowStart + TIME_WINDOW_VISIBLE_HOURS;
 
   for (const day of days) {
     for (const todo of day) {
       const { start, end } = todo;
+
+      const todoStartTime = start.hour + start.minutes / 60;
+      const todoEndTime = end.hour + end.minutes / 60;
+
       const drawDegreesStart = calcDegreesFrom(
-        start.hour + start.minutes / 60,
+        Math.max(todoStartTime, visibleTimeWindowStart),
         "hours"
       );
       const drawDegreesEnd = calcDegreesFrom(
-        end.hour + end.minutes / 60,
+        Math.min(todoEndTime, visibleTimeWindowEnd),
         "hours"
       );
 
-      const drawRadiansStart = calcRadiansFrom(
-        Math.max(drawDegreesStart, correctedViewableTimeDegreesStart)
+      const drawRadiansStart = calcRadiansFrom(drawDegreesStart);
+      const drawRadiansEnd = calcRadiansFrom(drawDegreesEnd);
+      console.log(
+        todoStartTime,
+        todoEndTime,
+        visibleTimeWindowStart,
+        visibleTimeWindowEnd
       );
-      const drawRadiansEnd = calcRadiansFrom(
-        Math.min(drawDegreesEnd, viewableTimeDegreesEnd)
-      );
-      if (correctedViewableTimeDegreesStart < drawDegreesEnd)
-        drawArc(drawRadiansStart, drawRadiansEnd, offsetRadians, todo.color);
+      if (
+        visibleTimeWindowStart <= todoEndTime &&
+        visibleTimeWindowEnd >= todoStartTime
+      )
+        drawTodo(drawRadiansStart, drawRadiansEnd, offsetRadians, todo.color);
     }
   }
 }

@@ -23,6 +23,28 @@ export const mockDays: Todo[][] = [
       },
       color: "#87CEEB",
     },
+    {
+      start: {
+        hour: 17,
+        minutes: 0,
+      },
+      end: {
+        hour: 19,
+        minutes: 0,
+      },
+      color: "#87CEEB",
+    },
+    {
+      start: {
+        hour: 21,
+        minutes: 0,
+      },
+      end: {
+        hour: 23,
+        minutes: 0,
+      },
+      color: "black",
+    },
   ],
   [],
 ];
