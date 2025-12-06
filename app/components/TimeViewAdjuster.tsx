@@ -57,8 +57,9 @@ export function TimeViewAdjuster({
           transformOrigin: "50% 50%",
           width: `${clockGraphRadius * 2 + HANDLE_BUTTON_SIZE_PX}px`,
         }}
-        className="absolute flex justify-end items-center h-1"
+        className="z-10 absolute flex justify-end items-center h-1 "
       >
+        <div className="border-white border border-dotted h-[50%] w-full" />
         <div
           onMouseDown={() => setMouseDown(true)}
           style={{
