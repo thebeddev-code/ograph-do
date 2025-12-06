@@ -33,9 +33,8 @@ export function TimeViewAdjuster({
 
     const dx = e.clientX - centerX;
     const dy = e.clientY - centerY;
-    const angleRadians = Math.atan2(dy, dx);
+    const angleRadians = Math.atan2(-dx, dy);
     let angleDeg = calcDegreesFrom(angleRadians);
-
     if (angleDeg < 0) angleDeg += 360;
     onViewableTimeDegreesChange(angleDeg);
   };
@@ -53,7 +52,7 @@ export function TimeViewAdjuster({
     >
       <div
         style={{
-          transform: `rotate(${viewableTimeDegrees}deg)`,
+          transform: `rotate(${viewableTimeDegrees + 90}deg)`,
           transformOrigin: "50% 50%",
           width: `${clockGraphRadius * 2 + HANDLE_BUTTON_SIZE_PX}px`,
         }}

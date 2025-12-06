@@ -46,5 +46,17 @@ export const mockDays: Todo[][] = [
       color: "black",
     },
   ],
-  [],
+  [
+    {
+      start: {
+        hour: 8,
+        minutes: 0,
+      },
+      end: {
+        hour: 11,
+        minutes: 0,
+      },
+      color: "#F08080",
+    },
+  ],
 ];

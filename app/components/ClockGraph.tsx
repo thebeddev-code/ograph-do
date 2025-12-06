@@ -5,10 +5,15 @@ import { drawTodos } from "~/lib/draw";
 import { TimeViewAdjuster } from "~/components/TimeViewAdjuster";
 import { calcRadiansFrom } from "../lib/utils/math";
 import { Clock } from "./Clock";
+import {
+  DEGREES_PER_HOUR,
+  TIME_WINDOW_VISIBLE_HOURS,
+} from "~/lib/utils/constants";
 
 export function ClockGraph() {
-  const [timeWindowStartDeg, setTimeWindowStartDeg] = useState(90);
+  const [timeWindowStartDeg, setTimeWindowStartDeg] = useState(0);
   const [timeWindowStartDegOffset, setTimeWindowStartDegOffset] = useState(0);
+  const [fullRotationCount, setFullRotationCount] = useState(0);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const radius = 150;
 
@@ -54,23 +59,48 @@ export function ClockGraph() {
       rect.height / 2,
       radius,
       calcRadiansFrom(90),
-      calcRadiansFrom(timeWindowStartDeg),
+      calcRadiansFrom(90 + timeWindowStartDeg),
       false
     );
     ctx.lineTo(rect.width / 2, rect.height / 2);
     ctx.fillStyle = "#E6E6FA";
     ctx.fill();
 
+    const visibleTimeWindowStart =
+      (timeWindowStartDeg + 180) / DEGREES_PER_HOUR;
+    const visibleTimeWindowEnd =
+      visibleTimeWindowStart + TIME_WINDOW_VISIBLE_HOURS;
+    const arr = mockDays[fullRotationCount + 1];
+    console.log(fullRotationCount, arr);
     drawTodos({
       canvas,
-      days: mockDays,
-      viewableTimeWindowDegrees: timeWindowStartDeg + timeWindowStartDegOffset,
+      todos: mockDays[fullRotationCount + 1],
+      viewableTimeWindow: {
+        start: visibleTimeWindowStart,
+        end: visibleTimeWindowEnd,
+      },
       radius,
     });
+    if (timeWindowStartDeg + 5 >= 360) {
+      setTimeWindowStartDeg(0);
+      setTimeWindowStartDegOffset(0);
+      const nextFullRotationCount = fullRotationCount + 1;
+      if (nextFullRotationCount < mockDays.length - 1)
+        setFullRotationCount(fullRotationCount + 1);
+    }
   }, [timeWindowStartDeg]);
 
+  const today = new Date();
+  const formattedDate = today.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+
+  const result = `${formattedDate}`;
+
   return (
-    <div className="bg-white flex justify-center items-center h-dvh w-dvw">
+    <div className="bg-white flex-col flex justify-center items-center h-dvh w-dvw">
+      <h1 className="text-2xl font-black mb-10">Day: {result}</h1>
       <TimeViewAdjuster
         clockGraphRadius={radius}
         onViewableTimeDegreesChange={(d) => setTimeWindowStartDeg(d)}

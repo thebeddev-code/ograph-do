@@ -1,21 +1,23 @@
-import { DEGREES_PER_HOUR, TIME_WINDOW_VISIBLE_HOURS } from "./utils/constants";
 import { calcDegreesFrom, calcRadiansFrom } from "./utils/math";
 
 interface DrawTodos {
   canvas: HTMLCanvasElement;
-  days: Days;
+  todos: Todo[];
   x?: number;
   y?: number;
   radius?: number;
-  viewableTimeWindowDegrees: number;
+  viewableTimeWindow: {
+    start: number;
+    end: number;
+  };
 }
 export function drawTodos({
   canvas,
-  days,
+  todos,
   x,
   y,
   radius,
-  viewableTimeWindowDegrees,
+  viewableTimeWindow,
 }: DrawTodos) {
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
@@ -44,40 +46,27 @@ export function drawTodos({
 
   const offsetRadians = calcRadiansFrom(90);
 
-  const visibleTimeWindowStart =
-    (viewableTimeWindowDegrees + 90) / DEGREES_PER_HOUR;
-  const visibleTimeWindowEnd =
-    visibleTimeWindowStart + TIME_WINDOW_VISIBLE_HOURS;
+  for (const todo of todos) {
+    const { start, end } = todo;
 
-  for (const day of days) {
-    for (const todo of day) {
-      const { start, end } = todo;
+    const todoStartTime = start.hour + start.minutes / 60;
+    const todoEndTime = end.hour + end.minutes / 60;
 
-      const todoStartTime = start.hour + start.minutes / 60;
-      const todoEndTime = end.hour + end.minutes / 60;
+    const drawDegreesStart = calcDegreesFrom(
+      Math.max(todoStartTime, viewableTimeWindow.start),
+      "hours"
+    );
+    const drawDegreesEnd = calcDegreesFrom(
+      Math.min(todoEndTime, viewableTimeWindow.end),
+      "hours"
+    );
 
-      const drawDegreesStart = calcDegreesFrom(
-        Math.max(todoStartTime, visibleTimeWindowStart),
-        "hours"
-      );
-      const drawDegreesEnd = calcDegreesFrom(
-        Math.min(todoEndTime, visibleTimeWindowEnd),
-        "hours"
-      );
-
-      const drawRadiansStart = calcRadiansFrom(drawDegreesStart);
-      const drawRadiansEnd = calcRadiansFrom(drawDegreesEnd);
-      console.log(
-        todoStartTime,
-        todoEndTime,
-        visibleTimeWindowStart,
-        visibleTimeWindowEnd
-      );
-      if (
-        visibleTimeWindowStart <= todoEndTime &&
-        visibleTimeWindowEnd >= todoStartTime
-      )
-        drawTodo(drawRadiansStart, drawRadiansEnd, offsetRadians, todo.color);
-    }
+    const drawRadiansStart = calcRadiansFrom(drawDegreesStart);
+    const drawRadiansEnd = calcRadiansFrom(drawDegreesEnd);
+    if (
+      viewableTimeWindow.start <= todoEndTime &&
+      viewableTimeWindow.end >= todoStartTime
+    )
+      drawTodo(drawRadiansStart, drawRadiansEnd, offsetRadians, todo.color);
   }
 }
