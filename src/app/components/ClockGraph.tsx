@@ -2,8 +2,8 @@
 import { useEffect, useRef, useState } from "react";
 import { mockDays } from "~/lib/utils/mockData";
 import { drawTodos } from "~/lib/draw";
-import { TimeViewAdjuster } from "~/components/TimeViewAdjuster";
-import { calcRadiansFrom } from "../lib/utils/math";
+import { TimeViewAdjuster } from "~/app/components/TimeViewAdjuster";
+import { calcRadiansFrom } from "../../lib/utils/math";
 import { Clock } from "./Clock";
 import {
   DEGREES_PER_HOUR,

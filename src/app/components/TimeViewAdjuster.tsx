@@ -1,7 +1,7 @@
 import { ReactNode, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { MouseEvent } from "react";
-import { calcDegreesFrom } from "../lib/utils/math";
+import { calcDegreesFrom } from "~/lib/utils/math";
 
 interface Props {
   children: ReactNode;

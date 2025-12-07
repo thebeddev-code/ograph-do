@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { drawTodos } from "../lib/draw";
+import { drawTodos } from "../../lib/draw";
 
 interface Props {
   todos: Todo[];
