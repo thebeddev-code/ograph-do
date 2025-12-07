@@ -9,6 +9,7 @@ import {
   DEGREES_PER_HOUR,
   TIME_WINDOW_VISIBLE_HOURS,
 } from "~/lib/utils/constants";
+import { LineGraph } from "./LineGraph";
 
 export function ClockGraph() {
   const [timeWindowStartDeg, setTimeWindowStartDeg] = useState(0);
@@ -71,7 +72,6 @@ export function ClockGraph() {
     const visibleTimeWindowEnd =
       visibleTimeWindowStart + TIME_WINDOW_VISIBLE_HOURS;
     const arr = mockDays[fullRotationCount + 1];
-    console.log(fullRotationCount, arr);
     drawTodos({
       canvas,
       todos: mockDays[fullRotationCount + 1],
@@ -108,6 +108,10 @@ export function ClockGraph() {
       >
         <Clock canvasRef={canvasRef} />
       </TimeViewAdjuster>
+      <LineGraph
+        todos={mockDays[1]}
+        visibleTimeWindowStart={(timeWindowStartDeg + 180) / DEGREES_PER_HOUR}
+      />
     </div>
   );
 }
