@@ -4,9 +4,24 @@ type TodoTime = {
 };
 
 type Todo = {
-  start: TodoTime;
-  end: TodoTime;
-  color: string;
+  id: number;
+  title: string;
+  description: string;
+  tags: string[];
+  color: string | null;
+  status: "pending" | "in-progress" | "completed";
+  priority: "low" | "medium" | "high";
+  time: {
+    start: TodoTime;
+    end: TodoTime;
+  };
+  due?: string | null;
+  createdAt: string;
+  updatedAt: string;
+  completedAt?: string | null;
+  isRecurring: boolean;
+  // e.g "RRULE:FREQ=WEEKLY;BYDAY=MO,WE,FR"
+  recurrenceRule?: string | null;
 };
 
 type Days = Todo[][];
