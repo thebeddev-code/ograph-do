@@ -47,7 +47,7 @@ export function drawTodos({
   const offsetRadians = calcRadiansFrom(90);
 
   for (const todo of todos) {
-    const { start, end } = todo;
+    const { start, end } = todo.time;
 
     const todoStartTime = start.hour + start.minutes / 60;
     const todoEndTime = end.hour + end.minutes / 60;
@@ -67,6 +67,11 @@ export function drawTodos({
       viewableTimeWindow.start <= todoEndTime &&
       viewableTimeWindow.end >= todoStartTime
     )
-      drawTodo(drawRadiansStart, drawRadiansEnd, offsetRadians, todo.color);
+      drawTodo(
+        drawRadiansStart,
+        drawRadiansEnd,
+        offsetRadians,
+        todo.color ?? "magenta"
+      );
   }
 }

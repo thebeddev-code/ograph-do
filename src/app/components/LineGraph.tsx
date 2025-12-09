@@ -37,10 +37,10 @@ export function LineGraph({ todos, visibleTimeWindowStart }: Props) {
 
     // Draw todos
     todos.forEach((t) => {
-      const { start, end, color } = t;
+      const { start, end } = t.time;
       const startX = unitWidth * start.hour + (unitWidth * start.minutes) / 60;
       const endX = unitWidth * end.hour + (unitWidth * end.minutes) / 60;
-      ctx.fillStyle = color;
+      ctx.fillStyle = t.color ?? "magenta";
       ctx.shadowColor = "rgba(0, 0, 0, 0.2)";
       ctx.shadowBlur = 4;
       ctx.fillRect(startX + 1, 4, endX - startX - 2, height - 8);
