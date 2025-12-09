@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { drawTodos } from "../../lib/draw";
 
 interface Props {
@@ -6,64 +6,77 @@ interface Props {
   visibleTimeWindowStart: number;
 }
 export function LineGraph({ todos, visibleTimeWindowStart }: Props) {
-  type DrawLineGraphTodo = {
-    drawPercentage: number;
-    color: string;
-    dir: "left" | "right";
-  };
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  const arr: DrawLineGraphTodo[] = new Array(24).fill({
-    drawPercentage: 0,
-    color: "",
-    dir: "",
-  });
-  for (const t of todos) {
-    for (let i = t.start.hour; i < t.end.hour; ++i) {
-      arr[i > 24 ? 24 : i] = {
-        color: t.color,
-        dir: "right",
-        drawPercentage: 100,
-      };
-    }
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-    if (t.start.minutes > 0) {
-      arr[t.start.hour].drawPercentage = ((60 - t.start.minutes) / 60) * 100;
-    }
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
 
-    if (t.end.minutes > 0) {
-      arr[t.end.hour].drawPercentage = (t.end.minutes / 60) * 100;
-      arr[t.end.hour].dir = "left";
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.scale(dpr, dpr);
+
+    const width = rect.width;
+    const height = rect.height;
+    const unitWidth = width / 24;
+
+    // Clear canvas
+    ctx.clearRect(0, 0, width, height);
+
+    // Background gradient
+    const gradient = ctx.createLinearGradient(0, 0, 0, height);
+    gradient.addColorStop(0, "#f0f4ff");
+    gradient.addColorStop(1, "#d9e2ff");
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, width, height);
+
+    // Draw todos
+    todos.forEach((t) => {
+      const { start, end, color } = t;
+      const startX = unitWidth * start.hour + (unitWidth * start.minutes) / 60;
+      const endX = unitWidth * end.hour + (unitWidth * end.minutes) / 60;
+      ctx.fillStyle = color;
+      ctx.shadowColor = "rgba(0, 0, 0, 0.2)";
+      ctx.shadowBlur = 4;
+      ctx.fillRect(startX + 1, 4, endX - startX - 2, height - 8);
+      ctx.shadowBlur = 0;
+    });
+
+    // Draw grid lines and labels
+    ctx.strokeStyle = "#bbb";
+    ctx.fillStyle = "#444";
+    ctx.textBaseline = "top";
+
+    for (let i = 0; i <= 24; i++) {
+      const x = unitWidth * i + 0.5; // 0.5 for crisp lines
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, height);
+      ctx.stroke();
+
+      if (i < 24) {
+        const label = i < 10 ? `0${i}:00` : `${i}:00`;
+        ctx.fillText(label, x + 4, 4);
+      }
     }
-  }
+  }, [todos]);
+
   return (
-    <div className="flex mt-10 border">
-      {arr.map(({ drawPercentage, color, dir }, i) => {
-        // no percentage, just solid bg
-        if (drawPercentage == 0) {
-          return <div key={`d${i}`} className={`h-10 w-10 bg-${color}`} />;
-        }
-
-        // 100%: all color
-        if (drawPercentage === 100) {
-          return <div key={`d${i}`} className={`h-10 w-10 bg-${color}`} />;
-        }
-
-        // build gradient based on dir
-        const fromColor = dir === "right" ? "white" : color;
-        const toColor = dir === "right" ? color : "white";
-
-        return (
-          <div
-            key={`d${i}`}
-            className="h-10 w-10"
-            style={{
-              background: `linear-gradient(to ${dir}, ${fromColor} ${
-                100 - drawPercentage
-              }%, ${toColor} ${100 - drawPercentage}%)`,
-            }}
-          />
-        );
-      })}
+    <div className="relative mt-10 border rounded-lg shadow-lg bg-white">
+      <canvas
+        ref={canvasRef}
+        className="w-[1000px] h-24 rounded-lg"
+        style={{ imageRendering: "pixelated" }}
+      />
+      <div
+        style={{ left: `${(visibleTimeWindowStart / 24) * 100}%` }}
+        className="absolute z-10 top-0 h-full w-[500px] border-2 border-purple-600 bg-purple-100/30 rounded pointer-events-none"
+      />
     </div>
   );
 }
