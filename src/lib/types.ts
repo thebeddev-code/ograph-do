@@ -9,12 +9,13 @@ type Todo = {
   description: string;
   tags: string[];
   color: string | null;
-  status: "pending" | "in-progress" | "completed";
+  status: "pending" | "in-progress" | "completed" | "overdue";
   priority: "low" | "medium" | "high";
   time: {
     start: TodoTime;
     end: TodoTime;
   };
+  // Only with the precision to the day
   due?: string | null;
   createdAt: string;
   updatedAt: string;
