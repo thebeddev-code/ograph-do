@@ -1,4 +1,5 @@
 import { FaCalendarAlt, FaStar, FaChartLine, FaSyncAlt } from "react-icons/fa";
+import { formatDueDate } from "~/lib/utils/date";
 
 interface Props {
   todo: Todo;
@@ -8,42 +9,6 @@ export function TodoCard({ todo }: Props) {
   const { title, due, priority, status, isRecurring } = todo;
 
   // Format the due date
-  const formatDueDate = (dueDate?: string) => {
-    if (!dueDate) return "";
-    const today = new Date();
-    const dueDateObj = new Date(dueDate);
-    const oneDay = 24 * 60 * 60 * 1000;
-
-    const diffDays = (dueDateObj.getTime() - today.getTime()) / oneDay;
-
-    if (diffDays < 0) return "Overdue";
-    if (diffDays === 0) return "Today";
-    if (diffDays === 1) return "Tomorrow";
-
-    const weekDays = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ];
-    const dueDay = weekDays[dueDateObj.getDay()];
-
-    const currentWeek =
-      today.getFullYear() === dueDateObj.getFullYear() &&
-      today.getMonth() === dueDateObj.getMonth() &&
-      Math.ceil((today.getDate() + 1) / 7) ===
-        Math.ceil((dueDateObj.getDate() + 1) / 7);
-
-    return currentWeek
-      ? dueDay
-      : dueDateObj.toLocaleDateString("en-US", {
-          day: "2-digit",
-          month: "short",
-        });
-  };
 
   return (
     <div
