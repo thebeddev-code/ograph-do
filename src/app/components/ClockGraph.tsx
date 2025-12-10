@@ -11,12 +11,12 @@ import {
 } from "~/lib/utils/constants";
 import { LineGraph } from "./LineGraph";
 
+const RADIUS = 130;
 export function ClockGraph() {
   const [timeWindowStartDeg, setTimeWindowStartDeg] = useState(0);
   const [timeWindowStartDegOffset, setTimeWindowStartDegOffset] = useState(0);
   const [fullRotationCount, setFullRotationCount] = useState(0);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const radius = 150;
 
   if (timeWindowStartDeg >= 180 && timeWindowStartDegOffset < 180)
     setTimeWindowStartDegOffset(180);
@@ -43,7 +43,7 @@ export function ClockGraph() {
     ctx.arc(
       rect.width / 2,
       rect.height / 2,
-      radius,
+      RADIUS,
       calcRadiansFrom(0),
       calcRadiansFrom(360),
       false
@@ -58,7 +58,7 @@ export function ClockGraph() {
     ctx.arc(
       rect.width / 2,
       rect.height / 2,
-      radius,
+      RADIUS,
       calcRadiansFrom(90),
       calcRadiansFrom(90 + timeWindowStartDeg),
       false
@@ -79,7 +79,7 @@ export function ClockGraph() {
         start: visibleTimeWindowStart,
         end: visibleTimeWindowEnd,
       },
-      radius,
+      radius: RADIUS,
     });
     if (timeWindowStartDeg + 5 >= 360) {
       setTimeWindowStartDeg(0);
@@ -99,10 +99,10 @@ export function ClockGraph() {
   const result = `${formattedDate}`;
 
   return (
-    <div className="bg-white flex-col flex justify-center items-center h-dvh w-dvw">
+    <div className="bg-white flex-col flex justify-center items-center">
       <h1 className="text-2xl font-black mb-10">Day: {result}</h1>
       <TimeViewAdjuster
-        clockGraphRadius={radius}
+        clockGraphRadius={RADIUS}
         onViewableTimeDegreesChange={(d) => setTimeWindowStartDeg(d)}
         viewableTimeDegrees={timeWindowStartDeg}
       >
