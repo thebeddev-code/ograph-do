@@ -1,11 +1,15 @@
 import { useEffect, useMemo, useRef } from "react";
-import { drawTodos } from "../../lib/draw";
 
 interface Props {
   todos: Todo[];
   visibleTimeWindowStart: number;
+  lineGraphWidth?: number;
 }
-export function LineGraph({ todos, visibleTimeWindowStart }: Props) {
+export function LineGraph({
+  todos,
+  visibleTimeWindowStart,
+  lineGraphWidth = 700,
+}: Props) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -70,12 +74,15 @@ export function LineGraph({ todos, visibleTimeWindowStart }: Props) {
     <div className="relative mt-10 border rounded-lg shadow-lg bg-white">
       <canvas
         ref={canvasRef}
-        className="w-[1000px] h-24 rounded-lg"
-        style={{ imageRendering: "pixelated" }}
+        className="h-24 rounded-lg"
+        style={{ imageRendering: "pixelated", width: lineGraphWidth }}
       />
       <div
-        style={{ left: `${(visibleTimeWindowStart / 24) * 100}%` }}
-        className="absolute z-10 top-0 h-full w-[500px] border-2 border-purple-600 bg-purple-100/30 rounded pointer-events-none"
+        style={{
+          left: `${(visibleTimeWindowStart / 24) * 100}%`,
+          width: lineGraphWidth / 2,
+        }}
+        className="absolute z-10 top-0 h-full border-2 border-purple-600 bg-purple-100/30 rounded pointer-events-none"
       />
     </div>
   );
