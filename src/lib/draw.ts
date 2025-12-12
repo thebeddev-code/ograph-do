@@ -47,6 +47,8 @@ export function drawTodos({
   const offsetRadians = calcRadiansFrom(90);
 
   for (const todo of todos) {
+    if (!todo.time) continue;
+
     const { start, end } = todo.time;
 
     const todoStartTime = start.hour + start.minutes / 60;
