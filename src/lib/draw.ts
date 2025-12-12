@@ -1,4 +1,5 @@
 import { calcDegreesFrom, calcRadiansFrom } from "./utils/math";
+import { Todo } from "./types";
 
 interface DrawTodos {
   canvas: HTMLCanvasElement;

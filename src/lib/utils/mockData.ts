@@ -1,4 +1,6 @@
-export const mockDays: Todo[][] = [
+import { Days } from "../types";
+
+export const mockDays: Days = [
   [],
   [
     {

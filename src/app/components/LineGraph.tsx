@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
+import { Todo } from "~/lib/types";
 
 interface Props {
   todos: Todo[];
@@ -41,6 +42,7 @@ export function LineGraph({
 
     // Draw todos
     todos.forEach((t) => {
+      if (!t.time) return;
       const { start, end } = t.time;
       const startX = unitWidth * start.hour + (unitWidth * start.minutes) / 60;
       const endX = unitWidth * end.hour + (unitWidth * end.minutes) / 60;

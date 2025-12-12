@@ -21,6 +21,14 @@ export function ClockGraph() {
   if (timeWindowStartDeg >= 180 && timeWindowStartDegOffset < 180)
     setTimeWindowStartDegOffset(180);
 
+  if (timeWindowStartDeg + 5 >= 360) {
+    setTimeWindowStartDeg(0);
+    setTimeWindowStartDegOffset(0);
+    const nextFullRotationCount = fullRotationCount + 1;
+    if (nextFullRotationCount < mockDays.length - 1)
+      setFullRotationCount(fullRotationCount + 1);
+  }
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -71,7 +79,6 @@ export function ClockGraph() {
       (timeWindowStartDeg + 180) / DEGREES_PER_HOUR;
     const visibleTimeWindowEnd =
       visibleTimeWindowStart + TIME_WINDOW_VISIBLE_HOURS;
-    const arr = mockDays[fullRotationCount + 1];
     drawTodos({
       canvas,
       todos: mockDays[fullRotationCount + 1],
@@ -81,14 +88,7 @@ export function ClockGraph() {
       },
       radius: RADIUS,
     });
-    if (timeWindowStartDeg + 5 >= 360) {
-      setTimeWindowStartDeg(0);
-      setTimeWindowStartDegOffset(0);
-      const nextFullRotationCount = fullRotationCount + 1;
-      if (nextFullRotationCount < mockDays.length - 1)
-        setFullRotationCount(fullRotationCount + 1);
-    }
-  }, [timeWindowStartDeg]);
+  }, [timeWindowStartDeg, fullRotationCount]);
 
   const today = new Date();
   const formattedDate = today.toLocaleDateString("en-US", {

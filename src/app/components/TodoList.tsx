@@ -12,8 +12,10 @@ export function TodoList() {
     >
       {todos
         .toSorted((t1, t2) => {
-          const { hour: hour1, minutes: minutes1 } = t1.time.start;
-          const { hour: hour2, minutes: minutes2 } = t2.time.start;
+          const { hour: hour1 = 0, minutes: minutes1 = 0 } =
+            t1.time?.start ?? {};
+          const { hour: hour2 = 0, minutes: minutes2 = 0 } =
+            t2.time?.start ?? {};
 
           const d1 =
             new Date(t1.due ?? 0).getTime() + (24 - hour1) + (60 - minutes1);

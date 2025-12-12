@@ -1,9 +1,9 @@
-type TodoTime = {
+export type TodoTime = {
   hour: number;
   minutes: number;
 };
 
-type Todo = {
+export type Todo = {
   id: number;
   title: string;
   description: string;
@@ -24,5 +24,4 @@ type Todo = {
   // e.g "RRULE:FREQ=WEEKLY;BYDAY=MO,WE,FR"
   recurrenceRule?: string | null;
 };
-
-type Days = Todo[][];
+export type Days = Todo[][];

@@ -1,6 +1,7 @@
 import { FaCalendarAlt, FaStar, FaChartLine, FaSyncAlt } from "react-icons/fa";
 import { formatDueDate, formatTimeToDoubleDigits } from "~/lib/utils/date";
 import { IoIosTime } from "react-icons/io";
+import { Todo } from "~/lib/types";
 
 interface Props {
   todo: Todo;
