@@ -14,7 +14,7 @@ type Todo = {
   time: {
     start: TodoTime;
     end: TodoTime;
-  };
+  } | null;
   // Only with the precision to the day
   due?: string | null;
   createdAt: string;

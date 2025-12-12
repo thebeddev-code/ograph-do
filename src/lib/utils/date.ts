@@ -34,3 +34,7 @@ export function formatDueDate(dueDate?: string) {
         month: "short",
       });
 }
+
+export function formatTimeToDoubleDigits(t = 0) {
+  return t > 9 ? t : `0${t}`;
+}
