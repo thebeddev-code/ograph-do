@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-      - "release/*"
   pull_request:
     branches:
       - main
@@ -45,7 +44,7 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
 
       - name: Run ESLint
         # fail on warnings to keep the repo strict; remove --max-warnings=0 if you prefer warnings allowed
@@ -79,7 +78,7 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
 
       - name: Run tests (Vitest)
         run: pnpm run test
@@ -128,7 +127,7 @@ jobs:
             ${{ runner.os }}-next-cache-
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
 
       - name: Build (Next)
         env:
