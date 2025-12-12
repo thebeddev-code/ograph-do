@@ -1,8 +1,0 @@
-- name: Debug
-  run: |
-    echo "Root directory:"
-    ls -al .
-    echo "Finding pnpm-lock.yaml:"
-    find . -maxdepth 4 -name "pnpm-lock.yaml"
-    echo "Finding package.json:"
-    find . -maxdepth 4 -name "package.json"
