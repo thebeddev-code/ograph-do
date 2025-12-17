@@ -1,4 +1,5 @@
 import { Days } from "../types";
+import { formatDate } from "./date";
 
 export const mockDays: Days = [
   [],
@@ -21,10 +22,10 @@ export const mockDays: Days = [
           minutes: 0,
         },
       },
-      due: "2025-12-10",
+      due: formatDate(),
       createdAt: "2025-12-01T12:00:00Z",
       updatedAt: "2025-12-01T12:30:00Z",
-      completedAt: "2025-12-01T15:00:00Z",
+      completedAt: null,
       isRecurring: false,
     },
     {
@@ -45,7 +46,7 @@ export const mockDays: Days = [
           minutes: 0,
         },
       },
-      due: "2025-12-15",
+      due: formatDate(),
       createdAt: "2025-12-02T09:00:00Z",
       updatedAt: "2025-12-05T11:00:00Z",
       completedAt: null,
@@ -70,7 +71,7 @@ export const mockDays: Days = [
           minutes: 0,
         },
       },
-      due: "2025-12-05",
+      due: formatDate(),
       createdAt: "2025-12-01T08:00:00Z",
       updatedAt: "2025-12-01T08:00:00Z",
       completedAt: null,
@@ -94,7 +95,7 @@ export const mockDays: Days = [
           minutes: 0,
         },
       },
-      due: "2025-12-10",
+      due: formatDate(),
       createdAt: "2025-12-01T13:00:00Z",
       updatedAt: "2025-12-03T10:15:00Z",
       completedAt: null,
