@@ -1,4 +1,4 @@
-export function formatDueDate(dueDate?: string) {
+export function formatDueDate(dueDate?: string): string {
   if (!dueDate) return "";
   const today = new Date();
   const dueDateObj = new Date(dueDate);
@@ -35,6 +35,25 @@ export function formatDueDate(dueDate?: string) {
       });
 }
 
-export function formatTimeToDoubleDigits(t = 0) {
-  return t > 9 ? t : `0${t}`;
+export function formatTimeToDoubleDigits(t = 0): string {
+  return `${t < 9 ? 0 : ""}${t}`;
+}
+
+export function formatDate(
+  date: Date = new Date(),
+  format: string = "yyyy-MM-dd"
+): string {
+  const parts = {
+    yyyy: String(date.getFullYear()),
+    MM: formatTimeToDoubleDigits(date.getMonth() + 1),
+    dd: formatTimeToDoubleDigits(date.getDate()),
+    HH: formatTimeToDoubleDigits(date.getHours()),
+    mm: formatTimeToDoubleDigits(date.getMinutes()),
+    ss: formatTimeToDoubleDigits(date.getSeconds()),
+  } as const;
+
+  return format.replace(
+    /yyyy|MM|dd|HH|mm|ss/g,
+    (match) => parts[match as keyof typeof parts]
+  );
 }
