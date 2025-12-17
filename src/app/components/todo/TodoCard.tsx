@@ -5,9 +5,10 @@ import { Todo } from "~/lib/types";
 
 interface Props {
   todo: Todo;
+  onShowExpandedView: (todoId: number) => void;
 }
 
-export function TodoCard({ todo }: Props) {
+export function TodoCard({ todo, onShowExpandedView }: Props) {
   const { title, due, priority, status, isRecurring } = todo;
 
   // Format the due date
@@ -18,6 +19,7 @@ export function TodoCard({ todo }: Props) {
       style={{
         borderColor: todo.color || "#9ca3af", // Fallback border color
       }}
+      onClick={() => onShowExpandedView(todo.id)}
     >
       <div className="p-5">
         <h3 className="text-xl font-semibold text-gray-800 mb-4">
