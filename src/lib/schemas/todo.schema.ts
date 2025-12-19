@@ -6,8 +6,7 @@ const todoTimeSchema = z.object({
 });
 
 // Define the Todo schema
-const todoSchema = z.object({
-  id: z.number(),
+export const todoSchema = z.object({
   title: z.string(),
   description: z.string(),
   tags: z.array(z.string()),
@@ -16,7 +15,7 @@ const todoSchema = z.object({
   priority: z.enum(["low", "medium", "high"]),
   time: z
     .object({
-      start: z.object({}),
+      start: todoTimeSchema,
       end: todoTimeSchema,
     })
     .nullable(),
@@ -28,4 +27,4 @@ const todoSchema = z.object({
   recurrenceRule: z.string().nullable().optional(),
 });
 
-export type Todo = z.infer<typeof todoSchema>;
+export type CreateTodo = z.infer<typeof todoSchema>;
