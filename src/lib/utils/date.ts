@@ -39,6 +39,29 @@ export function formatTimeToDoubleDigits(t = 0): string {
   return `${t < 9 ? 0 : ""}${t}`;
 }
 
+/**
+ * Formats a given date into a string based on the specified format.
+ *
+ * @param {Date} [date=new Date()] - The date to format. Defaults to the current date and time if not provided.
+ * @param {string} [format="yyyy-MM-dd"] - The format string that defines the output format.
+ * The format can contain the following placeholders:
+ *  - `yyyy`: full year (e.g., 2025)
+ *  - `MM`: month (01-12)
+ *  - `dd`: day of the month (01-31)
+ *  - `HH`: hours in 24-hour format (00-23)
+ *  - `mm`: minutes (00-59)
+ *  - `ss`: seconds (00-59)
+ *
+ * @returns {string} The formatted date string based on the provided format.
+ *
+ * @example
+ * // Returns "2025-12-19" if the date is December 19, 2025
+ * formatDate(new Date("2025-12-19"), "yyyy-MM-dd");
+ *
+ * @example
+ * // Returns "19-12-2025 14:30" if the date is December 19, 2025, 14:30
+ * formatDate(new Date("2025-12-19T14:30:00"), "dd-MM-yyyy HH:mm");
+ */
 export function formatDate(
   date: Date = new Date(),
   format: string = "yyyy-MM-dd"
