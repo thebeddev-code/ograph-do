@@ -1,6 +1,18 @@
 import { CgClose } from "react-icons/cg";
 import { twMerge, ClassNameValue } from "tailwind-merge";
 import { Todo } from "~/lib/types";
+import { formatDate } from "~/lib/utils/date";
+
+function DateField({ label, value }: { label: string; value?: string | null }) {
+  return (
+    <div className="flex flex-col">
+      <span className="text-sm font-semibold text-gray-500">{label}</span>
+      <span className="text-gray-800">
+        {value ? formatDate(new Date(value), "MM/dd/yyyy") : "—"}
+      </span>
+    </div>
+  );
+}
 
 interface Props {
   todo: Todo;
@@ -12,31 +24,6 @@ export function TodoExpandedView({
   containerClassName = "w-[50%]",
   onExpandedViewClose,
 }: Props) {
-  function DateField({
-    label,
-    value,
-  }: {
-    label: string;
-    value?: string | null;
-  }) {
-    return (
-      <div className="flex flex-col">
-        <span className="text-sm font-semibold text-gray-500">{label}</span>
-        <span className="text-gray-800">{value ? formatDate(value) : "—"}</span>
-      </div>
-    );
-  }
-
-  function formatDate(date: string) {
-    const d = new Date(date);
-    if (isNaN(d.getTime())) return date;
-    return d.toLocaleDateString(undefined, {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  }
-
   // Badge styles
   const statusColors: Record<Todo["status"], string> = {
     pending: "bg-yellow-100 text-yellow-700",

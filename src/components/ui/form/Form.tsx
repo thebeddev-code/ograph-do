@@ -11,8 +11,8 @@ import {
   UseFormReturn,
   useForm,
 } from "react-hook-form";
-import { ZodType, z } from "zod";
 import { mergeClasses } from "~/lib/utils/strings";
+import type { ZodObject, ZodRawShape, z } from "zod";
 
 interface Props<TFormValues extends FieldValues, Schema> {
   onSubmitAction: SubmitHandler<TFormValues>;
@@ -24,7 +24,7 @@ interface Props<TFormValues extends FieldValues, Schema> {
 }
 
 export function Form<
-  Schema extends ZodType<any, any, any>,
+  Schema extends ZodObject<ZodRawShape>,
   TFormValues extends FieldValues = z.infer<Schema>
 >({
   onSubmitAction,

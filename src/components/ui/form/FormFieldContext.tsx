@@ -1,4 +1,4 @@
-import { createContext, useContext, useId, useRef } from "react";
+import { createContext, useContext, useId, useMemo } from "react";
 
 type FormFieldContextModel = {
   id: string;
@@ -9,8 +9,8 @@ export const useFormFieldContext = () => useContext(FormFieldContext);
 
 export function FormFieldContextProvider() {
   const id = useId();
-  const v = useRef({ id });
-  return (
-    <FormFieldContext.Provider value={v.current}></FormFieldContext.Provider>
-  );
+  const v = useMemo(() => {
+    return { id };
+  }, [id]);
+  return <FormFieldContext.Provider value={v}></FormFieldContext.Provider>;
 }

@@ -2,12 +2,11 @@ import * as React from "react";
 import { type FieldError } from "react-hook-form";
 import { Error } from "./Error";
 import { Label } from "./Label";
-
 type FieldWrapperProps = {
   label?: string;
   className?: string;
   children: React.ReactNode;
-  error?: FieldError | any;
+  error?: FieldError | unknown;
 };
 
 export type FieldWrapperPassThroughProps = Omit<
@@ -22,7 +21,7 @@ export function FieldWrapper({ label, error, children }: FieldWrapperProps) {
         {label}
         <div className="mt-1">{children}</div>
       </Label>
-      <Error errorMessage={error?.message} />
+      <Error errorMessage={(error as { message: string })?.message} />
     </div>
   );
 }

@@ -1,25 +1,24 @@
 "use client";
 import { Todo } from "~/lib/types";
 import { Form, Input, Textarea, Select } from "~/components/ui/form";
-import z from "zod";
+import { todoSchema } from "~/lib/schemas/todo.schema";
 
 interface Props {
   todo?: Todo;
   formType: "update" | "create" | "read-only";
 }
 
-export default function TodoForm({ todo, formType }: Props) {
+export default function TodoForm({ todo }: Props) {
   return (
     <Form
-      onSubmitAction={async (values: any) => {
+      onSubmitAction={async (values: unknown) => {
         return alert(JSON.stringify(values, null, 2));
       }}
-      schema={z.object({
-        title: z.string().min(1, "Required"),
-        description: z.string().min(1, "Required"),
-        type: z.string().min(1, "Required"),
-      })}
+      schema={todoSchema}
       id="todo-form"
+      options={{
+        defaultValues: todo,
+      }}
     >
       {({ register, formState }) => (
         <>
