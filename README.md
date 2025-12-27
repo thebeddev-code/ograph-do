@@ -18,18 +18,23 @@ A sleek **Todo app** featuring a unique visualization of todos on clock-graph, m
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/circular-todo.git
-cd circular-todo
+git clone https://github.com/thebeddev-code/ograph-do.git
+cd ograph-do/apps/web
 
 # Install dependencies (choose your package manager)
-npm install      # or yarn install, pnpm install, bun install
+pnpm install      # or yarn install, npm install, bun install
 ```
 
 ## Getting Started
 
 ```bash
-# Start the development server
-npm run dev      # or yarn dev, pnpm dev, bun dev
+# Start the app
+pnpm run dev      # or yarn dev, npm dev, bun dev
+```
+
+```bash
+# Start the mock-server
+pnpm run dev:server      # or yarn dev, npm dev, bun dev
 ```
 
 Open **[http://localhost:3000](http://localhost:3000)** in your browser to view the app.
@@ -62,4 +67,4 @@ The optimized production build will be output to the `dist` (or `build`) directo
 
 ## License
 
-This project is licensed under the **MIT License**. See `LICENSE` for details.
+This project is licensed under the **AGPL License**. See `LICENSE` for details.
