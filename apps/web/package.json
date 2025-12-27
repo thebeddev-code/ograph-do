@@ -15,7 +15,7 @@
     "generate": "plop",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "run-mock-server": "tsx ./mock-server.ts"
+    "dev:server": "tsx ./mock-server.ts"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
