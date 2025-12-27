@@ -1,0 +1,11 @@
+{
+  "name": "ograph-do",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Todo app using circular task visualization (clock style graph) ",
+  "scripts": {
+    "prepare": "cd ./apps/nextjs-app && yarn && cd ../nextjs-pages && yarn && cd ../react-vite && yarn"
+  },
+  "author": "thebeddev-code",
+  "license": "AGPL"
+}

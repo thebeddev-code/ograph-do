@@ -1,0 +1,155 @@
+import { HttpResponse, http } from 'msw';
+
+import { env } from '@/config/env';
+
+import { db, persistDb } from '../db';
+import { networkDelay, requireAuth } from '../utils';
+import { CreateTodoPayload } from '@/lib/schemas/todo.schema';
+
+export const todosHandlers = [
+  http.get(`${env.API_URL}/todos`, async ({ cookies, request }) => {
+    await networkDelay();
+
+    try {
+      const { user, error } = requireAuth(cookies);
+      if (error) {
+        return HttpResponse.json({ message: error }, { status: 401 });
+      }
+
+      const url = new URL(request.url);
+
+      const page = Number(url.searchParams.get('page') || 1);
+
+      const result = db.todos.getAll();
+      return HttpResponse.json({
+        data: result,
+        meta: {
+          page,
+          total: result.length,
+          totalPages: Math.ceil(result.length / 50),
+        },
+      });
+    } catch (error: any) {
+      return HttpResponse.json(
+        { message: error?.message || 'Server Error' },
+        { status: 500 },
+      );
+    }
+  }),
+
+  http.get(`${env.API_URL}/todos/:todoId`, async ({ params, cookies }) => {
+    await networkDelay();
+
+    const { user, error } = requireAuth(cookies);
+    if (error) {
+      return HttpResponse.json({ message: error }, { status: 401 });
+    }
+
+    const todoId = Number(params.todoId) as number;
+    const todo = db.todos.findFirst({
+      where: {
+        id: {
+          equals: todoId,
+        },
+      },
+    });
+
+    try {
+      if (!todo) {
+        return HttpResponse.json(
+          { message: 'Todo not found' },
+          { status: 404 },
+        );
+      }
+
+      return HttpResponse.json({
+        data: {
+          todo,
+        },
+      });
+    } catch (error: any) {
+      return HttpResponse.json(
+        { message: error?.message || 'Server Error' },
+        { status: 500 },
+      );
+    }
+  }),
+
+  http.post(`${env.API_URL}/todos`, async ({ request, cookies }) => {
+    await networkDelay();
+
+    try {
+      const { user, error } = requireAuth(cookies);
+      if (error) {
+        return HttpResponse.json({ message: error }, { status: 401 });
+      }
+      const data = (await request.json()) as CreateTodoPayload;
+      const result = db.todos.create({
+        ...data,
+      });
+      await persistDb('todos');
+      return HttpResponse.json(result);
+    } catch (error: any) {
+      return HttpResponse.json(
+        { message: error?.message || 'Server Error' },
+        { status: 500 },
+      );
+    }
+  }),
+
+  http.patch(
+    `${env.API_URL}/todos/:todoId`,
+    async ({ request, params, cookies }) => {
+      await networkDelay();
+      try {
+        const { user, error } = requireAuth(cookies);
+        if (error) {
+          return HttpResponse.json({ message: error }, { status: 401 });
+        }
+        const data = (await request.json()) as CreateTodoPayload;
+        const todoId = Number(params.todoId) as number;
+        const result = db.todos.update({
+          where: {
+            id: {
+              equals: todoId,
+            },
+          },
+          data,
+        });
+        await persistDb('todos');
+        return HttpResponse.json(result);
+      } catch (error: any) {
+        return HttpResponse.json(
+          { message: error?.message || 'Server Error' },
+          { status: 500 },
+        );
+      }
+    },
+  ),
+
+  http.delete(`${env.API_URL}/todos/:todoId`, async ({ cookies, params }) => {
+    await networkDelay();
+
+    try {
+      const { user, error } = requireAuth(cookies);
+      if (error) {
+        return HttpResponse.json({ message: error }, { status: 401 });
+      }
+      const todoId = Number(params.todoId) as number;
+      const result = db.todos.delete({
+        where: {
+          id: {
+            equals: todoId,
+          },
+        },
+      });
+      await persistDb('todos');
+      return HttpResponse.json(result);
+    } catch (error: any) {
+      return HttpResponse.json(
+        { message: error?.message || 'Server Error' },
+        { status: 500 },
+      );
+    }
+  }),
+];
