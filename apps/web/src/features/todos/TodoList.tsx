@@ -2,11 +2,9 @@
 import { TodoCard } from "./TodoCard";
 import { useState } from "react";
 import { TodoExpandedView } from "./TodoExpandedView";
-import { useTodos } from "./api/getTodos";
 import { Todo } from "@/types/api";
 
 export function TodoList({ todos }: { todos: Todo[] }) {
-  const { data, status } = useTodos({});
   const [expandedTodoId, setExpandedTodoId] = useState<null | number>(null);
   const expandedTodo = todos.find((t) => t.id == expandedTodoId);
 
@@ -15,31 +13,26 @@ export function TodoList({ todos }: { todos: Todo[] }) {
   }
 
   return (
-    <div
-      className="bg-gray-200 flex flex-col gap-6 p-10 
-    overflow-y-scroll max-h-dvh rounded-xl shadow-lg w-full
-    border border-gray-100/30"
-    >
+    <div className="relative flex h-dvh w-full flex-col gap-2 overflow-y-auto rounded-lg bg-gray-50 p-4 border border-gray-200">
       {expandedTodo && (
         <div
           onClick={() => setExpandedTodoId(null)}
-          className="w-dvw h-dvh flex justify-center items-center absolute top-0 left-0 bg-black/50 z-20"
+          className="fixed inset-0 z-20 flex items-center justify-center bg-black/40"
         >
           <TodoExpandedView
             todo={expandedTodo}
             onExpandedViewClose={() => setExpandedTodoId(null)}
-          />{" "}
+          />
         </div>
       )}
-      {todos.map((t) => {
-        return (
-          <TodoCard
-            onShowExpandedView={handleShowTodoExpandedView}
-            key={t.id}
-            todo={t}
-          />
-        );
-      })}
+
+      {todos.map((t) => (
+        <TodoCard
+          key={t.id}
+          todo={t}
+          onShowExpandedView={handleShowTodoExpandedView}
+        />
+      ))}
     </div>
   );
 }
