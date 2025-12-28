@@ -15,8 +15,8 @@ interface Props {
 export function TodoCard({ todo, onShowExpandedView }: Props) {
   const { mutate: deleteTodo } = useDeleteTodo({
     mutationConfig: {
-      onSuccess: () => {
-        toast.success('You successfully deleted your todo!');
+      onError: () => {
+        toast.error('Failed to delete todo');
       },
     },
   });

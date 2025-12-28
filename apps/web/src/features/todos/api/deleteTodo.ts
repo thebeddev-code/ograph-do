@@ -18,7 +18,7 @@ export const useDeleteTodo = ({
   mutationConfig,
 }: UseDeleteTodoOptions = {}) => {
   const queryClient = useQueryClient();
-  const { onSuccess, ...restConfig } = mutationConfig || {};
+  const { onSuccess, onError, ...restConfig } = mutationConfig || {};
   const queryKey = getTodosQueryOptions().queryKey;
   return useMutation({
     onSuccess: (...args) => {
@@ -50,11 +50,13 @@ export const useDeleteTodo = ({
     },
     // If the mutation fails,
     // use the result returned from onMutate to roll back
-    onError: (_, __, onMutateResult, context) => {
+    onError: (...args) => {
+      const [_, __, onMutateResult, context] = args;
       context.client.setQueryData(
         ['todos'],
         (onMutateResult as { previousTodos: Todo[] })?.previousTodos,
       );
+      onError?.(...args);
     },
     ...restConfig,
     mutationFn: deleteTodo,
