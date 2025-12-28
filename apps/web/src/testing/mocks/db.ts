@@ -88,7 +88,10 @@ async function deleteFile(path: string) {
 }
 
 export const reinitializeDb = async () => {
-  deleteFile(dbFilePath);
+  await deleteFile(dbFilePath);
+  db.todos.clear();
+  db.users.clear();
+  await initializeDb();
 };
 
 export const resetDb = () => {

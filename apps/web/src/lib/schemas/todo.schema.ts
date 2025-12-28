@@ -22,7 +22,7 @@ export const todoPayloadSchema = z.object({
   due: z.string().optional(),
   createdAt: z.string(),
   updatedAt: z.string(),
-  completedAt: z.string().optional(),
+  completedAt: z.string().nullable().optional(),
   isRecurring: z.boolean(),
   recurrenceRule: z.string().optional(),
 });
