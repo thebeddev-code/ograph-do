@@ -1,12 +1,15 @@
-import { ClockGraph } from '@/features/graphs/ClockGraph';
-import { TodoList } from '@/features/todos/TodoList';
-import { mockDays } from '@/lib/utils/mockData';
+"use client";
+import { ClockGraph } from "@/features/graphs/ClockGraph";
+import { useTodos } from "@/features/todos/api/getTodos";
+import { TodoList } from "@/features/todos/TodoList";
 
 export default function Dashboard() {
+  const { data, status } = useTodos({});
+  const todos = data?.data;
   return (
     <main className="grid grid-cols-2">
-      <TodoList />
-      <ClockGraph days={mockDays} />
+      {status === "success" && todos && <TodoList todos={todos} />}
+      {status === "success" && todos && <ClockGraph todos={todos} />}
     </main>
   );
 }

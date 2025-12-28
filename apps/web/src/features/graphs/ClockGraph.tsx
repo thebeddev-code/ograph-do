@@ -1,41 +1,41 @@
-'use client';
-import { useEffect, useRef, useState } from 'react';
-import { drawTodos } from './utils/drawTodos';
-import { TimeViewAdjuster } from './components/TimeViewAdjuster';
-import { calcRadiansFrom } from '../../lib/utils/math';
-import { Clock } from './components/Clock';
+"use client";
+import { useEffect, useRef, useState } from "react";
+import { drawTodos } from "./utils/drawTodos";
+import { TimeViewAdjuster } from "./components/TimeViewAdjuster";
+import { calcRadiansFrom } from "../../lib/utils/math";
+import { Clock } from "./components/Clock";
 import {
   DEGREES_PER_HOUR,
   TIME_WINDOW_VISIBLE_HOURS,
-} from '@/lib/utils/constants';
-import { Days } from '@/lib/types';
+} from "@/lib/utils/constants";
+import { Todo } from "@/types/api";
 
 const RADIUS = 130;
 interface Props {
-  days: Days;
+  todos: Todo[];
 }
-export function ClockGraph({ days }: Props) {
+export function ClockGraph({ todos }: Props) {
   const [timeWindowStartDeg, setTimeWindowStartDeg] = useState(0);
   const [timeWindowStartDegOffset, setTimeWindowStartDegOffset] = useState(0);
   const [fullRotationCount, setFullRotationCount] = useState(0);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  if (timeWindowStartDeg >= 180 && timeWindowStartDegOffset < 180)
-    setTimeWindowStartDegOffset(180);
+  // if (timeWindowStartDeg >= 180 && timeWindowStartDegOffset < 180)
+  //   setTimeWindowStartDegOffset(180);
 
-  if (timeWindowStartDeg + 5 >= 360) {
-    setTimeWindowStartDeg(0);
-    setTimeWindowStartDegOffset(0);
-    const nextFullRotationCount = fullRotationCount + 1;
-    if (nextFullRotationCount < days.length - 1)
-      setFullRotationCount(fullRotationCount + 1);
-  }
+  // if (timeWindowStartDeg + 5 >= 360) {
+  //   setTimeWindowStartDeg(0);
+  //   setTimeWindowStartDegOffset(0);
+  //   const nextFullRotationCount = fullRotationCount + 1;
+  //   if (nextFullRotationCount < days.length - 1)
+  //     setFullRotationCount(fullRotationCount + 1);
+  // }
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
     const dpr = window.devicePixelRatio || 1;
     const rect = canvas.getBoundingClientRect();
@@ -59,7 +59,7 @@ export function ClockGraph({ days }: Props) {
       false,
     );
     ctx.lineTo(rect.width / 2, rect.height / 2);
-    ctx.fillStyle = 'oklch(100% 0.12 90)';
+    ctx.fillStyle = "oklch(100% 0.12 90)";
     ctx.fill();
 
     // Draw circle
@@ -74,7 +74,7 @@ export function ClockGraph({ days }: Props) {
       false,
     );
     ctx.lineTo(rect.width / 2, rect.height / 2);
-    ctx.fillStyle = '#E6E6FA';
+    ctx.fillStyle = "#E6E6FA";
     ctx.fill();
 
     const visibleTimeWindowStart =
@@ -83,19 +83,19 @@ export function ClockGraph({ days }: Props) {
       visibleTimeWindowStart + TIME_WINDOW_VISIBLE_HOURS;
     drawTodos({
       canvas,
-      todos: days[fullRotationCount + 1],
+      todos,
+      radius: RADIUS,
       viewableTimeWindow: {
         start: visibleTimeWindowStart,
         end: visibleTimeWindowEnd,
       },
-      radius: RADIUS,
     });
-  }, [timeWindowStartDeg, fullRotationCount]);
+  }, [timeWindowStartDeg, fullRotationCount, todos]);
 
   const today = new Date();
-  const formattedDate = today.toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
+  const formattedDate = today.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
   });
 
   const result = `${formattedDate}`;

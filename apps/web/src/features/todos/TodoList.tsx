@@ -1,11 +1,12 @@
-'use client';
-import { TodoCard } from './TodoCard';
-import { useState } from 'react';
-import { TodoExpandedView } from './TodoExpandedView';
-import { useTodos } from './api/getTodos';
-import { Todo } from '@/types/api';
+"use client";
+import { TodoCard } from "./TodoCard";
+import { useState } from "react";
+import { TodoExpandedView } from "./TodoExpandedView";
+import { useTodos } from "./api/getTodos";
+import { Todo } from "@/types/api";
 
-function List({ todos }: { todos: Todo[] }) {
+export function TodoList({ todos }: { todos: Todo[] }) {
+  const { data, status } = useTodos({});
   const [expandedTodoId, setExpandedTodoId] = useState<null | number>(null);
   const expandedTodo = todos.find((t) => t.id == expandedTodoId);
 
@@ -14,7 +15,11 @@ function List({ todos }: { todos: Todo[] }) {
   }
 
   return (
-    <>
+    <div
+      className="bg-gray-200 flex flex-col gap-6 p-10 
+    overflow-y-scroll max-h-dvh rounded-xl shadow-lg w-full
+    border border-gray-100/30"
+    >
       {expandedTodo && (
         <div
           onClick={() => setExpandedTodoId(null)}
@@ -23,7 +28,7 @@ function List({ todos }: { todos: Todo[] }) {
           <TodoExpandedView
             todo={expandedTodo}
             onExpandedViewClose={() => setExpandedTodoId(null)}
-          />{' '}
+          />{" "}
         </div>
       )}
       {todos.map((t) => {
@@ -35,19 +40,6 @@ function List({ todos }: { todos: Todo[] }) {
           />
         );
       })}
-    </>
-  );
-}
-
-export function TodoList() {
-  const { data, status } = useTodos({});
-  return (
-    <div
-      className="bg-gray-200 flex flex-col gap-6 p-10 
-    overflow-y-scroll max-h-dvh rounded-xl shadow-lg w-full
-    border border-gray-100/30"
-    >
-      {status === 'success' ? <List todos={data.data} /> : 'Loading'}
     </div>
   );
 }
