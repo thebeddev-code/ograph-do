@@ -1,28 +1,39 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 const todoTimeSchema = z.object({
   hour: z.number().min(0).max(24),
   minutes: z.number().min(0).max(60),
 });
 
+const colorSchema = z
+  .string()
+  .regex(
+    /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$|^rgb\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*\)$|^hsl\(\s*\d{1,3}\s*,\s*\d{1,3}%\s*,\s*\d{1,3}%\s*\)$/,
+    "Color must be hex, rgb(), or hsl().",
+  )
+  .nullable();
+
+const isoDateTime = z.iso.datetime({ offset: true }); // expects a valid ISO 8601 string like
+
 // Define the Todo schema
 export const todoPayloadSchema = z.object({
-  title: z.string(),
-  description: z.string(),
-  tags: z.array(z.string()),
-  color: z.string().nullable(),
-  status: z.enum(['pending', 'in-progress', 'completed']).nullable(),
-  priority: z.enum(['low', 'medium', 'high']).nullable(),
+  title: z.string().max(255).nonempty(),
+  description: z.string().max(500),
+  tags: z.array(z.string().max(50).nonempty()),
+  color: colorSchema,
+  status: z.enum(["pending", "in-progress", "completed"]).nullable(),
+  priority: z.enum(["low", "medium", "high"]).nullable(),
   time: z
     .object({
       start: todoTimeSchema,
       end: todoTimeSchema,
     })
     .nullable(),
-  due: z.string().optional(),
-  createdAt: z.string(),
-  updatedAt: z.string(),
-  completedAt: z.string().nullable().optional(),
+  due: isoDateTime.optional(),
+  createdAt: isoDateTime,
+  updatedAt: isoDateTime.optional(),
+  completedAt: isoDateTime.nullable().optional(),
+  // recurrence
   isRecurring: z.boolean(),
   recurrenceRule: z.string().optional(),
 });
