@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import NextLink from 'next/link';
-import { useSearchParams } from 'next/navigation';
-import * as React from 'react';
+import NextLink from "next/link";
+import { useSearchParams } from "next/navigation";
+import * as React from "react";
 
-import { Button } from '@/components/ui/button';
-import { Form, Input, Select, Label, Switch } from '@/components/ui/form';
-import { paths } from '@/config/paths';
-import { useRegister, registerInputSchema } from '@/lib/auth';
-import { Team } from '@/types/api';
+import { Button } from "@/components/ui/button";
+import { Form, Input, Select, Label, Switch } from "@/components/ui/form";
+import { paths } from "@/config/paths";
+import { useRegister, registerInputSchema } from "@/lib/auth";
+import { Team } from "@/types/api";
 
 type RegisterFormProps = {
   onSuccess: () => void;
@@ -25,7 +25,7 @@ export const RegisterForm = ({
 }: RegisterFormProps) => {
   const registering = useRegister({ onSuccess });
   const searchParams = useSearchParams();
-  const redirectTo = searchParams?.get('redirectTo');
+  const redirectTo = searchParams?.get("redirectTo");
 
   return (
     <div>
@@ -43,26 +43,26 @@ export const RegisterForm = ({
             <Input
               type="text"
               label="First Name"
-              error={formState.errors['firstName']}
-              registration={register('firstName')}
+              error={formState.errors["firstName"]}
+              registration={register("firstName")}
             />
             <Input
               type="text"
               label="Last Name"
-              error={formState.errors['lastName']}
-              registration={register('lastName')}
+              error={formState.errors["lastName"]}
+              registration={register("lastName")}
             />
             <Input
               type="email"
               label="Email Address"
-              error={formState.errors['email']}
-              registration={register('email')}
+              error={formState.errors["email"]}
+              registration={register("email")}
             />
             <Input
               type="password"
               label="Password"
-              error={formState.errors['password']}
-              registration={register('password')}
+              error={formState.errors["password"]}
+              registration={register("password")}
             />
 
             <div className="flex items-center space-x-2">
@@ -70,7 +70,7 @@ export const RegisterForm = ({
                 checked={chooseTeam}
                 onCheckedChange={setChooseTeam}
                 className={`${
-                  chooseTeam ? 'bg-blue-600' : 'bg-gray-200'
+                  chooseTeam ? "bg-blue-600" : "bg-gray-200"
                 } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2`}
                 id="choose-team"
               />
@@ -80,8 +80,8 @@ export const RegisterForm = ({
             {chooseTeam && teams ? (
               <Select
                 label="Team"
-                error={formState.errors['teamId']}
-                registration={register('teamId')}
+                error={formState.errors["teamId"]}
+                registration={register("teamId")}
                 options={teams?.map((team) => ({
                   label: team.name,
                   value: team.id,
@@ -91,8 +91,8 @@ export const RegisterForm = ({
               <Input
                 type="text"
                 label="Team Name"
-                error={formState.errors['teamName']}
-                registration={register('teamName')}
+                error={formState.errors["teamName"]}
+                registration={register("teamName")}
               />
             )}
             <div>

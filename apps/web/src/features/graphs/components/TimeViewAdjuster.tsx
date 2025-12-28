@@ -1,7 +1,7 @@
-import { ReactNode, useRef, useState } from 'react';
-import { twMerge } from 'tailwind-merge';
-import { MouseEvent } from 'react';
-import { calcDegreesFrom } from '@/lib/utils/math';
+import { ReactNode, useRef, useState } from "react";
+import { twMerge } from "tailwind-merge";
+import { MouseEvent } from "react";
+import { calcDegreesFrom } from "@/lib/utils/math";
 
 interface Props {
   children: ReactNode;
@@ -14,7 +14,7 @@ interface Props {
 const HANDLE_BUTTON_SIZE_PX = 21;
 export function TimeViewAdjuster({
   children,
-  containerClassName = '',
+  containerClassName = "",
   clockGraphRadius,
   onViewableTimeDegreesChange,
   viewableTimeDegrees,
@@ -43,7 +43,7 @@ export function TimeViewAdjuster({
     <div
       ref={containerRef}
       className={twMerge(
-        'relative flex justify-center items-center',
+        "relative flex justify-center items-center",
         containerClassName,
       )}
       onMouseUp={() => setMouseDown(false)}
@@ -53,7 +53,7 @@ export function TimeViewAdjuster({
       <div
         style={{
           transform: `rotate(${viewableTimeDegrees + 90}deg)`,
-          transformOrigin: '50% 50%',
+          transformOrigin: "50% 50%",
           width: `${clockGraphRadius * 2 + HANDLE_BUTTON_SIZE_PX}px`,
         }}
         className="z-10 absolute flex justify-end items-center h-1 "

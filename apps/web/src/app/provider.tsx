@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import * as React from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
-import { Toaster } from 'react-hot-toast';
-import { MainErrorFallback } from '@/components/errors/main';
-import { queryConfig } from '@/lib/react-query';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import * as React from "react";
+import { ErrorBoundary } from "react-error-boundary";
+import { Toaster } from "react-hot-toast";
+import { MainErrorFallback } from "@/components/errors/main";
+import { queryConfig } from "@/lib/react-query";
 
 type AppProviderProps = {
   children: React.ReactNode;

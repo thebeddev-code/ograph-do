@@ -1,8 +1,8 @@
-import { HttpResponse, http } from 'msw';
-import { env } from '@/config/env';
-import { networkDelay } from '../utils';
-import { authHandlers } from './auth';
-import { todosHandlers } from './todos';
+import { HttpResponse, http } from "msw";
+import { env } from "@/config/env";
+import { networkDelay } from "../utils";
+import { authHandlers } from "./auth";
+import { todosHandlers } from "./todos";
 
 export const handlers = [
   // ...authHandlers,

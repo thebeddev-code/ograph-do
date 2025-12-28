@@ -1,11 +1,11 @@
-'use client';
-import { Todo } from '@/lib/types';
-import { Form, Input, Textarea, Select } from '@/components/ui/form';
-import { todoSchema } from '@/lib/schemas/todo.schema';
+"use client";
+import { Todo } from "@/lib/types";
+import { Form, Input, Textarea, Select } from "@/components/ui/form";
+import { todoSchema } from "@/lib/schemas/todo.schema";
 
 interface Props {
   todo?: Todo;
-  formType: 'update' | 'create' | 'read-only';
+  formType: "update" | "create" | "read-only";
 }
 
 export default function TodoForm({ todo }: Props) {
@@ -24,19 +24,19 @@ export default function TodoForm({ todo }: Props) {
         <>
           <Input
             label="Title"
-            error={formState.errors['title']}
-            registration={register('title')}
+            error={formState.errors["title"]}
+            registration={register("title")}
           />
           <Textarea
             label="Description"
-            error={formState.errors['description']}
-            registration={register('description')}
+            error={formState.errors["description"]}
+            registration={register("description")}
           />
           <Select
             label="Type"
-            error={formState.errors['type']}
-            registration={register('type')}
-            options={['A', 'B', 'C'].map((type) => ({
+            error={formState.errors["type"]}
+            registration={register("type")}
+            options={["A", "B", "C"].map((type) => ({
               label: type,
               value: type,
             }))}

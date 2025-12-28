@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { ReactNode, useEffect } from 'react';
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { ReactNode, useEffect } from "react";
 
-import { Link } from '@/components/ui/link';
-import { paths } from '@/config/paths';
-import { useUser } from '@/lib/auth';
+import { Link } from "@/components/ui/link";
+import { paths } from "@/config/paths";
+import { useUser } from "@/lib/auth";
 
 type LayoutProps = {
   children: ReactNode;
@@ -17,11 +17,11 @@ export const AuthLayout = ({ children }: LayoutProps) => {
   const pathname = usePathname();
   const isLoginPage = pathname === paths.auth.login.getHref();
   const title = isLoginPage
-    ? 'Log in to your account'
-    : 'Register your account';
+    ? "Log in to your account"
+    : "Register your account";
 
   const searchParams = useSearchParams();
-  const redirectTo = searchParams?.get('redirectTo');
+  const redirectTo = searchParams?.get("redirectTo");
 
   useEffect(() => {
     if (user.data) {

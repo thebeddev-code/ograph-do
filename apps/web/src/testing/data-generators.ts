@@ -1,5 +1,5 @@
-import { formatDate } from '@/lib/utils/date';
-import { Todo } from '@/types/api';
+import { formatDate } from "@/lib/utils/date";
+import { Todo } from "@/types/api";
 import {
   randCompanyName,
   randUserName,
@@ -15,7 +15,7 @@ import {
   randNumber,
   randProductName,
   randFutureDate,
-} from '@ngneat/falso';
+} from "@ngneat/falso";
 
 const generateUser = () => ({
   id: randUuid() + Math.random(),
@@ -25,7 +25,7 @@ const generateUser = () => ({
   password: randPassword(),
   teamId: randUuid(),
   teamName: randCompanyName(),
-  role: 'ADMIN',
+  role: "ADMIN",
   bio: randParagraph(),
   createdAt: Date.now(),
 });
@@ -55,9 +55,9 @@ const generateTodo = () => {
     createdAt: formatDate(randPastDate()),
     title: randProductName(),
     description: randProductDescription(),
-    priority: rand(['low', 'medium', 'high']),
-    status: 'pending',
-    tags: [rand(['work', 'stuff', 'study', 'health'])],
+    priority: rand(["low", "medium", "high"]),
+    status: "pending",
+    tags: [rand(["work", "stuff", "study", "health"])],
     time: {
       start: {
         hour: startHour,

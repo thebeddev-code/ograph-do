@@ -1,5 +1,5 @@
-import { calcDegreesFrom, calcRadiansFrom } from '@/lib/utils/math';
-import { Todo } from '@/lib/types';
+import { calcDegreesFrom, calcRadiansFrom } from "@/lib/utils/math";
+import { Todo } from "@/lib/types";
 
 interface DrawTodos {
   canvas: HTMLCanvasElement;
@@ -20,7 +20,7 @@ export function drawTodos({
   radius,
   viewableTimeWindow,
 }: DrawTodos) {
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext("2d");
   if (!ctx) return;
   const rect = canvas.getBoundingClientRect();
 
@@ -57,11 +57,11 @@ export function drawTodos({
 
     const drawDegreesStart = calcDegreesFrom(
       Math.max(todoStartTime, viewableTimeWindow.start),
-      'hours',
+      "hours",
     );
     const drawDegreesEnd = calcDegreesFrom(
       Math.min(todoEndTime, viewableTimeWindow.end),
-      'hours',
+      "hours",
     );
 
     const drawRadiansStart = calcRadiansFrom(drawDegreesStart);
@@ -74,7 +74,7 @@ export function drawTodos({
         drawRadiansStart,
         drawRadiansEnd,
         offsetRadians,
-        todo.color ?? 'magenta',
+        todo.color ?? "magenta",
       );
   }
 }

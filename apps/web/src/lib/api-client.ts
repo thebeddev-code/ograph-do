@@ -1,6 +1,6 @@
-import { useNotifications } from '@/components/ui/notifications';
-import { env } from '@/config/env';
-import toast from 'react-hot-toast';
+import { useNotifications } from "@/components/ui/notifications";
+import { env } from "@/config/env";
+import toast from "react-hot-toast";
 
 type RequestOptions = {
   method?: string;
@@ -14,7 +14,7 @@ type RequestOptions = {
 
 function buildUrlWithParams(
   url: string,
-  params?: RequestOptions['params'],
+  params?: RequestOptions["params"],
 ): string {
   if (!params) return url;
   const filteredParams = Object.fromEntries(
@@ -31,19 +31,19 @@ function buildUrlWithParams(
 
 // Create a separate function for getting server-side cookies that can be imported where needed
 export function getServerCookies() {
-  if (typeof window !== 'undefined') return '';
+  if (typeof window !== "undefined") return "";
 
   // Dynamic import next/headers only on server-side
-  return import('next/headers').then(async ({ cookies }) => {
+  return import("next/headers").then(async ({ cookies }) => {
     try {
       const cookieStore = await cookies();
       return cookieStore
         .getAll()
         .map((c) => `${c.name}=${c.value}`)
-        .join('; ');
+        .join("; ");
     } catch (error) {
-      console.error('Failed to access cookies:', error);
-      return '';
+      console.error("Failed to access cookies:", error);
+      return "";
     }
   });
 }
@@ -53,18 +53,18 @@ async function fetchApi<T>(
   options: RequestOptions = {},
 ): Promise<T> {
   const {
-    method = 'GET',
+    method = "GET",
     headers = {},
     body,
     cookie,
     params,
-    cache = 'no-store',
+    cache = "no-store",
     next,
   } = options;
 
   // Get cookies from the request when running on server
   let cookieHeader = cookie;
-  if (typeof window === 'undefined' && !cookie) {
+  if (typeof window === "undefined" && !cookie) {
     cookieHeader = await getServerCookies();
   }
 
@@ -73,20 +73,20 @@ async function fetchApi<T>(
   const response = await fetch(fullUrl, {
     method,
     headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
+      "Content-Type": "application/json",
+      Accept: "application/json",
       ...headers,
       ...(cookieHeader ? { Cookie: cookieHeader } : {}),
     },
     body: body ? JSON.stringify(body) : undefined,
-    credentials: 'include',
+    credentials: "include",
     cache,
     next,
   });
 
   if (!response.ok) {
     const message = (await response.json()).message || response.statusText;
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       toast.error(message);
       // useNotifications.getState().addNotification({
       //   type: 'error',
@@ -102,18 +102,18 @@ async function fetchApi<T>(
 
 export const api = {
   get<T>(url: string, options?: RequestOptions): Promise<T> {
-    return fetchApi<T>(url, { ...options, method: 'GET' });
+    return fetchApi<T>(url, { ...options, method: "GET" });
   },
   post<T>(url: string, body?: any, options?: RequestOptions): Promise<T> {
-    return fetchApi<T>(url, { ...options, method: 'POST', body });
+    return fetchApi<T>(url, { ...options, method: "POST", body });
   },
   put<T>(url: string, body?: any, options?: RequestOptions): Promise<T> {
-    return fetchApi<T>(url, { ...options, method: 'PUT', body });
+    return fetchApi<T>(url, { ...options, method: "PUT", body });
   },
   patch<T>(url: string, body?: any, options?: RequestOptions): Promise<T> {
-    return fetchApi<T>(url, { ...options, method: 'PATCH', body });
+    return fetchApi<T>(url, { ...options, method: "PATCH", body });
   },
   delete<T>(url: string, options?: RequestOptions): Promise<T> {
-    return fetchApi<T>(url, { ...options, method: 'DELETE' });
+    return fetchApi<T>(url, { ...options, method: "DELETE" });
   },
 };

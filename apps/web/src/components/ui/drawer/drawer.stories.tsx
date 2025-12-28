@@ -1,7 +1,7 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from "@storybook/react";
 
-import { Button } from '@/components/ui/button';
-import { useDisclosure } from '@/hooks/use-disclosure';
+import { Button } from "@/components/ui/button";
+import { useDisclosure } from "@/hooks/use-disclosure";
 
 import {
   Drawer,
@@ -12,7 +12,7 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from './drawer';
+} from "./drawer";
 
 const meta: Meta<typeof Drawer> = {
   component: Drawer,

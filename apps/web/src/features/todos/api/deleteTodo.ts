@@ -1,10 +1,10 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { api } from '@/lib/api-client';
-import { MutationConfig } from '@/lib/react-query';
+import { api } from "@/lib/api-client";
+import { MutationConfig } from "@/lib/react-query";
 
-import { getTodosQueryOptions } from './getTodos';
-import { Todo } from '@/types/api';
+import { getTodosQueryOptions } from "./getTodos";
+import { Todo } from "@/types/api";
 
 export const deleteTodo = ({ todoId }: { todoId: number }) => {
   return api.delete(`/todos/${todoId}`);
@@ -53,7 +53,7 @@ export const useDeleteTodo = ({
     onError: (...args) => {
       const [_, __, onMutateResult, context] = args;
       context.client.setQueryData(
-        ['todos'],
+        ["todos"],
         (onMutateResult as { previousTodos: Todo[] })?.previousTodos,
       );
       onError?.(...args);

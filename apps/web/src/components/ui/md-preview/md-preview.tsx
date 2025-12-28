@@ -1,11 +1,11 @@
-import DOMPurify from 'isomorphic-dompurify';
-import { parse } from 'marked';
+import DOMPurify from "isomorphic-dompurify";
+import { parse } from "marked";
 
 export type MDPreviewProps = {
   value: string;
 };
 
-export const MDPreview = ({ value = '' }: MDPreviewProps) => {
+export const MDPreview = ({ value = "" }: MDPreviewProps) => {
   return (
     <div
       className="prose prose-slate w-full p-2"

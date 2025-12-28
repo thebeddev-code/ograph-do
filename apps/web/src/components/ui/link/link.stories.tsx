@@ -1,6 +1,6 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from "@storybook/react";
 
-import { Link } from './link';
+import { Link } from "./link";
 
 const meta: Meta<typeof Link> = {
   component: Link,
@@ -12,7 +12,7 @@ type Story = StoryObj<typeof Link>;
 
 export const Default: Story = {
   args: {
-    children: 'Link',
-    href: '/',
+    children: "Link",
+    href: "/",
   },
 };

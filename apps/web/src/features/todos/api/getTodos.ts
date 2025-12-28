@@ -1,8 +1,8 @@
-import { queryOptions, useQuery } from '@tanstack/react-query';
+import { queryOptions, useQuery } from "@tanstack/react-query";
 
-import { api } from '@/lib/api-client';
-import { QueryConfig } from '@/lib/react-query';
-import { Todo, Meta } from '@/types/api';
+import { api } from "@/lib/api-client";
+import { QueryConfig } from "@/lib/react-query";
+import { Todo, Meta } from "@/types/api";
 
 export const getTodos = (
   { page }: { page?: number } = { page: 1 },
@@ -19,7 +19,7 @@ export const getTodos = (
 
 export const getTodosQueryOptions = ({ page = 1 }: { page?: number } = {}) => {
   return queryOptions({
-    queryKey: ['todos', { page }],
+    queryKey: ["todos", { page }],
     queryFn: () => getTodos({ page }),
   });
 };

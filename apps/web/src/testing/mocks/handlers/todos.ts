@@ -1,9 +1,9 @@
-import { HttpResponse, http } from 'msw';
-import { env } from '@/config/env';
-import { db, persistDb } from '../db';
-import { networkDelay, requireAuth } from '../utils';
-import { CreateTodoPayload } from '@/lib/schemas/todo.schema';
-import { TodoModel } from '../utils/models';
+import { HttpResponse, http } from "msw";
+import { env } from "@/config/env";
+import { db, persistDb } from "../db";
+import { networkDelay, requireAuth } from "../utils";
+import { CreateTodoPayload } from "@/lib/schemas/todo.schema";
+import { TodoModel } from "../utils/models";
 
 export const todosHandlers = [
   http.get(`${env.API_URL}/todos`, async ({ cookies, request }) => {
@@ -17,7 +17,7 @@ export const todosHandlers = [
 
       const url = new URL(request.url);
 
-      const page = Number(url.searchParams.get('page') || 1);
+      const page = Number(url.searchParams.get("page") || 1);
 
       const result = db.todos.all();
       return HttpResponse.json({
@@ -30,7 +30,7 @@ export const todosHandlers = [
       });
     } catch (error: any) {
       return HttpResponse.json(
-        { message: error?.message || 'Server Error' },
+        { message: error?.message || "Server Error" },
         { status: 500 },
       );
     }
@@ -54,7 +54,7 @@ export const todosHandlers = [
     try {
       if (!todo) {
         return HttpResponse.json(
-          { message: 'Todo not found' },
+          { message: "Todo not found" },
           { status: 404 },
         );
       }
@@ -66,7 +66,7 @@ export const todosHandlers = [
       });
     } catch (error: any) {
       return HttpResponse.json(
-        { message: error?.message || 'Server Error' },
+        { message: error?.message || "Server Error" },
         { status: 500 },
       );
     }
@@ -85,11 +85,11 @@ export const todosHandlers = [
         id: index + 1,
         ...data,
       }));
-      await persistDb('todos');
+      await persistDb("todos");
       return HttpResponse.json(result);
     } catch (error: any) {
       return HttpResponse.json(
-        { message: error?.message || 'Server Error' },
+        { message: error?.message || "Server Error" },
         { status: 500 },
       );
     }
@@ -120,11 +120,11 @@ export const todosHandlers = [
             },
           },
         );
-        await persistDb('todos');
+        await persistDb("todos");
         return HttpResponse.json(result);
       } catch (error: any) {
         return HttpResponse.json(
-          { message: error?.message || 'Server Error' },
+          { message: error?.message || "Server Error" },
           { status: 500 },
         );
       }
@@ -141,11 +141,11 @@ export const todosHandlers = [
       }
       const todoId = Number(params.todoId) as number;
       const result = db.todos.delete((q) => q.where({ id: todoId }));
-      await persistDb('todos');
+      await persistDb("todos");
       return HttpResponse.json(result);
     } catch (error: any) {
       return HttpResponse.json(
-        { message: error?.message || 'Server Error' },
+        { message: error?.message || "Server Error" },
         { status: 500 },
       );
     }

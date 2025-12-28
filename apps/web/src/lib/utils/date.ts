@@ -1,23 +1,23 @@
 export function formatDueDate(dueDate?: string): string {
-  if (!dueDate) return '';
+  if (!dueDate) return "";
   const today = new Date();
   const dueDateObj = new Date(dueDate);
   const oneDay = 24 * 60 * 60 * 1000;
 
   const diffDays = (dueDateObj.getTime() - today.getTime()) / oneDay;
 
-  if (diffDays < 0) return 'Overdue';
-  if (diffDays === 0) return 'Today';
-  if (diffDays === 1) return 'Tomorrow';
+  if (diffDays < 0) return "Overdue";
+  if (diffDays === 0) return "Today";
+  if (diffDays === 1) return "Tomorrow";
 
   const weekDays = [
-    'Sunday',
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
   ];
   const dueDay = weekDays[dueDateObj.getDay()];
 
@@ -29,14 +29,14 @@ export function formatDueDate(dueDate?: string): string {
 
   return currentWeek
     ? dueDay
-    : dueDateObj.toLocaleDateString('en-US', {
-        day: '2-digit',
-        month: 'short',
+    : dueDateObj.toLocaleDateString("en-US", {
+        day: "2-digit",
+        month: "short",
       });
 }
 
 export function formatTimeToDoubleDigits(t = 0): string {
-  return `${t < 9 ? 0 : ''}${t}`;
+  return `${t < 9 ? 0 : ""}${t}`;
 }
 
 /**
@@ -64,7 +64,7 @@ export function formatTimeToDoubleDigits(t = 0): string {
  */
 export function formatDate(
   date: Date = new Date(),
-  format: string = 'yyyy-MM-dd',
+  format: string = "yyyy-MM-dd",
 ): string {
   const parts = {
     yyyy: String(date.getFullYear()),

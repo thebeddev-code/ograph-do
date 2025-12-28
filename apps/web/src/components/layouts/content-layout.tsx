@@ -1,11 +1,11 @@
-import { ReactNode } from 'react';
+import { ReactNode } from "react";
 
 type ContentLayoutProps = {
   children: ReactNode;
   title?: string;
 };
 
-export const ContentLayout = ({ children, title = '' }: ContentLayoutProps) => {
+export const ContentLayout = ({ children, title = "" }: ContentLayoutProps) => {
   return (
     <div className="py-6">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">

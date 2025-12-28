@@ -1,7 +1,7 @@
-import type { Meta } from '@storybook/react';
-import React from 'react';
+import type { Meta } from "@storybook/react";
+import React from "react";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 
 import {
   DropdownMenu,
@@ -16,7 +16,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
   DropdownMenuRadioGroup,
-} from './dropdown';
+} from "./dropdown";
 
 const meta: Meta = {
   component: DropdownMenu,
@@ -66,7 +66,7 @@ export const WithCheckboxItems = () => {
 };
 
 export const WithRadioItems = () => {
-  const [value, setValue] = React.useState('one');
+  const [value, setValue] = React.useState("one");
 
   return (
     <DropdownMenu>

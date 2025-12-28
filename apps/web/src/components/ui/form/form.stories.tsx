@@ -1,13 +1,13 @@
-import { Meta, StoryObj } from '@storybook/react';
-import { z } from 'zod';
+import { Meta, StoryObj } from "@storybook/react";
+import { z } from "zod";
 
-import { Button } from '../button';
+import { Button } from "../button";
 
-import { Form } from './form';
-import { FormDrawer } from './form-drawer';
-import { Input } from './input';
-import { Select } from './select';
-import { Textarea } from './textarea';
+import { Form } from "./form";
+import { FormDrawer } from "./form-drawer";
+import { Input } from "./input";
+import { Select } from "./select";
+import { Textarea } from "./textarea";
 
 const MyForm = ({ hideSubmit = false }: { hideSubmit?: boolean }) => {
   return (
@@ -16,9 +16,9 @@ const MyForm = ({ hideSubmit = false }: { hideSubmit?: boolean }) => {
         alert(JSON.stringify(values, null, 2));
       }}
       schema={z.object({
-        title: z.string().min(1, 'Required'),
-        description: z.string().min(1, 'Required'),
-        type: z.string().min(1, 'Required'),
+        title: z.string().min(1, "Required"),
+        description: z.string().min(1, "Required"),
+        type: z.string().min(1, "Required"),
       })}
       id="my-form"
     >
@@ -26,19 +26,19 @@ const MyForm = ({ hideSubmit = false }: { hideSubmit?: boolean }) => {
         <>
           <Input
             label="Title"
-            error={formState.errors['title']}
-            registration={register('title')}
+            error={formState.errors["title"]}
+            registration={register("title")}
           />
           <Textarea
             label="Description"
-            error={formState.errors['description']}
-            registration={register('description')}
+            error={formState.errors["description"]}
+            registration={register("description")}
           />
           <Select
             label="Type"
-            error={formState.errors['type']}
-            registration={register('type')}
-            options={['A', 'B', 'C'].map((type) => ({
+            error={formState.errors["type"]}
+            registration={register("type")}
+            options={["A", "B", "C"].map((type) => ({
               label: type,
               value: type,
             }))}

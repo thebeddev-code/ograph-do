@@ -1,6 +1,6 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from "@storybook/react";
 
-import { Table } from './table';
+import { Table } from "./table";
 
 const meta: Meta<typeof Table> = {
   component: Table,
@@ -21,20 +21,20 @@ type Story = StoryObj<typeof Table<User>>;
 
 const data: User[] = [
   {
-    id: '1',
+    id: "1",
     createdAt: Date.now(),
-    name: 'Jane Cooper',
-    title: 'Regional Paradigm Technician',
-    role: 'Admin',
-    email: 'jane.cooper@example.com',
+    name: "Jane Cooper",
+    title: "Regional Paradigm Technician",
+    role: "Admin",
+    email: "jane.cooper@example.com",
   },
   {
-    id: '2',
+    id: "2",
     createdAt: Date.now(),
-    name: 'Cody Fisher',
-    title: 'Product Directives Officer',
-    role: 'Owner',
-    email: 'cody.fisher@example.com',
+    name: "Cody Fisher",
+    title: "Product Directives Officer",
+    role: "Owner",
+    email: "cody.fisher@example.com",
   },
 ];
 
@@ -43,20 +43,20 @@ export const Default: Story = {
     data,
     columns: [
       {
-        title: 'Name',
-        field: 'name',
+        title: "Name",
+        field: "name",
       },
       {
-        title: 'Title',
-        field: 'title',
+        title: "Title",
+        field: "title",
       },
       {
-        title: 'Role',
-        field: 'role',
+        title: "Role",
+        field: "role",
       },
       {
-        title: 'Email',
-        field: 'email',
+        title: "Email",
+        field: "email",
       },
     ],
   },

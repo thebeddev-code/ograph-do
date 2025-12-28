@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { Info, CircleAlert, CircleX, CircleCheck } from 'lucide-react';
+import { Info, CircleAlert, CircleX, CircleCheck } from "lucide-react";
 
 const icons = {
   info: <Info className="size-6 text-blue-500" aria-hidden="true" />,

@@ -1,9 +1,8 @@
-import { ReactNode } from 'react';
-
+import { ReactNode } from "react";
 
 export const metadata = {
-  title: 'Dashboard',
-  description: 'Dashboard',
+  title: "Dashboard",
+  description: "Dashboard",
 };
 
 const AppLayout = ({ children }: { children: ReactNode }) => {

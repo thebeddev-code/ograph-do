@@ -1,13 +1,18 @@
-import { Button } from '@/components/ui/button';
-import { rtlRender, screen, userEvent, waitFor } from '../../../../../../examples/testing/test-utils';
+import { Button } from "@/components/ui/button";
+import {
+  rtlRender,
+  screen,
+  userEvent,
+  waitFor,
+} from "../../../../../../examples/testing/test-utils";
 
-import { ConfirmationDialog } from '../confirmation-dialog';
+import { ConfirmationDialog } from "../confirmation-dialog";
 
-test('should handle confirmation flow', async () => {
-  const titleText = 'Are you sure?';
-  const bodyText = 'Are you sure you want to delete this item?';
-  const confirmationButtonText = 'Confirm';
-  const openButtonText = 'Open';
+test("should handle confirmation flow", async () => {
+  const titleText = "Are you sure?";
+  const bodyText = "Are you sure you want to delete this item?";
+  const confirmationButtonText = "Confirm";
+  const openButtonText = "Open";
 
   await rtlRender(
     <ConfirmationDialog
@@ -21,13 +26,13 @@ test('should handle confirmation flow', async () => {
 
   expect(screen.queryByText(titleText)).not.toBeInTheDocument();
 
-  await userEvent.click(screen.getByRole('button', { name: openButtonText }));
+  await userEvent.click(screen.getByRole("button", { name: openButtonText }));
 
   expect(await screen.findByText(titleText)).toBeInTheDocument();
 
   expect(screen.getByText(bodyText)).toBeInTheDocument();
 
-  await userEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+  await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
 
   await waitFor(() =>
     expect(screen.queryByText(titleText)).not.toBeInTheDocument(),

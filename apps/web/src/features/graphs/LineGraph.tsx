@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import { Todo } from '@/lib/types';
+import { useEffect, useRef } from "react";
+import { Todo } from "@/lib/types";
 
 interface Props {
   todos: Todo[];
@@ -16,7 +16,7 @@ export function LineGraph({
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     const dpr = window.devicePixelRatio || 1;
@@ -35,8 +35,8 @@ export function LineGraph({
 
     // Background gradient
     const gradient = ctx.createLinearGradient(0, 0, 0, height);
-    gradient.addColorStop(0, '#f0f4ff');
-    gradient.addColorStop(1, '#d9e2ff');
+    gradient.addColorStop(0, "#f0f4ff");
+    gradient.addColorStop(1, "#d9e2ff");
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, width, height);
 
@@ -46,17 +46,17 @@ export function LineGraph({
       const { start, end } = t.time;
       const startX = unitWidth * start.hour + (unitWidth * start.minutes) / 60;
       const endX = unitWidth * end.hour + (unitWidth * end.minutes) / 60;
-      ctx.fillStyle = t.color ?? 'magenta';
-      ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
+      ctx.fillStyle = t.color ?? "magenta";
+      ctx.shadowColor = "rgba(0, 0, 0, 0.2)";
       ctx.shadowBlur = 4;
       ctx.fillRect(startX + 1, 4, endX - startX - 2, height - 8);
       ctx.shadowBlur = 0;
     });
 
     // Draw grid lines and labels
-    ctx.strokeStyle = '#bbb';
-    ctx.fillStyle = '#444';
-    ctx.textBaseline = 'top';
+    ctx.strokeStyle = "#bbb";
+    ctx.fillStyle = "#444";
+    ctx.textBaseline = "top";
 
     for (let i = 0; i <= 24; i++) {
       const x = unitWidth * i + 0.5; // 0.5 for crisp lines
@@ -77,7 +77,7 @@ export function LineGraph({
       <canvas
         ref={canvasRef}
         className="h-24 rounded-lg"
-        style={{ imageRendering: 'pixelated', width: lineGraphWidth }}
+        style={{ imageRendering: "pixelated", width: lineGraphWidth }}
       />
       <div
         style={{

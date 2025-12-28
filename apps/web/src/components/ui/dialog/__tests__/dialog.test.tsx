@@ -1,8 +1,13 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { Button } from '@/components/ui/button';
-import { useDisclosure } from '@/hooks/use-disclosure';
-import { rtlRender, screen, userEvent, waitFor } from '../../../../../examples/testing/test-utils';
+import { Button } from "@/components/ui/button";
+import { useDisclosure } from "@/hooks/use-disclosure";
+import {
+  rtlRender,
+  screen,
+  userEvent,
+  waitFor,
+} from "../../../../../examples/testing/test-utils";
 
 import {
   Dialog,
@@ -11,11 +16,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '../dialog';
+} from "../dialog";
 
-const openButtonText = 'Open Modal';
-const cancelButtonText = 'Cancel';
-const titleText = 'Modal Title';
+const openButtonText = "Open Modal";
+const cancelButtonText = "Cancel";
+const titleText = "Modal Title";
 
 const TestDialog = () => {
   const { close, open, isOpen } = useDisclosure();
@@ -51,16 +56,16 @@ const TestDialog = () => {
   );
 };
 
-test('should handle basic dialog flow', async () => {
+test("should handle basic dialog flow", async () => {
   rtlRender(<TestDialog />);
 
   expect(screen.queryByText(titleText)).not.toBeInTheDocument();
 
-  await userEvent.click(screen.getByRole('button', { name: openButtonText }));
+  await userEvent.click(screen.getByRole("button", { name: openButtonText }));
 
   expect(await screen.findByText(titleText)).toBeInTheDocument();
 
-  await userEvent.click(screen.getByRole('button', { name: cancelButtonText }));
+  await userEvent.click(screen.getByRole("button", { name: cancelButtonText }));
 
   await waitFor(() =>
     expect(screen.queryByText(titleText)).not.toBeInTheDocument(),

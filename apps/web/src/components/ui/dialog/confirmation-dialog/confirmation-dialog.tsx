@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { CircleAlert, Info } from 'lucide-react';
-import * as React from 'react';
-import { useEffect } from 'react';
+import { CircleAlert, Info } from "lucide-react";
+import * as React from "react";
+import { useEffect } from "react";
 
-import { Button } from '@/components/ui/button';
-import { useDisclosure } from '@/hooks/use-disclosure';
+import { Button } from "@/components/ui/button";
+import { useDisclosure } from "@/hooks/use-disclosure";
 
 import {
   Dialog,
@@ -14,7 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '../dialog';
+} from "../dialog";
 
 export type ConfirmationDialogProps = {
   triggerButton: React.ReactElement;
@@ -22,7 +22,7 @@ export type ConfirmationDialogProps = {
   title: string;
   body?: string;
   cancelButtonText?: string;
-  icon?: 'danger' | 'info';
+  icon?: "danger" | "info";
   isDone?: boolean;
 };
 
@@ -30,9 +30,9 @@ export const ConfirmationDialog = ({
   triggerButton,
   confirmButton,
   title,
-  body = '',
-  cancelButtonText = 'Cancel',
-  icon = 'danger',
+  body = "",
+  cancelButtonText = "Cancel",
+  icon = "danger",
   isDone = false,
 }: ConfirmationDialogProps) => {
   const { close, open, isOpen } = useDisclosure();
@@ -59,11 +59,11 @@ export const ConfirmationDialog = ({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader className="flex">
           <DialogTitle className="flex items-center gap-2">
-            {' '}
-            {icon === 'danger' && (
+            {" "}
+            {icon === "danger" && (
               <CircleAlert className="size-6 text-red-600" aria-hidden="true" />
             )}
-            {icon === 'info' && (
+            {icon === "info" && (
               <Info className="size-6 text-blue-600" aria-hidden="true" />
             )}
             {title}

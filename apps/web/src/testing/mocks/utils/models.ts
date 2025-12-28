@@ -1,5 +1,5 @@
-import z from 'zod';
-import { todoPayloadSchema } from '@/lib/schemas/todo.schema';
+import z from "zod";
+import { todoPayloadSchema } from "@/lib/schemas/todo.schema";
 
 export const todoModel = z.object({
   id: z.number(),

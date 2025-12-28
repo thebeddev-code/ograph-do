@@ -38,8 +38,8 @@ export type Todo = Entity<{
   description: string;
   tags: string[];
   color: string | null;
-  status: 'pending' | 'in-progress' | 'completed' | 'overdue';
-  priority: 'low' | 'medium' | 'high';
+  status: "pending" | "in-progress" | "completed" | "overdue";
+  priority: "low" | "medium" | "high";
   time: {
     start: TodoTime;
     end: TodoTime;
