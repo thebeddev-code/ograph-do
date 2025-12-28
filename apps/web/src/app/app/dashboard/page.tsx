@@ -7,9 +7,11 @@ export default function Dashboard() {
   const { data, status } = useTodos({});
   const todos = data?.data;
   return (
-    <main className="grid grid-cols-2">
-      {status === "success" && todos && <TodoList todos={todos} />}
-      {status === "success" && todos && <ClockGraph todos={todos} />}
+    <main>
+      <div className="grid grid-cols-2">
+        {status === "success" && todos && <ClockGraph todos={todos} />}
+        {status === "success" && todos && <TodoList todos={todos} />}
+      </div>
     </main>
   );
 }
