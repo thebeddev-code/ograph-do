@@ -18,8 +18,8 @@
     "dev:server": "tsx ./mock-server.ts"
   },
   "dependencies": {
-    "@heroicons/react": "^2.2.0",
     "@hookform/resolvers": "^5.2.2",
+    "@msw/data": "^1.1.2",
     "@next/env": "^16.1.0",
     "@ngneat/falso": "^8.0.2",
     "@radix-ui/react-dialog": "^1.1.15",
@@ -54,7 +54,6 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.3",
-    "@mswjs/data": "^0.16.2",
     "@mswjs/http-middleware": "^0.10.3",
     "@playwright/test": "^1.57.0",
     "@storybook/addon-a11y": "^10.1.10",

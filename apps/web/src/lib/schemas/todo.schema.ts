@@ -6,7 +6,7 @@ const todoTimeSchema = z.object({
 });
 
 // Define the Todo schema
-export const todoSchema = z.object({
+export const todoPayloadSchema = z.object({
   title: z.string(),
   description: z.string(),
   tags: z.array(z.string()),
@@ -27,4 +27,4 @@ export const todoSchema = z.object({
   recurrenceRule: z.string().optional(),
 });
 
-export type CreateTodoPayload = z.infer<typeof todoSchema>;
+export type CreateTodoPayload = z.infer<typeof todoPayloadSchema>;

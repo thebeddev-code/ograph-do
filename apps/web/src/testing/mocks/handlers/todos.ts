@@ -1,10 +1,9 @@
 import { HttpResponse, http } from 'msw';
-
 import { env } from '@/config/env';
-
 import { db, persistDb } from '../db';
 import { networkDelay, requireAuth } from '../utils';
 import { CreateTodoPayload } from '@/lib/schemas/todo.schema';
+import { TodoModel } from '../utils/models';
 
 export const todosHandlers = [
   http.get(`${env.API_URL}/todos`, async ({ cookies, request }) => {
@@ -20,7 +19,7 @@ export const todosHandlers = [
 
       const page = Number(url.searchParams.get('page') || 1);
 
-      const result = db.todos.getAll();
+      const result = db.todos.all();
       return HttpResponse.json({
         data: result,
         meta: {
@@ -46,13 +45,11 @@ export const todosHandlers = [
     }
 
     const todoId = Number(params.todoId) as number;
-    const todo = db.todos.findFirst({
-      where: {
-        id: {
-          equals: todoId,
-        },
-      },
-    });
+    const todo = db.todos.findFirst((q) =>
+      q.where({
+        id: todoId,
+      }),
+    );
 
     try {
       if (!todo) {
@@ -84,9 +81,10 @@ export const todosHandlers = [
         return HttpResponse.json({ message: error }, { status: 401 });
       }
       const data = (await request.json()) as CreateTodoPayload;
-      const result = db.todos.create({
+      const result = db.todos.createMany(1, (index) => ({
+        id: index + 1,
         ...data,
-      });
+      }));
       await persistDb('todos');
       return HttpResponse.json(result);
     } catch (error: any) {
@@ -106,16 +104,22 @@ export const todosHandlers = [
         if (error) {
           return HttpResponse.json({ message: error }, { status: 401 });
         }
-        const data = (await request.json()) as CreateTodoPayload;
+        const data = (await request.json()) as Partial<TodoModel>;
         const todoId = Number(params.todoId) as number;
-        const result = db.todos.update({
-          where: {
-            id: {
-              equals: todoId,
+        const result = db.todos.update(
+          (q) =>
+            q.where({
+              id: todoId,
+            }),
+          {
+            data: (todo) => {
+              const keys = Object.keys(data) as (keyof TodoModel)[];
+              for (const key of keys) {
+                (todo as any)[key] = data[key];
+              }
             },
           },
-          data,
-        });
+        );
         await persistDb('todos');
         return HttpResponse.json(result);
       } catch (error: any) {
@@ -136,13 +140,7 @@ export const todosHandlers = [
         return HttpResponse.json({ message: error }, { status: 401 });
       }
       const todoId = Number(params.todoId) as number;
-      const result = db.todos.delete({
-        where: {
-          id: {
-            equals: todoId,
-          },
-        },
-      });
+      const result = db.todos.delete((q) => q.where({ id: todoId }));
       await persistDb('todos');
       return HttpResponse.json(result);
     } catch (error: any) {

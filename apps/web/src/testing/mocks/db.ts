@@ -1,40 +1,17 @@
-import { factory, nullable, primaryKey } from '@mswjs/data';
+import { Collection } from '@msw/data';
 import { mockTodos } from './mockData';
+import { todoModel, userModel } from './utils/models';
 
-const models = {
-  todos: {
-    id: primaryKey(Number),
-    title: String,
-    description: String,
-    tags: Array,
-    color: nullable(String),
-    status: nullable(String),
-    time: nullable({
-      start: {
-        hour: Number,
-        end: Number,
-      },
-      end: {
-        hour: Number,
-        end: Number,
-      },
-    }),
-    due: String,
-    updatedAt: String,
-    completedAt: nullable(String),
-    isRecurring: Boolean,
-    recurrenceRule: String,
-  },
-  users: {
-    id: primaryKey(Number),
-    email: String,
-    password: String,
-  },
+export const db = {
+  todos: new Collection({
+    schema: todoModel,
+  }),
+  users: new Collection({
+    schema: userModel,
+  }),
 };
 
-export const db = factory(models);
-
-export type Model = keyof typeof models;
+export type Model = keyof typeof db;
 
 const dbFilePath = 'mocked-db.json';
 
@@ -80,7 +57,7 @@ export const storeDb = async (data: string) => {
 export const persistDb = async (model: Model) => {
   if (process.env.NODE_ENV === 'test') return;
   const data = await loadDb();
-  data[model] = db[model].getAll();
+  data[model] = db[model].all();
   await storeDb(JSON.stringify(data));
 };
 
@@ -94,6 +71,24 @@ export const initializeDb = async () => {
       }
     }
   }
+};
+
+async function deleteFile(path: string) {
+  try {
+    const { unlink } = await import('fs/promises');
+    await unlink(path);
+    console.log('File deleted:', path);
+  } catch (err: any) {
+    if (err?.code === 'ENOENT') {
+      console.log('File does not exist:', path);
+    } else {
+      console.error('Error deleting file:', err);
+    }
+  }
+}
+
+export const reinitializeDb = async () => {
+  deleteFile(dbFilePath);
 };
 
 export const resetDb = () => {

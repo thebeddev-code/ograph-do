@@ -92,13 +92,11 @@ export function requireAuth(cookies: Record<string, string>) {
     }
     const decodedToken = decode(encodedToken as string) as { id: string };
 
-    const user = db.users.findFirst({
-      where: {
-        id: {
-          equals: Number(decodedToken.id) as number,
-        },
-      },
-    });
+    const user = db.users.findFirst((q) =>
+      q.where({
+        id: Number(decodedToken.id) as number,
+      }),
+    );
 
     if (!user) {
       return { error: 'Unauthorized', user: null };
