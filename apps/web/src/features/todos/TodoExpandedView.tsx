@@ -1,14 +1,14 @@
-import { CgClose } from 'react-icons/cg';
-import { twMerge, ClassNameValue } from 'tailwind-merge';
-import { Todo } from '@/lib/types';
-import { formatDate } from '@/lib/utils/date';
+import { X as Close } from "lucide-react";
+import { twMerge, ClassNameValue } from "tailwind-merge";
+import { Todo } from "@/lib/types";
+import { formatDate } from "@/lib/utils/date";
 
 function DateField({ label, value }: { label: string; value?: string | null }) {
   return (
     <div className="flex flex-col">
       <span className="text-sm font-semibold text-gray-500">{label}</span>
       <span className="text-gray-800">
-        {value ? formatDate(new Date(value), 'MM/dd/yyyy') : '—'}
+        {value ? formatDate(new Date(value), "MM/dd/yyyy") : "—"}
       </span>
     </div>
   );
@@ -21,69 +21,63 @@ interface Props {
 }
 export function TodoExpandedView({
   todo,
-  containerClassName = 'w-[50%]',
+  containerClassName = "max-w-md w-full",
   onExpandedViewClose,
 }: Props) {
-  // Badge styles
-  const statusColors: Record<Todo['status'], string> = {
-    pending: 'bg-yellow-100 text-yellow-700',
-    'in-progress': 'bg-blue-100 text-blue-700',
-    completed: 'bg-green-100 text-green-700',
-    overdue: 'bg-red-100 text-red-700',
+  const statusColors: Record<Todo["status"], string> = {
+    pending: "bg-amber-50 text-amber-700",
+    "in-progress": "bg-sky-50 text-sky-700",
+    completed: "bg-emerald-50 text-emerald-700",
+    overdue: "bg-rose-50 text-rose-700",
   };
 
-  const priorityColors: Record<Todo['priority'], string> = {
-    low: 'bg-gray-100 text-gray-600',
-    medium: 'bg-orange-100 text-orange-700',
-    high: 'bg-red-100 text-red-700',
+  const priorityColors: Record<Todo["priority"], string> = {
+    low: "bg-gray-50 text-gray-600",
+    medium: "bg-amber-50 text-amber-700",
+    high: "bg-rose-50 text-rose-700",
   };
 
   return (
     <div
       className={twMerge(
-        'relative rounded-xl border shadow-sm p-6 space-y-5 transition-all bg-white',
+        "relative space-y-4 rounded-lg border border-gray-200 bg-white p-5 text-base shadow-sm",
         containerClassName,
       )}
-      style={
-        todo.color
-          ? {
-              borderColor: todo.color + '80',
-              boxShadow: `0 4px 12px ${todo.color}30`,
-            }
-          : {}
-      }
       onClick={(e) => e.stopPropagation()}
     >
+      {/* Close */}
       <button
         onClick={onExpandedViewClose}
-        className="cursor-pointer text-gray-800 absolute right-4 top-4 bg-red-50 hover:bg-red-300 p-2 rounded-full"
+        className="absolute right-3 top-3 rounded-full p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
+        aria-label="Close"
       >
-        <CgClose />
+        <Close className="h-5 w-5" />
       </button>
-      {/* Title */}
-      <div>
-        <h2 className="text-2xl font-semibold tracking-tight">{todo.title}</h2>
+
+      {/* Title + description */}
+      <div className="pr-7">
+        <h2 className="text-xl font-semibold text-gray-900">{todo.title}</h2>
         {todo.description && (
-          <p className="text-gray-600 mt-2 whitespace-pre-wrap">
+          <p className="mt-2 text-sm leading-relaxed text-gray-700 whitespace-pre-wrap">
             {todo.description}
           </p>
         )}
       </div>
 
-      {/* Status + Priority */}
-      <div className="flex flex-wrap gap-3">
+      {/* Status + priority */}
+      <div className="flex flex-wrap gap-2">
         <span
           className={twMerge(
-            'px-3 py-1 rounded-full text-sm font-medium',
+            "rounded-full px-3 py-1 text-xs font-medium",
             statusColors[todo.status],
           )}
         >
-          {todo.status.replace('-', ' ')}
+          {todo.status.replace("-", " ")}
         </span>
 
         <span
           className={twMerge(
-            'px-3 py-1 rounded-full text-sm font-medium',
+            "rounded-full px-3 py-1 text-xs font-medium",
             priorityColors[todo.priority],
           )}
         >
@@ -93,13 +87,13 @@ export function TodoExpandedView({
 
       {/* Tags */}
       {todo.tags?.length > 0 && (
-        <div>
-          <h3 className="text-sm font-semibold text-gray-500 mb-1">Tags</h3>
+        <div className="space-y-1">
+          <h3 className="text-sm font-medium text-gray-500">Tags</h3>
           <div className="flex flex-wrap gap-2">
             {todo.tags.map((tag) => (
               <span
                 key={tag}
-                className="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded-md"
+                className="rounded-md bg-gray-50 px-2.5 py-0.5 text-xs text-gray-800"
               >
                 #{tag}
               </span>
@@ -109,7 +103,7 @@ export function TodoExpandedView({
       )}
 
       {/* Dates */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 text-sm">
         <DateField label="Due" value={todo.due} />
         <DateField label="Created" value={todo.createdAt} />
         <DateField label="Updated" value={todo.updatedAt} />
@@ -119,12 +113,12 @@ export function TodoExpandedView({
       </div>
 
       {/* Recurrence */}
-      <div>
-        <h3 className="text-sm font-semibold text-gray-500 mb-1">Recurrence</h3>
-        <p className="text-gray-700">
+      <div className="space-y-1">
+        <h3 className="text-sm font-medium text-gray-500">Recurrence</h3>
+        <p className="text-sm text-gray-700">
           {todo.isRecurring
-            ? todo.recurrenceRule || 'Repeats'
-            : 'Not recurring'}
+            ? todo.recurrenceRule || "Repeats"
+            : "Not recurring"}
         </p>
       </div>
     </div>
