@@ -1,14 +1,15 @@
 import { Todo } from "@/types/api";
-import { formatDate } from "@/lib/utils/date";
+import { randSoonDate, randTodo, randText } from "@ngneat/falso";
 
 export const mockTodos: Todo[] = [
   {
     id: 1,
-    title: "Buy groceries",
-    description: "Milk, eggs, bread, and fruits.",
+    title:
+      "Take a break from gaming: Disconnect and recharge your energy for the next adventure.",
+    description: randText({ maxCharCount: 500 }),
     tags: ["shopping", "urgent"],
     color: "#ffcc00",
-    status: "completed",
+    status: "in-progress",
     priority: "high",
     time: {
       start: {
@@ -20,83 +21,80 @@ export const mockTodos: Todo[] = [
         minutes: 0,
       },
     },
-    due: formatDate(),
-    createdAt: "2025-12-01T12:00:00Z",
-    updatedAt: "2025-12-01T12:30:00Z",
-    completedAt: null,
+    due: randSoonDate({ days: 14 }).toISOString(), // Valid future due date
+    createdAt: new Date().toISOString(), // Valid creation date
+    updatedAt: randSoonDate({ days: 5 }).toISOString(), // Updated after creation
     isRecurring: false,
   },
   {
     id: 2,
-    title: "Complete project report",
-    description: "Finalize and submit the report to the team.",
+    title:
+      "Review a patient's medical history: Be prepared for any potential health concerns.",
+    description: randText({ maxCharCount: 500 }),
     tags: ["work", "report"],
     color: "#4caf50",
     status: "in-progress",
     priority: "medium",
     time: {
       start: {
-        hour: 8,
+        hour: 18,
         minutes: 30,
       },
       end: {
-        hour: 10,
+        hour: 21,
         minutes: 0,
       },
     },
-    due: formatDate(),
-    createdAt: "2025-12-02T09:00:00Z",
-    updatedAt: "2025-12-05T11:00:00Z",
-    completedAt: null,
+    due: randSoonDate({ days: 14 }).toISOString(), // Valid future due date
+    createdAt: new Date().toISOString(), // Correct date format
+    updatedAt: randSoonDate({ days: 5 }).toISOString(), // Valid update date
     isRecurring: false,
   },
-
   {
     id: 3,
-    title: "Morning workout",
-    description: "30 minutes of cardio and stretching.",
+    title:
+      "Become a language whiz: Learn basic greetings in a new language you've always wanted to speak.",
+    description: randText({ maxCharCount: 500 }),
     tags: ["health", "fitness"],
     color: "#2196f3",
     status: "pending",
     priority: "low",
     time: {
       start: {
-        hour: 17,
+        hour: 10,
         minutes: 0,
       },
       end: {
-        hour: 19,
+        hour: 12,
         minutes: 0,
       },
     },
-    due: formatDate(),
-    createdAt: "2025-12-01T08:00:00Z",
-    updatedAt: "2025-12-01T08:00:00Z",
-    completedAt: null,
+    due: randSoonDate({ days: 14 }).toISOString(), // Valid future due date
+    createdAt: new Date().toISOString(), // Valid creation date
+    updatedAt: randSoonDate({ days: 5 }).toISOString(), // Must be after createdAt
     isRecurring: true,
   },
   {
     id: 4,
-    title: "Send client invoice",
-    description: "Email the invoice to client for the completed project.",
+    title: "Finish reading assigned book",
+    description: randText({ maxCharCount: 500 }),
     tags: ["finance", "work"],
     color: "#ff5722",
     status: "in-progress",
     priority: "high",
     time: {
       start: {
-        hour: 21,
+        hour: 14,
         minutes: 0,
       },
       end: {
-        hour: 23,
+        hour: 15,
         minutes: 0,
       },
     },
-    due: formatDate(),
-    createdAt: "2025-12-01T13:00:00Z",
-    updatedAt: "2025-12-03T10:15:00Z",
-    completedAt: null,
+    due: randSoonDate({ days: 14 }).toISOString(), // Valid due date
+    createdAt: new Date().toISOString(), // Valid creation date
+    updatedAt: randSoonDate({ days: 5 }).toISOString(), // Must be after createdAt
     isRecurring: false,
   },
 ];
