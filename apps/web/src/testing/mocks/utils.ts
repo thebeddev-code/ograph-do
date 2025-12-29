@@ -75,7 +75,7 @@ export const sanitizeUser = <O extends object>(user: O) =>
 //   throw error;
 // }
 
-export const AUTH_COOKIE = `bulletproof_react_app_token`;
+export const AUTH_COOKIE = `ograph_do_app_token`;
 
 export function requireAuth(cookies: Record<string, string>) {
   try {

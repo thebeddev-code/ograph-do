@@ -11,7 +11,7 @@ import { getUserQueryOptions } from "@/lib/auth";
 import "@/styles/globals.css";
 
 export const metadata = {
-  title: "Bulletproof React",
+  title: "Ograph-do",
   description: "Showcasing Best Practices For Building React Applications",
 };
 
