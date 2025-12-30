@@ -18,7 +18,7 @@ interface Props {
 }
 
 const HANDLE_BUTTON_SIZE_PX = 21;
-export function TimeViewAdjuster({
+export function ClockHandle({
   children,
   containerClassName = "",
   clockGraphRadius,
@@ -79,7 +79,7 @@ export function TimeViewAdjuster({
           transformOrigin: "50% 50%",
           width: `${clockGraphRadius * 2 + HANDLE_BUTTON_SIZE_PX}px`,
         }}
-        className="z-10 absolute flex justify-start items-center h-1 "
+        className="z-10 absolute flex justify-start items-center"
       >
         <div
           onMouseDown={() => setMouseDown(true)}
@@ -87,10 +87,12 @@ export function TimeViewAdjuster({
             width: `${HANDLE_BUTTON_SIZE_PX}px`,
             height: `${HANDLE_BUTTON_SIZE_PX}px`,
           }}
-          className="bg-white border-2 border-gray-400 rounded-full shadow-sm hover:shadow-md active:scale-95 transition-all duration-150 cursor-grab"
+          className="bg-slate-900 rounded-full cursor-grab"
         />
-        <div className="border-white border border-dotted h-[50%] w-full" />
+        <div className="border-slate-900 border border-dotted h-[50%] w-full" />
+        <div className="bg-slate-900 h-2 w-2 rounded-full cursor-grab" />
       </div>
+      <div className="bg-slate-900 absolute h-2 w-2 rounded-full" />
       {children}
     </div>
   );

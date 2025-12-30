@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { drawTodos } from "./utils/drawTodos";
-import { TimeViewAdjuster } from "./components/TimeViewAdjuster";
+import { ClockHandle } from "./components/ClockHandle";
 import { calcDegreesFrom, calcRadiansFrom } from "../../lib/utils/math";
 import { Clock } from "./components/Clock";
 import { DEGREES_PER_HOUR } from "@/lib/utils/constants";
@@ -52,8 +52,7 @@ export function ClockGraph({ todos }: Props) {
 
   return (
     <div className="bg-white flex-col flex justify-center items-center">
-      <button onClick={() => setClockHandleDegrees(startAngle)}>reset</button>
-      <TimeViewAdjuster
+      <ClockHandle
         startAngle={startAngle}
         clockGraphRadius={RADIUS}
         onChange={({ totalAngle }) => {
@@ -61,7 +60,7 @@ export function ClockGraph({ todos }: Props) {
         }}
       >
         <Clock canvasRef={canvasRef} />
-      </TimeViewAdjuster>
+      </ClockHandle>
     </div>
   );
 }
