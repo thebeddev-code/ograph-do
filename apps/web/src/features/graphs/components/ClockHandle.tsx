@@ -87,12 +87,12 @@ export function ClockHandle({
             width: `${HANDLE_BUTTON_SIZE_PX}px`,
             height: `${HANDLE_BUTTON_SIZE_PX}px`,
           }}
-          className="bg-slate-900 rounded-full cursor-grab"
+          className="absolute bg-slate-800 rounded-full cursor-grab"
         />
-        <div className="border-slate-900 border border-dotted h-[50%] w-full" />
-        <div className="bg-slate-900 h-2 w-2 rounded-full cursor-grab" />
+        <div className="border-slate-800 border border-dotted h-[50%] w-1/2" />
+        {/* <div className="bg-slate-900 h-2 w-2 rounded-full cursor-grab" /> */}
       </div>
-      <div className="bg-slate-900 absolute h-2 w-2 rounded-full" />
+      <div className="bg-slate-800 absolute h-2 w-2 rounded-full" />
       {children}
     </div>
   );
