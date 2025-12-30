@@ -7,7 +7,7 @@ interface DrawTodos {
   x?: number;
   y?: number;
   radius?: number;
-  viewableTimeWindow: {
+  viewHours: {
     start: number;
     end: number;
   };
@@ -18,7 +18,7 @@ export function drawTodos({
   x,
   y,
   radius,
-  viewableTimeWindow,
+  viewHours,
 }: DrawTodos) {
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
@@ -41,7 +41,7 @@ export function drawTodos({
     );
     ctx.strokeStyle = color;
     ctx.fillStyle = color;
-    ctx.lineWidth = 10;
+    ctx.lineWidth = 40;
     ctx.stroke();
   }
 
@@ -56,20 +56,17 @@ export function drawTodos({
     const todoEndTime = end.hour + end.minutes / 60;
 
     const drawDegreesStart = calcDegreesFrom(
-      Math.max(todoStartTime, viewableTimeWindow.start),
+      Math.max(todoStartTime, viewHours.start),
       "hours",
     );
     const drawDegreesEnd = calcDegreesFrom(
-      Math.min(todoEndTime, viewableTimeWindow.end),
+      Math.min(todoEndTime, viewHours.end),
       "hours",
     );
 
     const drawRadiansStart = calcRadiansFrom(drawDegreesStart);
     const drawRadiansEnd = calcRadiansFrom(drawDegreesEnd);
-    if (
-      viewableTimeWindow.start <= todoEndTime &&
-      viewableTimeWindow.end >= todoStartTime
-    )
+    if (viewHours.start <= todoEndTime && viewHours.end >= todoStartTime)
       drawTodo(
         drawRadiansStart,
         drawRadiansEnd,

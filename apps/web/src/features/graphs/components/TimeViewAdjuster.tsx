@@ -1,4 +1,4 @@
-import { ReactNode, useRef, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { MouseEvent } from "react";
 import { calcDegreesFrom } from "@/lib/utils/math";
@@ -7,8 +7,14 @@ interface Props {
   children: ReactNode;
   containerClassName?: string;
   clockGraphRadius: number;
-  onViewableTimeDegreesChange: (degrees: number) => void;
-  viewableTimeDegrees: number;
+  startAngle?: number;
+  onChange?: ({
+    totalAngle,
+    delta,
+  }: {
+    totalAngle: number;
+    delta: number;
+  }) => void;
 }
 
 const HANDLE_BUTTON_SIZE_PX = 21;
@@ -16,27 +22,44 @@ export function TimeViewAdjuster({
   children,
   containerClassName = "",
   clockGraphRadius,
-  onViewableTimeDegreesChange,
-  viewableTimeDegrees,
+  startAngle = 0,
+  onChange,
 }: Props) {
-  const containerRef = useRef<HTMLDivElement | null>(null);
   const [mouseDown, setMouseDown] = useState(false);
+  const [displayAngle, setDisplayAngle] = useState(startAngle % 360);
+  const [totalAngle, setTotalAngle] = useState(startAngle);
+  const lastRawAngleRef = useRef<number | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
     if (!mouseDown) return;
 
     const rect = e.currentTarget.getBoundingClientRect();
-
-    // center of the rotating element relative to viewport
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
 
     const dx = e.clientX - centerX;
     const dy = e.clientY - centerY;
-    const angleRadians = Math.atan2(-dx, dy);
-    let angleDeg = calcDegreesFrom(angleRadians);
-    if (angleDeg < 0) angleDeg += 360;
-    onViewableTimeDegreesChange(angleDeg);
+    const angleRadians = Math.atan2(dx, -dy);
+    let raw = calcDegreesFrom(angleRadians, "radians"); // -180..180 or similar, depending on your helper
+    if (raw < 0) raw += 360; // 0..360
+
+    if (lastRawAngleRef.current == null) {
+      lastRawAngleRef.current = raw;
+      return;
+    }
+
+    let delta = raw - lastRawAngleRef.current;
+
+    // Fix wrap at 0/360
+    if (delta > 180) delta -= 360;
+    if (delta < -180) delta += 360;
+
+    lastRawAngleRef.current = raw;
+
+    setTotalAngle((prev) => prev + delta);
+    setDisplayAngle(raw);
+    onChange?.({ totalAngle, delta });
   };
 
   return (
@@ -52,13 +75,12 @@ export function TimeViewAdjuster({
     >
       <div
         style={{
-          transform: `rotate(${viewableTimeDegrees + 90}deg)`,
+          transform: `rotate(${displayAngle + 90}deg)`,
           transformOrigin: "50% 50%",
           width: `${clockGraphRadius * 2 + HANDLE_BUTTON_SIZE_PX}px`,
         }}
-        className="z-10 absolute flex justify-end items-center h-1 "
+        className="z-10 absolute flex justify-start items-center h-1 "
       >
-        <div className="border-white border border-dotted h-[50%] w-full" />
         <div
           onMouseDown={() => setMouseDown(true)}
           style={{
@@ -67,6 +89,7 @@ export function TimeViewAdjuster({
           }}
           className="bg-white border-2 border-gray-400 rounded-full shadow-sm hover:shadow-md active:scale-95 transition-all duration-150 cursor-grab"
         />
+        <div className="border-white border border-dotted h-[50%] w-full" />
       </div>
       {children}
     </div>

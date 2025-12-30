@@ -2,12 +2,9 @@
 import { useEffect, useRef, useState } from "react";
 import { drawTodos } from "./utils/drawTodos";
 import { TimeViewAdjuster } from "./components/TimeViewAdjuster";
-import { calcRadiansFrom } from "../../lib/utils/math";
+import { calcDegreesFrom, calcRadiansFrom } from "../../lib/utils/math";
 import { Clock } from "./components/Clock";
-import {
-  DEGREES_PER_HOUR,
-  TIME_WINDOW_VISIBLE_HOURS,
-} from "@/lib/utils/constants";
+import { DEGREES_PER_HOUR } from "@/lib/utils/constants";
 import { Todo } from "@/types/api";
 
 const RADIUS = 130;
@@ -15,21 +12,17 @@ interface Props {
   todos: Todo[];
 }
 export function ClockGraph({ todos }: Props) {
-  const [timeWindowStartDeg, setTimeWindowStartDeg] = useState(0);
-  const [timeWindowStartDegOffset, setTimeWindowStartDegOffset] = useState(0);
-  const [fullRotationCount, setFullRotationCount] = useState(0);
+  const today = new Date();
+  const currentTime = {
+    hours: today.getHours() + 5,
+    minutes: today.getMinutes(),
+  };
+  const startAngle =
+    calcDegreesFrom(currentTime.hours, "hours") +
+    calcDegreesFrom(currentTime.minutes / 60, "hours");
+
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-  // if (timeWindowStartDeg >= 180 && timeWindowStartDegOffset < 180)
-  //   setTimeWindowStartDegOffset(180);
-
-  // if (timeWindowStartDeg + 5 >= 360) {
-  //   setTimeWindowStartDeg(0);
-  //   setTimeWindowStartDegOffset(0);
-  //   const nextFullRotationCount = fullRotationCount + 1;
-  //   if (nextFullRotationCount < days.length - 1)
-  //     setFullRotationCount(fullRotationCount + 1);
-  // }
+  const [clockHandleDegrees, setClockHandleDegrees] = useState(startAngle);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -43,70 +36,29 @@ export function ClockGraph({ todos }: Props) {
     // Set internal resolution
     canvas.width = rect.width * dpr;
     canvas.height = rect.height * dpr;
-
-    // Scale drawing context
     ctx.scale(dpr, dpr);
 
-    // Day
-    ctx.beginPath();
-    ctx.moveTo(rect.width / 2, rect.height / 2);
-    ctx.arc(
-      rect.width / 2,
-      rect.height / 2,
-      RADIUS,
-      calcRadiansFrom(0),
-      calcRadiansFrom(360),
-      false,
-    );
-    ctx.lineTo(rect.width / 2, rect.height / 2);
-    ctx.fillStyle = "oklch(100% 0.12 90)";
-    ctx.fill();
-
-    // Draw circle
-    ctx.beginPath();
-    ctx.moveTo(rect.width / 2, rect.height / 2);
-    ctx.arc(
-      rect.width / 2,
-      rect.height / 2,
-      RADIUS,
-      calcRadiansFrom(90),
-      calcRadiansFrom(90 + timeWindowStartDeg),
-      false,
-    );
-    ctx.lineTo(rect.width / 2, rect.height / 2);
-    ctx.fillStyle = "#E6E6FA";
-    ctx.fill();
-
-    const visibleTimeWindowStart =
-      (timeWindowStartDeg + 180) / DEGREES_PER_HOUR;
-    const visibleTimeWindowEnd =
-      visibleTimeWindowStart + TIME_WINDOW_VISIBLE_HOURS;
+    const viewHoursStart = (clockHandleDegrees / DEGREES_PER_HOUR) % 24;
     drawTodos({
       canvas,
       todos,
       radius: RADIUS,
-      viewableTimeWindow: {
-        start: visibleTimeWindowStart,
-        end: visibleTimeWindowEnd,
+      viewHours: {
+        start: viewHoursStart,
+        end: Math.min(24, viewHoursStart + 12),
       },
     });
-  }, [timeWindowStartDeg, fullRotationCount, todos]);
-
-  const today = new Date();
-  const formattedDate = today.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  });
-
-  const result = `${formattedDate}`;
+  }, [todos, clockHandleDegrees]);
 
   return (
     <div className="bg-white flex-col flex justify-center items-center">
-      <h1 className="text-2xl font-black mb-10">Day: {result}</h1>
+      <button onClick={() => setClockHandleDegrees(startAngle)}>reset</button>
       <TimeViewAdjuster
+        startAngle={startAngle}
         clockGraphRadius={RADIUS}
-        onViewableTimeDegreesChange={(d) => setTimeWindowStartDeg(d)}
-        viewableTimeDegrees={timeWindowStartDeg}
+        onChange={({ totalAngle }) => {
+          setClockHandleDegrees(totalAngle);
+        }}
       >
         <Clock canvasRef={canvasRef} />
       </TimeViewAdjuster>
