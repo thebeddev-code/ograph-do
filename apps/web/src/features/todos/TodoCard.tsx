@@ -20,9 +20,8 @@ export function TodoCard({ todo, onShowExpandedView }: Props) {
   function handleDeleteTodo(todoId: number) {
     deleteTodo({ todoId });
   }
-  const { title, due, priority, status, isRecurring, time, color } = todo;
+  const { title, due, priority, status, isRecurring, startsAt, color } = todo;
   const isCompleted = status === "completed";
-  const formatTimePart = (n: number) => n.toString().padStart(2, "0");
 
   return (
     <div className="overflow-hidden relative bg-white rounded-md border border-gray-200 hover:border-gray-300 transition cursor-pointer">
@@ -64,9 +63,9 @@ export function TodoCard({ todo, onShowExpandedView }: Props) {
 
           <div className="mt-0.5 flex items-center gap-2 text-[12px] text-gray-400">
             {due && <span>{`${format(due, "MM/dd/yyyy")}`}</span>}
-            {time && (
+            {startsAt && due && (
               <span>
-                {`${formatTimePart(time.start.hour)}:${formatTimePart(time.start.minutes)}-${formatTimePart(time.end.hour)}:${formatTimePart(time.end.minutes)}`}
+                {format(startsAt, "hh:mm")} - {format(due, "hh:mm")}
               </span>
             )}
             {priority && (

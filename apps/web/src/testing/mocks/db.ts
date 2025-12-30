@@ -1,5 +1,5 @@
 import { Collection } from "@msw/data";
-import { mockTodos } from "./mockData";
+import { mockTodos } from "./dateGenerators";
 import { todoModel, userModel } from "./utils/models";
 
 export const db = {

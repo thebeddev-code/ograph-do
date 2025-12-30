@@ -23,15 +23,10 @@ export const todoPayloadSchema = z.object({
   color: colorSchema,
   status: z.enum(["pending", "in-progress", "completed"]).nullable(),
   priority: z.enum(["low", "medium", "high"]).nullable(),
-  time: z
-    .object({
-      start: todoTimeSchema,
-      end: todoTimeSchema,
-    })
-    .nullable(),
+  startsAt: isoDateTime.optional(),
   due: isoDateTime.optional(),
   createdAt: isoDateTime,
-  updatedAt: isoDateTime.optional(),
+  updatedAt: isoDateTime,
   completedAt: isoDateTime.nullable().optional(),
   // recurrence
   isRecurring: z.boolean(),

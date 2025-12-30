@@ -1,7 +1,7 @@
 import { X as Close } from "lucide-react";
 import { twMerge, ClassNameValue } from "tailwind-merge";
-import { Todo } from "@/lib/types";
 import { formatDate } from "@/lib/utils/date";
+import { Todo } from "@/types/api";
 
 function DateField({ label, value }: { label: string; value?: string | null }) {
   return (

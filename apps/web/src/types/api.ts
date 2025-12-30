@@ -40,11 +40,7 @@ export type Todo = Entity<{
   color: string | null;
   status: "pending" | "in-progress" | "completed" | "overdue";
   priority: "low" | "medium" | "high";
-  time: {
-    start: TodoTime;
-    end: TodoTime;
-  } | null;
-  // Only with the precision to the day
+  startsAt?: string | null;
   due?: string | null;
   updatedAt: string;
   completedAt?: string | null;

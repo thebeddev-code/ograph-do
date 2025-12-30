@@ -1,5 +1,5 @@
 import { calcDegreesFrom, calcRadiansFrom } from "@/lib/utils/math";
-import { Todo } from "@/lib/types";
+import { Todo } from "@/types/api";
 
 interface DrawTodos {
   canvas: HTMLCanvasElement;
@@ -48,9 +48,19 @@ export function drawTodos({
   const offsetRadians = calcRadiansFrom(90);
 
   for (const todo of todos) {
-    if (!todo.time) continue;
+    if (!todo.startsAt || !todo.due) continue;
 
-    const { start, end } = todo.time;
+    const startsAt = new Date(todo.startsAt);
+    const start = {
+      hour: startsAt.getHours(),
+      minutes: startsAt.getMinutes(),
+    };
+
+    const endsAt = new Date(todo.due);
+    const end = {
+      hour: endsAt.getHours(),
+      minutes: endsAt.getMinutes(),
+    };
 
     const todoStartTime = start.hour + start.minutes / 60;
     const todoEndTime = end.hour + end.minutes / 60;
