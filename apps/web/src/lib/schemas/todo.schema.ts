@@ -1,10 +1,5 @@
 import { z } from "zod";
 
-const todoTimeSchema = z.object({
-  hour: z.number().min(0).max(24),
-  minutes: z.number().min(0).max(60),
-});
-
 const colorSchema = z
   .string()
   .regex(
