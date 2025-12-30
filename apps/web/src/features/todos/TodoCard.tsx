@@ -3,7 +3,7 @@ import { useDeleteTodo } from "./api/deleteTodo";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { X as Close } from "lucide-react";
-
+import { format } from "date-fns";
 type Props = {
   todo: Todo;
   onShowExpandedView: (id: number) => void;
@@ -20,8 +20,9 @@ export function TodoCard({ todo, onShowExpandedView }: Props) {
   function handleDeleteTodo(todoId: number) {
     deleteTodo({ todoId });
   }
-  const { title, due, priority, status, isRecurring, color } = todo;
+  const { title, due, priority, status, isRecurring, time, color } = todo;
   const isCompleted = status === "completed";
+  const formatTimePart = (n: number) => n.toString().padStart(2, "0");
 
   return (
     <div className="overflow-hidden relative bg-white rounded-md border border-gray-200 hover:border-gray-300 transition cursor-pointer">
@@ -31,7 +32,7 @@ export function TodoCard({ todo, onShowExpandedView }: Props) {
           background: `radial-gradient(ellipse at center, ${color}, transparent, transparent)`,
           opacity: "0.2",
         }}
-      ></div>
+      />
 
       <div
         className="relative z-10 flex items-center justify-between gap-3 bg-transparent px-3 py-2 text-sm"
@@ -62,7 +63,12 @@ export function TodoCard({ todo, onShowExpandedView }: Props) {
           </h3>
 
           <div className="mt-0.5 flex items-center gap-2 text-[12px] text-gray-400">
-            {due && <span>{due}</span>}
+            {due && <span>{`${format(due, "MM/dd/yyyy")}`}</span>}
+            {time && (
+              <span>
+                {`${formatTimePart(time.start.hour)}:${formatTimePart(time.start.minutes)}-${formatTimePart(time.end.hour)}:${formatTimePart(time.end.minutes)}`}
+              </span>
+            )}
             {priority && (
               <span
                 className={
