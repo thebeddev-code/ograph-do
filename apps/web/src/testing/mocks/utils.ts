@@ -2,6 +2,7 @@ import Cookies from "js-cookie";
 import { delay } from "msw";
 
 import { db } from "./db";
+import { UserModel } from "./utils/models";
 
 export const encode = (obj: any) => {
   const btoa =
@@ -84,6 +85,7 @@ export function requireAuth(cookies: Record<string, string>) {
         id: 1,
         email: "mocking",
         password: "mocking",
+        timezone: "Asia/Yekaterinburg",
       },
     };
     const encodedToken = cookies[AUTH_COOKIE] || Cookies.get(AUTH_COOKIE);

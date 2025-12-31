@@ -1,6 +1,6 @@
 import { Todo } from "@/types/api";
 import { randNumber, randTodo, randText, randHex } from "@ngneat/falso";
-import { set } from "date-fns";
+import { set, subDays } from "date-fns";
 
 let id = 0;
 export function createTodo(overrides: Partial<Todo>): Todo {
@@ -58,7 +58,18 @@ export function createTodo(overrides: Partial<Todo>): Todo {
 
 export const mockTodos: Todo[] = [
   createTodo({
-    title: "Your todo",
+    title: "A",
     startsAt: set(new Date(), { hours: 19, minutes: 0 }).toISOString(),
+  }),
+  createTodo({
+    title: "B",
+    startsAt: set(subDays(new Date(), 1), {
+      hours: 3,
+      minutes: 0,
+    }).toISOString(),
+    due: set(subDays(new Date(), 1), {
+      hours: 4,
+      minutes: 0,
+    }).toISOString(),
   }),
 ];

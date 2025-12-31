@@ -5,7 +5,11 @@ import { useTodos } from "@/features/todos/api/getTodos";
 import { TodoList } from "@/features/todos/TodoList";
 
 export default function Dashboard() {
-  const { data, status } = useTodos({});
+  const { data, status } = useTodos({
+    params: {
+      due: "today",
+    },
+  });
   const todos = data?.data;
   return (
     <main className="flex">

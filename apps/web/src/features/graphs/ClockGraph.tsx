@@ -14,7 +14,7 @@ interface Props {
 export function ClockGraph({ todos }: Props) {
   const today = new Date();
   const currentTime = {
-    hours: today.getHours() + 5,
+    hours: today.getHours(),
     minutes: today.getMinutes(),
   };
   const startAngle =

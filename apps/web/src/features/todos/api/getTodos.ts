@@ -4,33 +4,40 @@ import { api } from "@/lib/api-client";
 import { QueryConfig } from "@/lib/react-query";
 import { Todo, Meta } from "@/types/api";
 
+interface Params {
+  page?: number;
+  pageSize?: number;
+  asc?: string;
+  desc?: string;
+  due?: "today" | "tommorow" | string;
+}
+
 export const getTodos = (
-  { page }: { page?: number } = { page: 1 },
+  params: Params,
 ): Promise<{
   data: Todo[];
   meta: Meta;
 }> => {
   return api.get(`/todos`, {
-    params: {
-      page,
-    },
+    params: params as Record<string, string>,
   });
 };
 
-export const getTodosQueryOptions = ({ page = 1 }: { page?: number } = {}) => {
+export const getTodosQueryOptions = (params: Params = {}) => {
   return queryOptions({
-    queryKey: ["todos", { page }],
-    queryFn: () => getTodos({ page }),
+    queryKey: ["todos", params],
+    queryFn: () => getTodos(params),
   });
 };
 
 interface UseTodosOptions {
   queryConfig?: QueryConfig<typeof getTodosQueryOptions>;
-  page?: number;
+  params?: Params;
 }
-export const useTodos = ({ queryConfig, page }: UseTodosOptions) => {
+
+export const useTodos = ({ queryConfig, params }: UseTodosOptions) => {
   return useQuery({
-    ...getTodosQueryOptions({ page }),
+    ...getTodosQueryOptions(params),
     ...queryConfig,
   });
 };

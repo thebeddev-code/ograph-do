@@ -3,7 +3,9 @@ import { env } from "@/config/env";
 import { db, persistDb } from "../db";
 import { networkDelay, requireAuth } from "../utils";
 import { CreateTodoPayload } from "@/lib/schemas/todo.schema";
-import { TodoModel } from "../utils/models";
+import { TodoModel, UserModel } from "../utils/models";
+import { toZonedTime } from "date-fns-tz";
+import { isSameDay } from "date-fns";
 
 export const todosHandlers = [
   http.get(`${env.API_URL}/todos`, async ({ cookies, request }) => {
@@ -11,21 +13,34 @@ export const todosHandlers = [
 
     try {
       const { user, error } = requireAuth(cookies);
-      if (error) {
+      if (error || !user) {
         return HttpResponse.json({ message: error }, { status: 401 });
       }
-
       const url = new URL(request.url);
-
       const page = Number(url.searchParams.get("page") || 1);
+      const due = url.searchParams.get("due");
 
-      const result = db.todos.all();
+      const filters: Record<string, unknown> = {};
+      if (due === "today") {
+        filters.due = (d: string | undefined) => {
+          if (!d) return false;
+          const userTimezone = (user as UserModel).timezone;
+          const nowInUserTz = toZonedTime(new Date(), userTimezone);
+          const dueDateInUserTz = toZonedTime(d, userTimezone);
+          return isSameDay(dueDateInUserTz, nowInUserTz);
+        };
+      }
+
+      const result = db.todos.findMany((q) => q.where({ ...filters }), {
+        take: 100,
+      });
+      const itemsTotal = db.todos.all();
       return HttpResponse.json({
         data: result,
         meta: {
           page,
           total: result.length,
-          totalPages: Math.ceil(result.length / 50),
+          totalPages: Math.ceil(itemsTotal.length / 100),
         },
       });
     } catch (error: any) {
