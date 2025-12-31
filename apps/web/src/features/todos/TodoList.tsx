@@ -3,6 +3,7 @@ import { TodoCard } from "./TodoCard";
 import { useState } from "react";
 import { TodoExpandedView } from "./TodoExpandedView";
 import { Todo } from "@/types/api";
+import TodoForm from "./TodoForm";
 
 export function TodoList({ todos }: { todos: Todo[] }) {
   const [expandedTodoId, setExpandedTodoId] = useState<null | number>(null);
@@ -11,9 +12,8 @@ export function TodoList({ todos }: { todos: Todo[] }) {
   function handleShowTodoExpandedView(todoId: number) {
     setExpandedTodoId(todoId);
   }
-
   return (
-    <div className="relative flex h-dvh w-full flex-col gap-2 overflow-y-auto rounded-lg bg-gray-50 p-4 border border-gray-200">
+    <div className="flex h-dvh w-full flex-col gap-2 overflow-y-auto rounded-lg bg-gray-50 p-4 border border-gray-200">
       {expandedTodo && (
         <div
           onClick={() => setExpandedTodoId(null)}
@@ -25,7 +25,6 @@ export function TodoList({ todos }: { todos: Todo[] }) {
           />
         </div>
       )}
-
       {todos.map((t) => (
         <TodoCard
           key={t.id}
@@ -33,6 +32,9 @@ export function TodoList({ todos }: { todos: Todo[] }) {
           onShowExpandedView={handleShowTodoExpandedView}
         />
       ))}
+      <div className="absolute z-20 shadow px-10 overflow-y-scroll bg-white min-w-[50%] h-dvh top-0 right-0">
+        <TodoForm formType="create" />
+      </div>
     </div>
   );
 }
