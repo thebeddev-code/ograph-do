@@ -1,6 +1,5 @@
-## Intro
-
-A sleek **Todo app** featuring a unique visualization of todos on clock-graph, making organization both visual and intuitive.
+# Ograph-do
+A To-Do app that makes todos management feel more intuitive and natural, by visualizing your todos on a dynamic clock graph. 
 
 ## Features
 
