@@ -17,10 +17,8 @@ import {
   useFormContext,
 } from "react-hook-form";
 import { ZodType, z } from "zod";
-
 import { cn } from "@/utils/cn";
-
-import { Label } from "./label";
+import { Label } from "./Label";
 
 type FormFieldContextValue<
   TFieldValues extends FieldValues = FieldValues,

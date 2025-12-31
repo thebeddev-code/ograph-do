@@ -1,8 +1,8 @@
 import * as React from "react";
 import { type FieldError } from "react-hook-form";
 
-import { Error } from "./error";
-import { Label } from "./label";
+import { Error } from "./Error";
+import { Label } from "./Label";
 
 type FieldWrapperProps = {
   label?: string;
@@ -16,7 +16,7 @@ export type FieldWrapperPassThroughProps = Omit<
   "className" | "children"
 >;
 
-export const FieldWrapper = (props: FieldWrapperProps) => {
+export function FieldWrapper(props: FieldWrapperProps) {
   const { label, error, children } = props;
   return (
     <div>
@@ -27,4 +27,4 @@ export const FieldWrapper = (props: FieldWrapperProps) => {
       <Error errorMessage={error?.message} />
     </div>
   );
-};
+}

@@ -10,7 +10,7 @@ import {
 } from "../../../../../examples/testing/test-utils";
 
 import { Form } from "../form";
-import { Input } from "../input";
+import { Input } from "../Input";
 
 const testData = {
   title: "Hello World",

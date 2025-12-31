@@ -2,7 +2,7 @@ export type ErrorProps = {
   errorMessage?: string | null;
 };
 
-export const Error = ({ errorMessage }: ErrorProps) => {
+export function Error({ errorMessage }: ErrorProps) {
   if (!errorMessage) return null;
 
   return (
@@ -14,4 +14,4 @@ export const Error = ({ errorMessage }: ErrorProps) => {
       {errorMessage}
     </div>
   );
-};
+}

@@ -4,10 +4,10 @@ import { z } from "zod";
 import { Button } from "../button";
 
 import { Form } from "./form";
-import { FormDrawer } from "./form-drawer";
-import { Input } from "./input";
-import { Select } from "./select";
-import { Textarea } from "./textarea";
+import { FormDrawer } from "./FormDrawer";
+import { Input } from "./Input";
+import { Select } from "./Select";
+import { Textarea } from "./Textarea";
 
 const MyForm = ({ hideSubmit = false }: { hideSubmit?: boolean }) => {
   return (

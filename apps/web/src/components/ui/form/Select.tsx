@@ -2,24 +2,22 @@
 
 import * as React from "react";
 import { UseFormRegisterReturn } from "react-hook-form";
-
 import { cn } from "@/utils/cn";
-
-import { FieldWrapper, FieldWrapperPassThroughProps } from "./field-wrapper";
+import { FieldWrapper, FieldWrapperPassThroughProps } from "./FieldWrapper";
 
 type Option = {
   label: React.ReactNode;
   value: string | number | string[];
 };
 
-type SelectFieldProps = FieldWrapperPassThroughProps & {
+interface Props {
   options: Option[];
   className?: string;
   defaultValue?: string;
   registration: Partial<UseFormRegisterReturn>;
-};
+}
 
-export const Select = (props: SelectFieldProps) => {
+export function Select(props: Props & FieldWrapperPassThroughProps) {
   const { label, options, error, className, defaultValue, registration } =
     props;
   return (
@@ -40,4 +38,5 @@ export const Select = (props: SelectFieldProps) => {
       </select>
     </FieldWrapper>
   );
-};
+}
+Select.displayName = "Select";
