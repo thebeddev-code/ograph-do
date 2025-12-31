@@ -11,4 +11,7 @@ export type TodoModel = z.infer<typeof todoModel>;
 export const userModel = z.object({
   id: z.number(),
   email: z.string(),
+  timezone: z.string(),
 });
+
+export type UserModel = z.infer<typeof userModel>;
