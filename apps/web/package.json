@@ -19,6 +19,7 @@
     "dev:server": "tsx ./mock-server.ts"
   },
   "dependencies": {
+    "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^5.2.2",
     "@msw/data": "^1.1.2",
     "@next/env": "^16.1.0",
