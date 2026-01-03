@@ -15,6 +15,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
+import { motion, AnimatePresence } from "motion/react";
 
 export function TodoList({ todos }: { todos: Todo[] }) {
   const [expandedTodoId, setExpandedTodoId] = useState<null | number>(null);
@@ -51,34 +52,45 @@ export function TodoList({ todos }: { todos: Todo[] }) {
         <DrawerTrigger asChild>
           <Button variant="outline">Create todo</Button>
         </DrawerTrigger>
-
         <DrawerContent
-          className="min-w-[800px] overflow-y-auto"
           aria-label="Create a new todo"
           role="region"
+          className="min-w-[800px] overflow-y-auto p-0 border-0 bg-transparent transition-colors duration-200"
         >
-          <DrawerHeader className="mb-4 p-4">
-            <DrawerTitle>Create todo</DrawerTitle>
-            <DrawerDescription>
-              Fill in the fields below to create a new todo.
-            </DrawerDescription>
-          </DrawerHeader>
+          {showForm && (
+            <motion.div
+              className="bg-white p-4 "
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{
+                type: "spring",
+                stiffness: 260,
+                damping: 30,
+              }}
+            >
+              <DrawerHeader className="mb-4 p-4">
+                <DrawerTitle className="text-center">Create todo</DrawerTitle>
+                <DrawerDescription className="text-center">
+                  Fill in the fields below to create a new todo.
+                </DrawerDescription>
+              </DrawerHeader>
 
-          <div>
-            <TodoForm
-              formType="create"
-              renderButtons={() => (
-                <DrawerFooter>
-                  <div className="flex w-full justify-center gap-6 pt-10">
-                    <Button className="px-10" type="submit" form="todo-form">
-                      Create
-                    </Button>
-                  </div>
-                </DrawerFooter>
-              )}
-              onFormClose={toggleForm}
-            />
-          </div>
+              <TodoForm
+                formType="create"
+                renderButtons={() => (
+                  <DrawerFooter>
+                    <div className="flex w-full justify-center gap-6 pt-10">
+                      <Button className="px-10" type="submit" form="todo-form">
+                        Create
+                      </Button>
+                    </div>
+                  </DrawerFooter>
+                )}
+                onFormClose={toggleForm}
+              />
+            </motion.div>
+          )}
         </DrawerContent>
       </Drawer>
     </div>
