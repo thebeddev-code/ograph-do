@@ -96,10 +96,12 @@ export const todosHandlers = [
         return HttpResponse.json({ message: error }, { status: 401 });
       }
       const data = (await request.json()) as CreateTodoPayload;
-      const result = db.todos.createMany(1, (index) => ({
-        id: index + 1,
-        ...data,
-      }));
+      const todo = db.todos.findMany(undefined, {
+        take: 1,
+        orderBy: { id: "desc" },
+      });
+      const prevTodoId = todo.at(0)?.id ?? 0;
+      const result = db.todos.create({ ...data, id: prevTodoId + 1 });
       await persistDb("todos");
       return HttpResponse.json(result);
     } catch (error: any) {
