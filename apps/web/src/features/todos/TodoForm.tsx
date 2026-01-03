@@ -38,9 +38,22 @@ import { FormProvider } from "react-hook-form";
 import { TagsInputField } from "@/components/ui/tags-input";
 import { ChevronDownIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
-import { format, parse, set } from "date-fns";
+import { format, formatDate, parse, set } from "date-fns";
 import { useCreateTodo } from "./api/createTodo";
 import toast from "react-hot-toast";
+import { cn } from "@/lib/utils";
+
+const WEEKDAYS = [
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+  "sunday",
+];
+
+const DEFAULT_TAGS = [...WEEKDAYS, "everyday", "monthly", "weekly"];
 
 interface Props {
   todo?: Todo;
@@ -71,22 +84,80 @@ export default function TodoForm({
       isRecurring: false,
       priority: "low",
       color: "#00b4d8",
+      monthly: new Date(),
+      recurrenceRule: "",
     } as Partial<Todo>,
   });
+  const { handleSubmit, setValue, getValues, watch } = form;
+  // Watch these fields
+  // We use tags field to construct/set recurrence fields
+  watch("tags");
+  // This is to set interval of monthly recurrence rule
+  watch("monthly");
 
-  const { control, handleSubmit, setValue, getValues } = form;
-  const onSubmit = handleSubmit(async (data) => {
-    await toast.promise(
-      createTodoMutation.mutateAsync(data as CreateTodoPayload),
-      {
-        loading: "Saving...",
-        success: <b>Todo created!</b>,
-        error: <b>Could not create todo.</b>,
-      },
-    );
-    onFormClose?.();
-  });
-  const fieldIds: Record<keyof CreateTodoPayload, string> = useMemo(
+  const currentTags = getValues("tags") || [];
+  const currentMonthly = getValues("monthly");
+  // Filter functional tag suggestions based on tags selected
+  const tagSuggestions = useMemo(() => {
+    // No suggestions if "everyday" or "monthly" is selected
+    const lowerTags = currentTags.map((tag: string) => tag.toLowerCase());
+    if (lowerTags.includes("everyday") || lowerTags.includes("monthly")) {
+      return [];
+    }
+
+    // If weekly or specific weekdays selected, suggest only weekdays
+    const lowercaseWeekdays = WEEKDAYS.map((w) => w.toLowerCase());
+    const hasWeeklyOrWeekday =
+      lowerTags.includes("weekly") ||
+      lowerTags.some((tag: string) => lowercaseWeekdays.includes(tag));
+
+    if (hasWeeklyOrWeekday) {
+      return WEEKDAYS.filter((v) => !lowerTags.includes(v.toLowerCase()));
+    }
+
+    // Default: all options
+    return DEFAULT_TAGS;
+  }, [currentTags]);
+
+  // Handle recurrence rule
+  const currentRecurrenceRule = getValues("recurrenceRule");
+  const currentIsRecurring = getValues("isRecurring");
+
+  if (currentRecurrenceRule && !currentIsRecurring)
+    setValue("isRecurring", true);
+  if (!currentRecurrenceRule && currentIsRecurring)
+    setValue("isRecurring", false);
+
+  const newRecurrenceRule = useMemo(() => {
+    function getRecurrenceRule() {
+      const lowerCaseTags: string[] = currentTags.map((v: string) =>
+        v.toLowerCase(),
+      );
+      if (lowerCaseTags.includes("everyday")) return "everyday";
+      const weekly = lowerCaseTags.filter((v) => WEEKDAYS.includes(v));
+      if (weekly.length > 0) return `weekly=${weekly.join(",")}`;
+      if (lowerCaseTags.includes("weekly"))
+        return `weekly=${WEEKDAYS[new Date().getDay() - 1]}`;
+      if (lowerCaseTags.includes("monthly")) {
+        const monthlyDate = formatDate(
+          currentMonthly ? new Date(currentMonthly) : new Date(),
+          "yyyy-MM-dd",
+        );
+        return `monthly=${monthlyDate}`;
+      }
+
+      return "";
+    }
+    return `rrule:${getRecurrenceRule()}`.toLowerCase();
+  }, [currentTags, currentMonthly]);
+
+  if (newRecurrenceRule != currentRecurrenceRule)
+    setValue("recurrenceRule", newRecurrenceRule);
+
+  const showMonthlyField = getValues("tags")?.includes("monthly");
+  const fieldIds: Record<keyof CreateTodoPayload, string> & {
+    monthly: string;
+  } = useMemo(
     () => ({
       title: uuidv4(),
       color: uuidv4(),
@@ -101,9 +172,26 @@ export default function TodoForm({
       status: uuidv4(),
       tags: uuidv4(),
       updatedAt: uuidv4(),
+      // Temp form field
+      monthly: uuidv4(),
     }),
     [],
   );
+
+  const onSubmit = handleSubmit(async (data) => {
+    console.log(data);
+    return;
+    await toast.promise(
+      createTodoMutation.mutateAsync(data as CreateTodoPayload),
+      {
+        loading: "Saving...",
+        success: <b>Todo created!</b>,
+        error: <b>Could not create todo.</b>,
+      },
+    );
+    onFormClose?.();
+  });
+
   return (
     <FormProvider {...form}>
       <form
@@ -381,13 +469,59 @@ export default function TodoForm({
         </FieldGroup>
 
         {/* Tags */}
-        <FieldGroup>
+        <FieldGroup
+          className={cn({ "grid grid-cols-[1fr_auto]": showMonthlyField })}
+        >
           <TagsInputField
             variant="default"
             name="tags"
             label="Tags"
             placeholder="Todo tags"
+            tagVariant="outline"
+            suggestions={tagSuggestions}
           />
+
+          {showMonthlyField && (
+            <Controller
+              name="monthly"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={fieldIds.startsAt}>
+                    Monthly start
+                  </FieldLabel>
+                  <div className="flex flex-row gap-3">
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          id="date-picker"
+                          className="w-32 justify-between font-normal"
+                        >
+                          {field.value
+                            ? new Date(field?.value).toLocaleDateString()
+                            : "Select date"}
+                          <ChevronDownIcon />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        className="w-auto overflow-hidden p-0"
+                        align="start"
+                      >
+                        <Calendar
+                          id={`${fieldIds.monthly}`}
+                          mode="single"
+                          selected={field.value}
+                          captionLayout="dropdown"
+                          onSelect={field.onChange}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </Field>
+              )}
+            />
+          )}
         </FieldGroup>
 
         {renderButtons?.() ?? <Button>Submit</Button>}
