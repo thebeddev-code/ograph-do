@@ -18,8 +18,10 @@ import { Button } from "@/components/ui/button";
 
 export function TodoList({ todos }: { todos: Todo[] }) {
   const [expandedTodoId, setExpandedTodoId] = useState<null | number>(null);
-  const expandedTodo = todos.find((t) => t.id == expandedTodoId);
+  const [showForm, setShowForm] = useState(false);
+  const toggleForm = () => setShowForm((b) => !b);
 
+  const expandedTodo = todos.find((t) => t.id == expandedTodoId);
   function handleShowTodoExpandedView(todoId: number) {
     setExpandedTodoId(todoId);
   }
@@ -45,7 +47,7 @@ export function TodoList({ todos }: { todos: Todo[] }) {
         />
       ))}
 
-      <Drawer>
+      <Drawer open={showForm} onOpenChange={toggleForm}>
         <DrawerTrigger asChild>
           <Button variant="outline">Create todo</Button>
         </DrawerTrigger>
@@ -74,6 +76,7 @@ export function TodoList({ todos }: { todos: Todo[] }) {
                   </div>
                 </DrawerFooter>
               )}
+              onFormClose={toggleForm}
             />
           </div>
         </DrawerContent>

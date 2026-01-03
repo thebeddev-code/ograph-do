@@ -40,11 +40,13 @@ import { ChevronDownIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { format, parse, set } from "date-fns";
 import { useCreateTodo } from "./api/createTodo";
+import toast from "react-hot-toast";
 
 interface Props {
   todo?: Todo;
   formType: "update" | "create" | "read-only";
   renderButtons?: () => ReactNode;
+  onFormClose?: () => void;
   formProps?: HTMLAttributes<HTMLFormElement>;
 }
 
@@ -53,8 +55,9 @@ export default function TodoForm({
   formType,
   formProps,
   renderButtons,
+  onFormClose,
 }: Props) {
-  const { mutate } = useCreateTodo({});
+  const createTodoMutation = useCreateTodo({});
   const [openStartsAt, setOpenStartsAt] = useState(false);
   const [openDue, setOpenDue] = useState(false);
   const form = useForm({
@@ -72,8 +75,16 @@ export default function TodoForm({
   });
 
   const { control, handleSubmit, setValue, getValues } = form;
-  const onSubmit = handleSubmit((data) => {
-    mutate(data as CreateTodoPayload);
+  const onSubmit = handleSubmit(async (data) => {
+    await toast.promise(
+      createTodoMutation.mutateAsync(data as CreateTodoPayload),
+      {
+        loading: "Saving...",
+        success: <b>Todo created!</b>,
+        error: <b>Could not create todo.</b>,
+      },
+    );
+    onFormClose?.();
   });
   const fieldIds: Record<keyof CreateTodoPayload, string> = useMemo(
     () => ({
