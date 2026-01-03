@@ -44,8 +44,8 @@ export function ClockGraph({ todos }: Props) {
       todos,
       radius: RADIUS,
       viewHours: {
-        start: viewHoursStart,
-        end: Math.min(24, viewHoursStart + 12),
+        start: Math.max(viewHoursStart - 6, 0),
+        end: Math.min(24, viewHoursStart + 6),
       },
     });
   }, [todos, clockHandleDegrees]);
