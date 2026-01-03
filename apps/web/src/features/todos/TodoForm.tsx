@@ -179,8 +179,6 @@ export default function TodoForm({
   );
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data);
-    return;
     await toast.promise(
       createTodoMutation.mutateAsync(data as CreateTodoPayload),
       {
