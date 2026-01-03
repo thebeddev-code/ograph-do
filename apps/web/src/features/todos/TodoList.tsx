@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "motion/react";
+import { Plus } from "lucide-react";
 
 export function TodoList({ todos }: { todos: Todo[] }) {
   const [expandedTodoId, setExpandedTodoId] = useState<null | number>(null);
@@ -50,7 +51,14 @@ export function TodoList({ todos }: { todos: Todo[] }) {
 
       <Drawer open={showForm} onOpenChange={toggleForm}>
         <DrawerTrigger asChild>
-          <Button variant="outline">Create todo</Button>
+          <div className="flex justify-center">
+            <Button
+              variant="secondary"
+              className="w-30 border hover:border-blue-500"
+            >
+              <Plus className="text-slate-800" />
+            </Button>
+          </div>
         </DrawerTrigger>
         <DrawerContent
           aria-label="Create a new todo"
