@@ -4,6 +4,17 @@ import { useState } from "react";
 import { TodoExpandedView } from "./TodoExpandedView";
 import { Todo } from "@/types/api";
 import TodoForm from "./TodoForm";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import { Button } from "@/components/ui/button";
 
 export function TodoList({ todos }: { todos: Todo[] }) {
   const [expandedTodoId, setExpandedTodoId] = useState<null | number>(null);
@@ -25,6 +36,7 @@ export function TodoList({ todos }: { todos: Todo[] }) {
           />
         </div>
       )}
+
       {todos.map((t) => (
         <TodoCard
           key={t.id}
@@ -32,9 +44,40 @@ export function TodoList({ todos }: { todos: Todo[] }) {
           onShowExpandedView={handleShowTodoExpandedView}
         />
       ))}
-      <div className="absolute z-20 shadow px-10 overflow-y-scroll bg-white min-w-[50%] h-dvh top-0 right-0">
-        <TodoForm formType="create" />
-      </div>
+
+      <Drawer>
+        <DrawerTrigger asChild>
+          <Button variant="outline">Create todo</Button>
+        </DrawerTrigger>
+
+        <DrawerContent
+          className="min-w-[800px] overflow-y-auto"
+          aria-label="Create a new todo"
+          role="region"
+        >
+          <DrawerHeader className="mb-4 p-4">
+            <DrawerTitle>Create todo</DrawerTitle>
+            <DrawerDescription>
+              Fill in the fields below to create a new todo.
+            </DrawerDescription>
+          </DrawerHeader>
+
+          <div>
+            <TodoForm
+              formType="create"
+              renderButtons={() => (
+                <DrawerFooter>
+                  <div className="flex w-full justify-center gap-6 pt-10">
+                    <Button className="px-10" type="submit" form="todo-form">
+                      Create
+                    </Button>
+                  </div>
+                </DrawerFooter>
+              )}
+            />
+          </div>
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 }
