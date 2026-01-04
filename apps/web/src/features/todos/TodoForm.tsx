@@ -212,6 +212,7 @@ export default function TodoForm({
                   aria-invalid={fieldState.invalid}
                   placeholder="What needs to be done?"
                   autoComplete="off"
+                  maxLength={255}
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -233,6 +234,7 @@ export default function TodoForm({
                   <InputGroupTextarea
                     {...field}
                     id={fieldIds.description}
+                    maxLength={500}
                     placeholder="First [ ] ... then [ ] ..."
                     rows={6}
                     className="min-h-24 resize-none"
@@ -477,8 +479,8 @@ export default function TodoForm({
             placeholder="Todo tags"
             tagVariant="outline"
             suggestions={tagSuggestions}
+            maxLength={50}
           />
-
           {showMonthlyField && (
             <Controller
               name="monthly"
