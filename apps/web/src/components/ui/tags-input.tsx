@@ -22,6 +22,7 @@ import {
 import { type FieldValues, type Path, useFormContext } from "react-hook-form";
 import { X, Plus, Tag } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { FieldError } from "./field";
 
 interface TagsInputFieldProps<TFieldValues extends FieldValues> {
   name: Path<TFieldValues>;
@@ -161,9 +162,9 @@ const TagsInputFieldBase = <TFieldValues extends FieldValues>({
     <FormField
       control={control}
       name={name}
-      render={({ field }) => {
+      render={({ field, fieldState }) => {
         const tags = field.value || [];
-
+        console.log(fieldState.error);
         return (
           <FormItem className={cn("space-y-2", className)}>
             <FormLabel className="flex items-center gap-2">
@@ -321,7 +322,7 @@ const TagsInputFieldBase = <TFieldValues extends FieldValues>({
             </FormControl>
 
             {description && <FormDescription>{description}</FormDescription>}
-
+            {/* Max tag len count */}
             <div className="flex justify-between items-center">
               <FormMessage />
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -337,6 +338,11 @@ const TagsInputFieldBase = <TFieldValues extends FieldValues>({
                 )}
               </div>
             </div>
+            {fieldState.invalid && (
+              <FieldError
+                errors={fieldState.error as unknown as Array<undefined>}
+              />
+            )}
           </FormItem>
         );
       }}
