@@ -87,6 +87,8 @@ export default function TodoForm({
       monthly: new Date(),
       recurrenceRule: "",
     } as Partial<Todo>,
+    reValidateMode: "onBlur",
+    mode: "onBlur",
   });
   const { handleSubmit, setValue, getValues, watch } = form;
   // Watch these fields
