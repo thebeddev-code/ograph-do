@@ -2,12 +2,13 @@
 import { useEffect, useRef, useState } from "react";
 import { drawTodos } from "./utils/drawTodos";
 import { ClockHandle } from "./components/ClockHandle";
-import { calcDegreesFrom, calcRadiansFrom } from "../../lib/utils/math";
+import { calcDegreesFrom } from "../../lib/utils/math";
 import { Clock } from "./components/Clock";
 import { DEGREES_PER_HOUR } from "@/lib/utils/constants";
 import { Todo } from "@/types/api";
+import { formatDate } from "date-fns";
 
-const RADIUS = 130;
+const RADIUS = 170;
 interface Props {
   todos: Todo[];
 }
@@ -59,6 +60,11 @@ export function ClockGraph({ todos }: Props) {
           setClockHandleDegrees(totalAngle);
         }}
       >
+        <div className="absolute -top-12 left-1/2 -translate-x-1/2">
+          <div className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground select-none">
+            {formatDate(new Date(), "PP")}
+          </div>
+        </div>
         <Clock canvasRef={canvasRef} />
       </ClockHandle>
     </div>
