@@ -87,7 +87,7 @@ export function ClockHandle({
             width: `${HANDLE_BUTTON_SIZE_PX}px`,
             height: `${HANDLE_BUTTON_SIZE_PX}px`,
           }}
-          className="absolute flex justify-center items-center bg-slate-800/20 rounded-full cursor-grab -left-2"
+          className="absolute flex justify-center items-center bg-slate-800/20 rounded-full cursor-grab -left-[11px]"
         >
           <div className="bg-slate-800 h-1 w-1 rounded-full" />
         </div>
