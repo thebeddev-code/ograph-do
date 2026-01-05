@@ -2,7 +2,9 @@ import { ReactNode, useEffect, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { MouseEvent } from "react";
 import { calcDegreesFrom } from "@/lib/utils/math";
-
+import { motion, AnimatePresence } from "motion/react";
+import { addHours, formatDate, set } from "date-fns";
+import { DEGREES_PER_HOUR } from "@/lib/utils/constants";
 interface Props {
   children: ReactNode;
   containerClassName?: string;
@@ -26,6 +28,7 @@ export function ClockHandle({
   onChange,
 }: Props) {
   const [mouseDown, setMouseDown] = useState(false);
+  const [mouseEnter, setMouseEnter] = useState(false);
   const [displayAngle, setDisplayAngle] = useState(startAngle % 360);
   const [totalAngle, setTotalAngle] = useState(startAngle);
   const lastRawAngleRef = useRef<number | null>(null);
@@ -61,7 +64,7 @@ export function ClockHandle({
     setDisplayAngle(raw);
     onChange?.({ totalAngle, delta });
   };
-
+  const showTooltip = mouseEnter || mouseDown;
   return (
     <div
       ref={containerRef}
@@ -83,13 +86,42 @@ export function ClockHandle({
       >
         <div
           onMouseDown={() => setMouseDown(true)}
+          onMouseEnter={() => setMouseEnter(true)}
+          onMouseLeave={() => setMouseEnter(false)}
           style={{
             width: `${HANDLE_BUTTON_SIZE_PX}px`,
             height: `${HANDLE_BUTTON_SIZE_PX}px`,
           }}
           className="absolute flex justify-center items-center bg-slate-800/20 rounded-full cursor-grab -left-[11px]"
         >
-          <div className="bg-slate-800 h-1 w-1 rounded-full" />
+          <div className="relative bg-slate-800 h-1 w-1 rounded-full">
+            <AnimatePresence>
+              {showTooltip && (
+                <motion.div
+                  initial={{ opacity: 0, y: 4, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 4, scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 260, damping: 20 }}
+                  className="absolute -translate-x-20 select-none
+                     bg-muted px-3 py-1 rounded-full "
+                  style={{
+                    rotate: `-${Math.round(displayAngle + 90)}deg`,
+                    transformOrigin: "center center",
+                  }}
+                >
+                  <span className="whitespace-nowrap text-xs text-muted-foreground font-medium">
+                    {formatDate(
+                      addHours(
+                        set(new Date(), { hours: 0, minutes: 0, seconds: 0 }),
+                        totalAngle / DEGREES_PER_HOUR,
+                      ),
+                      "p",
+                    )}
+                  </span>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
         <div className="border-slate-800 border border-dotted h-[50%] w-full" />
         {/* <div className="bg-slate-900 h-2 w-2 rounded-full cursor-grab" /> */}
