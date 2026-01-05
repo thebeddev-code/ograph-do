@@ -1,11 +1,11 @@
 import { addSeconds, formatDate } from "date-fns";
-import { Ref, useEffect, useState } from "react";
+import { HTMLAttributes, Ref, useEffect, useState } from "react";
 
-interface Props {
+interface Props extends HTMLAttributes<HTMLDivElement> {
   className?: string;
   dateFormatting?: string;
 }
-export function Time({ dateFormatting = "p", className }: Props) {
+export function Time({ dateFormatting = "p", ...props }: Props) {
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -16,5 +16,5 @@ export function Time({ dateFormatting = "p", className }: Props) {
     return () => clearTimeout(timeoutId);
   }, [time]);
 
-  return <div className={className}>{formatDate(time, "p")}</div>;
+  return <div {...props}>{formatDate(time, dateFormatting)}</div>;
 }
