@@ -77,7 +77,7 @@ export default function TodoForm({
 
   const [openStartsAt, setOpenStartsAt] = useState(false);
   const [openDue, setOpenDue] = useState(false);
-  const defaultValues =
+  const defaultValues = (
     formMode === "update"
       ? todoData
       : ({
@@ -89,8 +89,14 @@ export default function TodoForm({
           color: "#00b4d8",
           monthly: new Date(),
           recurrenceRule: "",
-        } as Partial<Todo>);
-
+        } as Partial<Todo>)
+  ) as Partial<Todo> & { monthly?: Date };
+  if (formMode === "update") {
+    if (defaultValues.recurrenceRule?.includes("monthly"))
+      defaultValues.monthly = new Date(
+        defaultValues.recurrenceRule.split("=").at(-1) as unknown as string,
+      );
+  }
   const form = useForm({
     resolver: zodResolver(
       todoPayloadSchema,
@@ -519,8 +525,11 @@ export default function TodoForm({
                           id="date-picker"
                           className="w-32 justify-between font-normal"
                         >
-                          {field.value
-                            ? new Date(field?.value).toLocaleDateString()
+                          {(field.value ?? defaultValues?.monthly)
+                            ? new Date(
+                                field?.value ??
+                                  (defaultValues?.monthly as unknown as string),
+                              ).toLocaleDateString()
                             : "Select date"}
                           <ChevronDownIcon />
                         </Button>
