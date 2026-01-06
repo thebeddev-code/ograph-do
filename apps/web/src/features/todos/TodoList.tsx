@@ -1,5 +1,5 @@
 "use client";
-import { TodoCard } from "./TodoCard";
+import { TodoItem } from "./TodoItem";
 import { useState } from "react";
 import { TodoExpandedView } from "./TodoExpandedView";
 import { Todo } from "@/types/api";
@@ -42,7 +42,7 @@ export function TodoList({ todos }: { todos: Todo[] }) {
       )}
 
       {todos.map((t) => (
-        <TodoCard
+        <TodoItem
           key={t.id}
           todo={t}
           onShowExpandedView={handleShowTodoExpandedView}

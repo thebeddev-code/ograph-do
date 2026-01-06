@@ -4,12 +4,12 @@ import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { X as Close } from "lucide-react";
 import { format } from "date-fns";
+
 type Props = {
   todo: Todo;
   onShowExpandedView: (id: number) => void;
 };
-
-export function TodoCard({ todo, onShowExpandedView }: Props) {
+export function TodoItem({ todo, onShowExpandedView }: Props) {
   const { mutate: deleteTodo } = useDeleteTodo({
     mutationConfig: {
       onError: () => {
