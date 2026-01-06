@@ -3,7 +3,7 @@ import { TodoItem } from "./TodoItem";
 import { useState } from "react";
 import { TodoExpandedView } from "./TodoExpandedView";
 import { Todo } from "@/types/api";
-import { useTodoForm } from "./stores/todo-form.store";
+import { useTodoForm } from "./stores/todoForm.store";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
@@ -35,6 +35,9 @@ export function TodoList({ todos }: { todos: Todo[] }) {
           key={t.id}
           todo={t}
           onShowExpandedView={handleShowTodoExpandedView}
+          onEdit={(todo) => {
+            changeFormType("update", todo);
+          }}
         />
       ))}
 

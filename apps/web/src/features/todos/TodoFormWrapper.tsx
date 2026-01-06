@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "motion/react";
 import { Plus } from "lucide-react";
-import { useTodoForm } from "./stores/todo-form.store";
+import { useTodoForm } from "./stores/todoForm.store";
 
 export function TodoFormWrapper() {
   const { formMode, todoData, changeFormType } = useTodoForm((state) => state);
@@ -45,12 +45,13 @@ export function TodoFormWrapper() {
             </DrawerHeader>
 
             <TodoForm
-              formType="create"
+              todoData={todoData}
+              formMode={formMode}
               renderButtons={() => (
                 <DrawerFooter>
                   <div className="flex w-full justify-center gap-6 pt-10">
                     <Button className="px-10" type="submit" form="todo-form">
-                      Create
+                      {formMode === "create" ? "Create" : "Save"}
                     </Button>
                   </div>
                 </DrawerFooter>

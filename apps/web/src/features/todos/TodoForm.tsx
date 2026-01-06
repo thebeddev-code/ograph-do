@@ -42,6 +42,8 @@ import { format, formatDate, parse, set } from "date-fns";
 import { useCreateTodo } from "./api/createTodo";
 import toast from "react-hot-toast";
 import { cn } from "@/lib/utils";
+import { useUpdateTodo } from "./api/updateTodo";
+import { TodoFormModes, TodoFormTodoData } from "./stores/todoForm.store";
 
 const WEEKDAYS = [
   "monday",
@@ -56,37 +58,44 @@ const WEEKDAYS = [
 const DEFAULT_TAGS = [...WEEKDAYS, "everyday", "monthly", "weekly"];
 
 interface Props {
-  todo?: Todo;
-  formType: "update" | "create" | "read-only";
+  todoData?: TodoFormTodoData<TodoFormModes>;
+  formMode: TodoFormModes;
   renderButtons?: () => ReactNode;
   onFormClose?: () => void;
   formProps?: HTMLAttributes<HTMLFormElement>;
 }
 
 export default function TodoForm({
-  todo,
-  formType,
+  todoData,
+  formMode,
   formProps,
   renderButtons,
   onFormClose,
 }: Props) {
   const createTodoMutation = useCreateTodo({});
+  const updateTodoMutation = useUpdateTodo({});
+
   const [openStartsAt, setOpenStartsAt] = useState(false);
   const [openDue, setOpenDue] = useState(false);
+  const defaultValues =
+    formMode === "update"
+      ? todoData
+      : ({
+          title: "",
+          description: "",
+          tags: [],
+          isRecurring: false,
+          priority: "low",
+          color: "#00b4d8",
+          monthly: new Date(),
+          recurrenceRule: "",
+        } as Partial<Todo>);
+
   const form = useForm({
     resolver: zodResolver(
       todoPayloadSchema,
     ) as unknown as Resolver<FieldValues>,
-    defaultValues: {
-      title: "",
-      description: "",
-      tags: [],
-      isRecurring: false,
-      priority: "low",
-      color: "#00b4d8",
-      monthly: new Date(),
-      recurrenceRule: "",
-    } as Partial<Todo>,
+    defaultValues,
     reValidateMode: "onBlur",
     mode: "onBlur",
   });
@@ -181,14 +190,24 @@ export default function TodoForm({
   );
 
   const onSubmit = handleSubmit(async (data) => {
-    await toast.promise(
-      createTodoMutation.mutateAsync(data as CreateTodoPayload),
-      {
-        loading: "Saving...",
-        success: <b>Todo created!</b>,
-        error: <b>Could not create todo.</b>,
-      },
-    );
+    if (formMode === "create")
+      await toast.promise(
+        createTodoMutation.mutateAsync(data as CreateTodoPayload),
+        {
+          loading: "Saving...",
+          success: <b>Todo created!</b>,
+          error: <b>Could not create todo.</b>,
+        },
+      );
+    if (formMode === "update")
+      await toast.promise(
+        updateTodoMutation.mutateAsync({ id: todoData?.id as number, ...data }),
+        {
+          loading: "Saving...",
+          success: <b>Todo updated!</b>,
+          error: <b>Could not update todo.</b>,
+        },
+      );
     onFormClose?.();
   });
 

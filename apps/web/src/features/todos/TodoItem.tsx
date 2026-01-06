@@ -7,9 +7,10 @@ import { format } from "date-fns";
 
 type Props = {
   todo: Todo;
-  onShowExpandedView: (id: number) => void;
+  onShowExpandedView?: (id: number) => void;
+  onEdit?: (todo: Todo) => void;
 };
-export function TodoItem({ todo, onShowExpandedView }: Props) {
+export function TodoItem({ todo, onShowExpandedView, onEdit }: Props) {
   const { mutate: deleteTodo } = useDeleteTodo({
     mutationConfig: {
       onError: () => {
@@ -35,7 +36,7 @@ export function TodoItem({ todo, onShowExpandedView }: Props) {
 
       <div
         className="relative z-10 flex items-center justify-between gap-3 bg-transparent px-3 py-2 text-sm"
-        onClick={() => onShowExpandedView(todo.id)}
+        onClick={() => onShowExpandedView?.(todo.id)}
       >
         <button
           type="button"
@@ -108,6 +109,7 @@ export function TodoItem({ todo, onShowExpandedView }: Props) {
           className="h-6 w-6 p-2 text-slate-700/20 border-gray-200/70 shadow-none hover:border-slate-500 hover:text-slate-600 transition-colors"
           onClick={(e) => {
             e.stopPropagation();
+            onEdit?.(todo);
           }}
         >
           <Edit />
