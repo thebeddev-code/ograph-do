@@ -2,7 +2,7 @@ import { Todo } from "@/types/api";
 import { useDeleteTodo } from "./api/deleteTodo";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
-import { X as Close } from "lucide-react";
+import { X as Close, Edit } from "lucide-react";
 import { format } from "date-fns";
 
 type Props = {
@@ -99,6 +99,18 @@ export function TodoItem({ todo, onShowExpandedView }: Props) {
           }}
         >
           <Close size={16} />
+        </Button>
+        <Button
+          variant="outline"
+          aria-label="Edit todo"
+          title="Edit todo"
+          size={"icon"}
+          className="h-6 w-6 p-2 text-slate-700/20 border-gray-200/70 shadow-none hover:border-slate-500 hover:text-slate-600 transition-colors"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <Edit />
         </Button>
       </div>
     </div>
