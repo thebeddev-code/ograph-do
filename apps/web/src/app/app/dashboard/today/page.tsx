@@ -12,12 +12,9 @@ export default function Dashboard() {
   });
   const todos = data?.data;
   return (
-    <main className="flex">
-      <Sidebar />
-      <div className="flex-1 grid grid-cols-2">
-        {status === "success" && todos && <ClockGraph todos={todos} />}
-        {status === "success" && todos && <TodoList todos={todos} />}
-      </div>
+    <main className="flex-1 grid grid-cols-2">
+      {status === "success" && todos && <ClockGraph todos={todos} />}
+      {status === "success" && todos && <TodoList todos={todos} />}
     </main>
   );
 }
