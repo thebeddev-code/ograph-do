@@ -139,11 +139,17 @@ export default function TodoForm({
   // Handle recurrence rule
   const currentRecurrenceRule = getValues("recurrenceRule");
   const currentIsRecurring = getValues("isRecurring");
-
-  if (currentRecurrenceRule && !currentIsRecurring)
+  const strippedRRulePart =
+    typeof currentRecurrenceRule === "string"
+      ? currentRecurrenceRule.replace("rrule:", "")
+      : "";
+  if (strippedRRulePart && !currentIsRecurring) {
     setValue("isRecurring", true);
-  if (!currentRecurrenceRule && currentIsRecurring)
+  }
+  if (!strippedRRulePart && currentIsRecurring) {
     setValue("isRecurring", false);
+  }
+  console.log(strippedRRulePart, currentRecurrenceRule, currentIsRecurring);
 
   const newRecurrenceRule = useMemo(() => {
     function getRecurrenceRule() {
