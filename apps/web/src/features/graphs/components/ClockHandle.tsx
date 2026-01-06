@@ -65,6 +65,15 @@ export function ClockHandle({
     onChange?.({ totalAngle, delta });
   };
   const showTooltip = mouseEnter || mouseDown;
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (mouseDown) return;
+      setTotalAngle((prev) => prev + DEGREES_PER_HOUR / 3600);
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [mouseDown]);
   return (
     <div
       ref={containerRef}
