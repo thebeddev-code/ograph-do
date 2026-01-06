@@ -10,7 +10,6 @@ import { Plus } from "lucide-react";
 export function TodoList({ todos }: { todos: Todo[] }) {
   const changeFormType = useTodoForm((state) => state.changeFormType);
   const [expandedTodoId, setExpandedTodoId] = useState<null | number>(null);
-  const [showForm, setShowForm] = useState(false);
 
   const expandedTodo = todos.find((t) => t.id == expandedTodoId);
   function handleShowTodoExpandedView(todoId: number) {
@@ -35,9 +34,6 @@ export function TodoList({ todos }: { todos: Todo[] }) {
           key={t.id}
           todo={t}
           onShowExpandedView={handleShowTodoExpandedView}
-          onEdit={(todo) => {
-            changeFormType("update", todo);
-          }}
         />
       ))}
 

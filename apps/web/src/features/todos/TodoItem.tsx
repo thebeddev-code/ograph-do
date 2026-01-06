@@ -4,13 +4,15 @@ import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { X as Close, Edit } from "lucide-react";
 import { format } from "date-fns";
+import { useUpdateTodo } from "./api/updateTodo";
+import { useTodoForm } from "./stores/todoForm.store";
 
 type Props = {
   todo: Todo;
   onShowExpandedView?: (id: number) => void;
-  onEdit?: (todo: Todo) => void;
 };
-export function TodoItem({ todo, onShowExpandedView, onEdit }: Props) {
+export function TodoItem({ todo, onShowExpandedView }: Props) {
+  const changeFormType = useTodoForm((state) => state.changeFormType);
   const { mutate: deleteTodo } = useDeleteTodo({
     mutationConfig: {
       onError: () => {
@@ -18,9 +20,35 @@ export function TodoItem({ todo, onShowExpandedView, onEdit }: Props) {
       },
     },
   });
-  function handleDeleteTodo(todoId: number) {
-    deleteTodo({ todoId });
+  const completeTodoMutation = useUpdateTodo({
+    mutationConfig: {
+      onError: () => {
+        toast.error("Failed to update todo");
+      },
+    },
+  });
+  function handleEditTodo() {
+    changeFormType("update", todo);
   }
+  function handleCompleteTodo() {
+    if (todo.status === "completed") {
+      completeTodoMutation.mutate({
+        id: todo.id,
+        completedAt: null,
+        status: "pending",
+      });
+    } else {
+      completeTodoMutation.mutate({
+        id: todo.id,
+        completedAt: new Date().toISOString(),
+        status: "completed",
+      });
+    }
+  }
+  function handleDeleteTodo() {
+    deleteTodo({ todoId: todo.id });
+  }
+
   const { title, due, priority, status, isRecurring, startsAt, color } = todo;
   const isCompleted = status === "completed";
 
@@ -42,6 +70,7 @@ export function TodoItem({ todo, onShowExpandedView, onEdit }: Props) {
           type="button"
           onClick={(e) => {
             e.stopPropagation();
+            handleCompleteTodo();
           }}
           className={`flex h-4 w-4 items-center justify-center rounded border text-[10px] ${
             isCompleted
@@ -96,7 +125,7 @@ export function TodoItem({ todo, onShowExpandedView, onEdit }: Props) {
           className="h-6 w-6 p-2 text-slate-700/20 border-gray-200/70 shadow-none hover:border-red-500 hover:text-red-600 transition-colors"
           onClick={(e) => {
             e.stopPropagation();
-            handleDeleteTodo(todo.id);
+            handleDeleteTodo();
           }}
         >
           <Close size={16} />
@@ -109,7 +138,7 @@ export function TodoItem({ todo, onShowExpandedView, onEdit }: Props) {
           className="h-6 w-6 p-2 text-slate-700/20 border-gray-200/70 shadow-none hover:border-slate-500 hover:text-slate-600 transition-colors"
           onClick={(e) => {
             e.stopPropagation();
-            onEdit?.(todo);
+            handleEditTodo();
           }}
         >
           <Edit />
