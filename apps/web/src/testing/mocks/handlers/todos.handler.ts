@@ -134,6 +134,9 @@ export const todosHandlers = [
               for (const key of keys) {
                 (todo as any)[key] = data[key];
               }
+              const userTimezone = (user as UserModel).timezone;
+              const dateInUserTz = toZonedTime(new Date(), userTimezone);
+              todo.updatedAt = dateInUserTz.toISOString();
             },
           },
         );
