@@ -1,9 +1,9 @@
+import { DrawableTodo } from "@/lib/types";
 import { calcDegreesFrom, calcRadiansFrom } from "@/lib/utils/math";
-import { Todo } from "@/types/api";
 
 interface DrawTodos {
   canvas: HTMLCanvasElement;
-  todos: Todo[];
+  todos: DrawableTodo[];
   x?: number;
   y?: number;
   radius?: number;
