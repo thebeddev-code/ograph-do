@@ -23,7 +23,7 @@ export function TodoFormWrapper() {
       <DrawerContent
         aria-label="Create a new todo"
         role="region"
-        className="min-w-[800px] overflow-y-auto p-0 border-0 bg-transparent transition-colors duration-200"
+        className="min-w-[650px] overflow-y-auto p-0 border-0 bg-transparent transition-colors duration-200"
       >
         {showForm && (
           <motion.div
