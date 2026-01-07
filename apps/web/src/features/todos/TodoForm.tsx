@@ -66,7 +66,7 @@ interface Props {
 }
 
 export default function TodoForm({
-  todoData,
+  todoData = {},
   formMode,
   formProps,
   renderButtons,
@@ -89,7 +89,8 @@ export default function TodoForm({
           color: "#00b4d8",
           monthly: new Date(),
           recurrenceRule: "",
-        } as Partial<Todo>)
+          ...todoData,
+        } as Partial<Todo> & { monthly?: Date })
   ) as Partial<Todo> & { monthly?: Date };
   if (formMode === "update") {
     if (defaultValues.recurrenceRule?.includes("monthly"))
