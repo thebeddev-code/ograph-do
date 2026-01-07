@@ -7,14 +7,15 @@ import { Clock } from "./components/Clock";
 import { DEGREES_PER_HOUR } from "@/lib/utils/constants";
 import { Todo } from "@/types/api";
 import { addHours, formatDate, set } from "date-fns";
-import { cn } from "@/lib/utils";
+import { DrawableTodo } from "@/lib/types";
 
 const RADIUS = 170;
 const MAX_LAST_CLICK_DIFF_MS = 300;
 interface Props {
-  todos: Todo[];
+  drawableTodos: DrawableTodo[];
+  onFormOpen?: (data: DrawableTodo) => void;
 }
-export function ClockGraph({ todos }: Props) {
+export function ClockGraph({ drawableTodos, onFormOpen }: Props) {
   const today = new Date();
   const currentTime = {
     hours: today.getHours(),
@@ -66,7 +67,7 @@ export function ClockGraph({ todos }: Props) {
     ctx.scale(dpr, dpr);
 
     const viewHoursStart = (clockHandleDegrees / DEGREES_PER_HOUR) % 24;
-    const copyTodos = [...todos];
+    const copyTodos = [...drawableTodos];
     if (drawableTodo) copyTodos.push(drawableTodo as Todo);
     drawTodos({
       canvas,
@@ -77,7 +78,7 @@ export function ClockGraph({ todos }: Props) {
         end: Math.min(24, viewHoursStart + 6),
       },
     });
-  }, [todos, clockHandleDegrees, drawableTodo]);
+  }, [drawableTodos, clockHandleDegrees, drawableTodo]);
 
   const shouldTrackNewTodo = typeof newTodoDegrees.start === "number";
   const clock = (
@@ -96,9 +97,9 @@ export function ClockGraph({ todos }: Props) {
       <div
         className="rounded-full"
         onClick={(e) => {
-          if (typeof newTodoDegrees.start === "number") {
-            console.log("Form values:", drawableTodo);
+          if (typeof newTodoDegrees.start === "number" && drawableTodo) {
             setNewTodoDegrees({ start: null, end: null });
+            onFormOpen?.(drawableTodo);
             return;
           }
           const lastClickTime = lastClickTimeRef.current;
