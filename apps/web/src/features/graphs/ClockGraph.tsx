@@ -36,7 +36,10 @@ export function ClockGraph({ drawableTodos, onFormOpen }: Props) {
   });
 
   let drawableTodo = null;
-  if (newTodoDegrees.start && newTodoDegrees.end) {
+  if (
+    typeof newTodoDegrees.start === "number" &&
+    typeof newTodoDegrees.end === "number"
+  ) {
     drawableTodo = {
       startsAt: addHours(
         set(new Date(), { hours: 0, minutes: 0, seconds: 0 }),
@@ -140,6 +143,7 @@ export function ClockGraph({ drawableTodos, onFormOpen }: Props) {
               }}
               followMouse={shouldTrackNewTodo}
               variant="minimal"
+              snapDegrees={DEGREES_PER_HOUR * (1 / 60) * 5}
             >
               {clock}
             </ClockHandle>

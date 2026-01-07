@@ -23,6 +23,7 @@ interface Props {
   }) => void;
   variant?: "minimal" | "full";
   followMouse?: boolean;
+  snapDegrees?: number;
 }
 
 export function ClockHandle({
@@ -33,17 +34,21 @@ export function ClockHandle({
   onChange,
   followMouse = false,
   variant = "full",
+  snapDegrees,
 }: Props) {
   const [mouseDown, setMouseDown] = useState(followMouse);
   const [mouseEnter, setMouseEnter] = useState(followMouse);
   const [displayAngle, setDisplayAngle] = useState(startAngle % 360);
   const [totalAngle, setTotalAngle] = useState(startAngle);
   const lastRawAngleRef = useRef<number | null>(null);
+  const lastSnapAngleRef = useRef<number>(startAngle);
 
+  const timeAngle =
+    typeof snapDegrees === "number" ? lastSnapAngleRef.current : totalAngle;
   const time = formatDate(
     addHours(
       set(new Date(), { hours: 0, minutes: 0, seconds: 0 }),
-      totalAngle / DEGREES_PER_HOUR,
+      timeAngle / DEGREES_PER_HOUR,
     ),
     "p",
   );
@@ -74,10 +79,18 @@ export function ClockHandle({
     if (delta < -180) delta += 360;
 
     lastRawAngleRef.current = raw;
+    const newTotalAngle = totalAngle + delta;
+    setTotalAngle(newTotalAngle);
+    if (
+      typeof snapDegrees === "number" &&
+      Math.abs((lastSnapAngleRef.current ?? 0) - newTotalAngle) < snapDegrees
+    ) {
+      return;
+    }
 
-    setTotalAngle((prev) => prev + delta);
     setDisplayAngle(raw);
-    onChange?.({ totalAngle, delta });
+    onChange?.({ totalAngle: newTotalAngle, delta });
+    lastSnapAngleRef.current = newTotalAngle;
   };
 
   useEffect(() => {
