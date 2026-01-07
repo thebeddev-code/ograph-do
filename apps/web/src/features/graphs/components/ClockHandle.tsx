@@ -5,6 +5,10 @@ import { calcDegreesFrom } from "@/lib/utils/math";
 import { motion, AnimatePresence } from "motion/react";
 import { addHours, formatDate, set } from "date-fns";
 import { DEGREES_PER_HOUR } from "@/lib/utils/constants";
+import { cn } from "@/utils/cn";
+
+const HANDLE_BUTTON_SIZE_PX = 21;
+
 interface Props {
   children: ReactNode;
   containerClassName?: string;
@@ -17,22 +21,33 @@ interface Props {
     totalAngle: number;
     delta: number;
   }) => void;
+  variant?: "minimal" | "full";
+  followMouse?: boolean;
 }
 
-const HANDLE_BUTTON_SIZE_PX = 21;
 export function ClockHandle({
   children,
   containerClassName = "",
   clockGraphRadius,
   startAngle = 0,
   onChange,
+  followMouse = false,
+  variant = "full",
 }: Props) {
-  const [mouseDown, setMouseDown] = useState(false);
-  const [mouseEnter, setMouseEnter] = useState(false);
+  const [mouseDown, setMouseDown] = useState(followMouse);
+  const [mouseEnter, setMouseEnter] = useState(followMouse);
   const [displayAngle, setDisplayAngle] = useState(startAngle % 360);
   const [totalAngle, setTotalAngle] = useState(startAngle);
   const lastRawAngleRef = useRef<number | null>(null);
-  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  const time = formatDate(
+    addHours(
+      set(new Date(), { hours: 0, minutes: 0, seconds: 0 }),
+      totalAngle / DEGREES_PER_HOUR,
+    ),
+    "p",
+  );
+  const showTooltip = mouseEnter || mouseDown;
 
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
     if (!mouseDown) return;
@@ -64,7 +79,6 @@ export function ClockHandle({
     setDisplayAngle(raw);
     onChange?.({ totalAngle, delta });
   };
-  const showTooltip = mouseEnter || mouseDown;
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -74,15 +88,19 @@ export function ClockHandle({
 
     return () => clearInterval(intervalId);
   }, [mouseDown]);
+
   return (
     <div
-      ref={containerRef}
       className={twMerge(
         "relative flex justify-center items-center",
         containerClassName,
       )}
-      onMouseUp={() => setMouseDown(false)}
-      onMouseLeave={() => setMouseDown(false)}
+      onMouseUp={() => {
+        if (!followMouse) setMouseDown(false);
+      }}
+      onMouseLeave={() => {
+        if (!followMouse) setMouseDown(false);
+      }}
       onMouseMove={handleMouseMove}
     >
       <div
@@ -101,9 +119,18 @@ export function ClockHandle({
             width: `${HANDLE_BUTTON_SIZE_PX}px`,
             height: `${HANDLE_BUTTON_SIZE_PX}px`,
           }}
-          className="absolute flex justify-center items-center bg-slate-800/20 rounded-full cursor-grab -left-[11px]"
+          className={cn(
+            "absolute flex justify-center items-center bg-slate-800/20 rounded-full  -left-[11px]",
+            {
+              "cursor-grab": variant === "full",
+            },
+          )}
         >
-          <div className="relative bg-slate-800 h-1 w-1 rounded-full">
+          <div
+            className={cn({
+              "relative bg-slate-800 h-1 w-1 rounded-full": variant === "full",
+            })}
+          >
             <AnimatePresence>
               {showTooltip && (
                 <motion.div
@@ -119,22 +146,21 @@ export function ClockHandle({
                   }}
                 >
                   <span className="whitespace-nowrap text-xs text-muted-foreground font-medium">
-                    {formatDate(
-                      addHours(
-                        set(new Date(), { hours: 0, minutes: 0, seconds: 0 }),
-                        totalAngle / DEGREES_PER_HOUR,
-                      ),
-                      "p",
-                    )}
+                    {time}
                   </span>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
         </div>
-        <div className="border-slate-800 border border-dotted h-[50%] w-full" />
+        <div
+          className={cn("border-slate-800/40 border h-[50%] w-[50%]", {
+            "border-dotted w-full": variant === "full",
+          })}
+        />
         {/* <div className="bg-slate-900 h-2 w-2 rounded-full cursor-grab" /> */}
       </div>
+
       {children}
     </div>
   );
