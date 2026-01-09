@@ -164,7 +164,6 @@ const TagsInputFieldBase = <TFieldValues extends FieldValues>({
       name={name}
       render={({ field, fieldState }) => {
         const tags = field.value || [];
-        console.log(fieldState.error);
         return (
           <FormItem className={cn("space-y-2", className)}>
             <FormLabel className="flex items-center gap-2">

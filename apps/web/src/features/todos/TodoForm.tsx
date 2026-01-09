@@ -150,7 +150,6 @@ export default function TodoForm({
   if (!strippedRRulePart && currentIsRecurring) {
     setValue("isRecurring", false);
   }
-  console.log(strippedRRulePart, currentRecurrenceRule, currentIsRecurring);
 
   const newRecurrenceRule = useMemo(() => {
     function getRecurrenceRule() {
