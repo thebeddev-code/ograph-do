@@ -43,11 +43,11 @@ export function ClockGraph({ drawableTodos, onFormOpen }: Props) {
     drawableTodo = {
       startsAt: addHours(
         set(new Date(), { hours: 0, minutes: 0, seconds: 0 }),
-        (newTodoDegrees.start + 360) / DEGREES_PER_HOUR,
+        newTodoDegrees.start / DEGREES_PER_HOUR,
       ).toString(),
       due: addHours(
         set(new Date(), { hours: 0, minutes: 0, seconds: 0 }),
-        (newTodoDegrees.end + 360) / DEGREES_PER_HOUR,
+        newTodoDegrees.end / DEGREES_PER_HOUR,
       ).toString(),
       color: "black",
     };
@@ -116,8 +116,39 @@ export function ClockGraph({ drawableTodos, onFormOpen }: Props) {
             const angleRadians = Math.atan2(dx, -dy);
             let raw = calcDegreesFrom(angleRadians, "radians");
             if (raw < 0) raw += 360;
+
+            const normalizedCurrentTimeDegrees = clockHandleDegrees % 360;
+
+            const clockwise = (raw - normalizedCurrentTimeDegrees + 360) % 360;
+            const counterclockwise =
+              (normalizedCurrentTimeDegrees - raw + 360) % 360;
+
+            /*
+              If angle between currentTimeDegrees to 360 or 0 currentTimeDegrees + 180  
+            
+            */
+            function isPastCurrentTimeAngle() {
+              if (
+                normalizedCurrentTimeDegrees < 360 &&
+                (normalizedCurrentTimeDegrees + 180) % 360 <
+                  normalizedCurrentTimeDegrees
+              ) {
+                return (
+                  (normalizedCurrentTimeDegrees <= raw && raw <= 360) ||
+                  (raw >= 0 &&
+                    raw <= (normalizedCurrentTimeDegrees + 180) % 360)
+                );
+              }
+              return (
+                normalizedCurrentTimeDegrees <= raw &&
+                raw <= normalizedCurrentTimeDegrees + 180
+              );
+            }
+            const offsetAngle = isPastCurrentTimeAngle()
+              ? clockwise
+              : -counterclockwise;
             setNewTodoDegrees({
-              start: raw,
+              start: clockHandleDegrees + offsetAngle,
               end: null,
             });
           }
@@ -136,6 +167,13 @@ export function ClockGraph({ drawableTodos, onFormOpen }: Props) {
               startAngle={newTodoDegrees.start ?? 0}
               clockGraphRadius={RADIUS}
               onChange={({ totalAngle }) => {
+                if (!newTodoDegrees.start) return;
+                if (totalAngle < newTodoDegrees.start) return;
+                if (
+                  totalAngle > clockHandleDegrees + 180 ||
+                  totalAngle < clockHandleDegrees - 180
+                )
+                  return;
                 setNewTodoDegrees(({ start }) => ({
                   start,
                   end: totalAngle,
