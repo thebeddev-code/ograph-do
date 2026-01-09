@@ -1,13 +1,14 @@
 "use client";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { drawTodos } from "./utils/drawTodos";
-import { ClockHandle } from "./components/ClockHandle";
+import { ClockHandle, ClockHandleStateSetters } from "./components/ClockHandle";
 import { calcDegreesFrom } from "../../lib/utils/math";
 import { Clock } from "./components/Clock";
 import { DEGREES_PER_HOUR } from "@/lib/utils/constants";
 import { Todo } from "@/types/api";
 import { addHours, formatDate, set } from "date-fns";
 import { DrawableTodo } from "@/lib/types";
+import { Button } from "@/components/ui/button/button";
 
 const RADIUS = 170;
 const MAX_LAST_CLICK_DIFF_MS = 300;
@@ -49,7 +50,7 @@ export function ClockGraph({ drawableTodos, onFormOpen }: Props) {
         set(new Date(), { hours: 0, minutes: 0, seconds: 0 }),
         newTodoDegrees.end / DEGREES_PER_HOUR,
       ).toString(),
-      color: "black",
+      color: "#000000",
     };
   }
 
@@ -83,6 +84,16 @@ export function ClockGraph({ drawableTodos, onFormOpen }: Props) {
     });
   }, [drawableTodos, clockHandleDegrees, drawableTodo]);
 
+  function handleQuickSwitchClick(
+    stateSetters: ClockHandleStateSetters,
+    index: number,
+  ) {
+    const angle = 180 * index;
+    setClockHandleDegrees(angle);
+    stateSetters.setTotalAngle(angle);
+    stateSetters.setDisplayAngle(angle % 360);
+  }
+
   const shouldTrackNewTodo = typeof newTodoDegrees.start === "number";
   const clock = (
     <>
@@ -102,7 +113,11 @@ export function ClockGraph({ drawableTodos, onFormOpen }: Props) {
         onClick={(e) => {
           if (typeof newTodoDegrees.start === "number" && drawableTodo) {
             setNewTodoDegrees({ start: null, end: null });
-            onFormOpen?.(drawableTodo);
+            onFormOpen?.({
+              ...drawableTodo,
+              startsAt: new Date(drawableTodo.startsAt).toISOString(),
+              due: new Date(drawableTodo.due).toISOString(),
+            });
             return;
           }
           const lastClickTime = lastClickTimeRef.current;
@@ -161,6 +176,22 @@ export function ClockGraph({ drawableTodos, onFormOpen }: Props) {
           onChange={({ totalAngle }) => {
             setClockHandleDegrees(totalAngle);
           }}
+          renderButtons={(stateSetters) => (
+            <div className="absolute -bottom-20 flex gap-4">
+              <Button onClick={() => handleQuickSwitchClick(stateSetters, 1)}>
+                Morning
+              </Button>
+              <Button onClick={() => handleQuickSwitchClick(stateSetters, 2)}>
+                Day
+              </Button>
+              <Button onClick={() => handleQuickSwitchClick(stateSetters, 3)}>
+                Evening
+              </Button>
+              <Button onClick={() => handleQuickSwitchClick(stateSetters, 4)}>
+                Night
+              </Button>
+            </div>
+          )}
         >
           {shouldTrackNewTodo && (
             <ClockHandle

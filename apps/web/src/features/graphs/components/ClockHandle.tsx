@@ -1,4 +1,11 @@
-import { ReactNode, useEffect, useRef, useState } from "react";
+import {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { twMerge } from "tailwind-merge";
 import { MouseEvent } from "react";
 import { calcDegreesFrom } from "@/lib/utils/math";
@@ -8,6 +15,11 @@ import { DEGREES_PER_HOUR } from "@/lib/utils/constants";
 import { cn } from "@/utils/cn";
 
 const HANDLE_BUTTON_SIZE_PX = 21;
+
+export type ClockHandleStateSetters = {
+  setDisplayAngle: Dispatch<SetStateAction<number>>;
+  setTotalAngle: Dispatch<SetStateAction<number>>;
+};
 
 interface Props {
   children: ReactNode;
@@ -24,6 +36,7 @@ interface Props {
   variant?: "minimal" | "full";
   followMouse?: boolean;
   snapDegrees?: number;
+  renderButtons?: (stateSetters: ClockHandleStateSetters) => ReactNode;
 }
 
 export function ClockHandle({
@@ -35,6 +48,7 @@ export function ClockHandle({
   followMouse = false,
   variant = "full",
   snapDegrees,
+  renderButtons,
 }: Props) {
   const [mouseDown, setMouseDown] = useState(followMouse);
   const [mouseEnter, setMouseEnter] = useState(followMouse);
@@ -175,6 +189,7 @@ export function ClockHandle({
       </div>
 
       {children}
+      {renderButtons?.({ setDisplayAngle, setTotalAngle })}
     </div>
   );
 }

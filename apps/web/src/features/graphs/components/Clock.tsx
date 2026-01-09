@@ -51,7 +51,7 @@ export function Clock({ canvasRef }: Props) {
 
         {/* center dot */}
         {/* <div className="absolute z-10 h-3 w-3 rounded-full bg-slate-700 shadow-sm" /> */}
-        <Time className="absolute z-20 bg-gray-200 p-1 rounded-sm font-bold text-sm text-slate-800" />
+        {/* <Time className="absolute z-20 bg-gray-200 p-1 rounded-sm font-bold text-sm text-slate-800" /> */}
       </div>
     </div>
   );
