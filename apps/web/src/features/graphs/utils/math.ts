@@ -1,0 +1,30 @@
+export function calcRadiansFrom(
+  value: number,
+  type: "hours" | "degrees" = "degrees",
+) {
+  let degrees = value;
+  if (type == "hours") degrees = value * 30;
+  // 360/2*Math.Pi = degrees/x
+  // using cross multiplication to solve the proportion
+  return (degrees * Math.PI) / 180;
+}
+
+export function calcDegreesFrom(
+  value: number,
+  type: "hours" | "radians" = "radians",
+) {
+  if (type == "hours") return value * 30;
+  return (value * 180) / Math.PI;
+}
+
+export function getMouseAngleInDegrees(e: React.MouseEvent<HTMLDivElement>) {
+  const rect = e.currentTarget.getBoundingClientRect();
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+  const dx = e.clientX - centerX;
+  const dy = e.clientY - centerY;
+  const angleRadians = Math.atan2(dx, -dy);
+  let angle = calcDegreesFrom(angleRadians, "radians");
+  if (angle < 0) angle += 360;
+  return angle;
+}

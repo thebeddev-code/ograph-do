@@ -8,11 +8,11 @@ import {
 } from "react";
 import { twMerge } from "tailwind-merge";
 import { MouseEvent } from "react";
-import { calcDegreesFrom } from "@/lib/utils/math";
 import { motion, AnimatePresence } from "motion/react";
 import { addHours, formatDate, set } from "date-fns";
 import { DEGREES_PER_HOUR } from "@/lib/utils/constants";
 import { cn } from "@/utils/cn";
+import { calcDegreesFrom, getMouseAngleInDegrees } from "../../utils/math";
 
 const HANDLE_BUTTON_SIZE_PX = 21;
 
@@ -71,30 +71,22 @@ export function ClockHandle({
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
     if (!mouseDown) return;
 
-    const rect = e.currentTarget.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-
-    const dx = e.clientX - centerX;
-    const dy = e.clientY - centerY;
-    const angleRadians = Math.atan2(dx, -dy);
-    let raw = calcDegreesFrom(angleRadians, "radians"); // -180..180 or similar, depending on your helper
-    if (raw < 0) raw += 360; // 0..360
-
+    const mouseDegrees = getMouseAngleInDegrees(e);
     if (lastRawAngleRef.current == null) {
-      lastRawAngleRef.current = raw;
+      lastRawAngleRef.current = mouseDegrees;
       return;
     }
 
-    let delta = raw - lastRawAngleRef.current;
+    let delta = mouseDegrees - lastRawAngleRef.current;
 
     // Fix wrap at 0/360
     if (delta > 180) delta -= 360;
     if (delta < -180) delta += 360;
 
-    lastRawAngleRef.current = raw;
+    lastRawAngleRef.current = mouseDegrees;
     const newTotalAngle = totalAngle + delta;
     setTotalAngle(newTotalAngle);
+
     if (
       typeof snapDegrees === "number" &&
       Math.abs((lastSnapAngleRef.current ?? 0) - newTotalAngle) < snapDegrees
@@ -102,7 +94,7 @@ export function ClockHandle({
       return;
     }
 
-    setDisplayAngle(raw);
+    setDisplayAngle(mouseDegrees);
     onChange?.({ totalAngle: newTotalAngle, delta });
     lastSnapAngleRef.current = newTotalAngle;
   };

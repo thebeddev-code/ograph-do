@@ -1,5 +1,5 @@
 import { DrawableTodo } from "@/lib/types";
-import { calcDegreesFrom, calcRadiansFrom } from "@/lib/utils/math";
+import { calcDegreesFrom, calcRadiansFrom } from "./math";
 
 interface DrawTodos {
   canvas: HTMLCanvasElement;
