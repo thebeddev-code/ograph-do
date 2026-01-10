@@ -1,9 +1,9 @@
 "use client";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { drawTodos } from "./utils/drawTodos";
-import { ClockHandle, ClockHandleStateSetters } from "./components/ClockHandle";
-import { calcDegreesFrom } from "../../lib/utils/math";
-import { Clock } from "./components/Clock";
+import { drawTodos } from "../../utils/drawTodos";
+import { ClockHandle, ClockHandleStateSetters } from "./ClockHandle";
+import { calcDegreesFrom } from "../../../../lib/utils/math";
+import { Clock } from "./Clock";
 import { DEGREES_PER_HOUR } from "@/lib/utils/constants";
 import { Todo } from "@/types/api";
 import { addHours, formatDate, set } from "date-fns";
@@ -16,18 +16,21 @@ interface Props {
   drawableTodos: DrawableTodo[];
   onFormOpen?: (data: DrawableTodo) => void;
 }
-export function ClockGraph({ drawableTodos, onFormOpen }: Props) {
-  const today = new Date();
-  const currentTime = {
-    hours: today.getHours(),
-    minutes: today.getMinutes(),
-  };
-  const startAngle =
-    calcDegreesFrom(currentTime.hours, "hours") +
-    calcDegreesFrom(currentTime.minutes / 60, "hours");
 
+const today = new Date();
+const currentTime = {
+  hours: today.getHours(),
+  minutes: today.getMinutes(),
+};
+const currentTimeDegrees =
+  calcDegreesFrom(currentTime.hours, "hours") +
+  calcDegreesFrom(currentTime.minutes / 60, "hours");
+
+export function ClockGraph({ drawableTodos, onFormOpen }: Props) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [clockHandleDegrees, setClockHandleDegrees] = useState(startAngle);
+  const lastClickTimeRef = useRef(0);
+  const [clockHandleDegrees, setClockHandleDegrees] =
+    useState(currentTimeDegrees);
   const [newTodoDegrees, setNewTodoDegrees] = useState<{
     start: null | number;
     end: null | number;
@@ -36,7 +39,7 @@ export function ClockGraph({ drawableTodos, onFormOpen }: Props) {
     end: null,
   });
 
-  let drawableTodo = null;
+  let drawableTodo: Pick<Todo, "startsAt" | "due" | "color"> | null = null;
   if (
     typeof newTodoDegrees.start === "number" &&
     typeof newTodoDegrees.end === "number"
@@ -53,8 +56,6 @@ export function ClockGraph({ drawableTodos, onFormOpen }: Props) {
       color: "#000000",
     };
   }
-
-  const lastClickTimeRef = useRef(0);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -94,6 +95,64 @@ export function ClockGraph({ drawableTodos, onFormOpen }: Props) {
     stateSetters.setDisplayAngle(angle % 360);
   }
 
+  function handleCreateTodoClick(e: React.MouseEvent<HTMLDivElement>) {
+    if (typeof newTodoDegrees.start === "number" && drawableTodo) {
+      setNewTodoDegrees({ start: null, end: null });
+      onFormOpen?.({
+        ...drawableTodo,
+        startsAt: new Date(drawableTodo.startsAt as string).toISOString(),
+        due: new Date(drawableTodo.due as string).toISOString(),
+      });
+      return;
+    }
+    const lastClickTime = lastClickTimeRef.current;
+    const currentClickTime = new Date().getTime();
+    if (currentClickTime - lastClickTime < MAX_LAST_CLICK_DIFF_MS) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const dx = e.clientX - centerX;
+      const dy = e.clientY - centerY;
+      const angleRadians = Math.atan2(dx, -dy);
+      let raw = calcDegreesFrom(angleRadians, "radians");
+      if (raw < 0) raw += 360;
+
+      const normalizedCurrentTimeDegrees = clockHandleDegrees % 360;
+
+      const clockwise = (raw - normalizedCurrentTimeDegrees + 360) % 360;
+      const counterclockwise = (normalizedCurrentTimeDegrees - raw + 360) % 360;
+
+      /*
+              If angle between currentTimeDegrees to 360 or 0 currentTimeDegrees + 180  
+            
+            */
+      function isPastCurrentTimeAngle() {
+        if (
+          normalizedCurrentTimeDegrees < 360 &&
+          (normalizedCurrentTimeDegrees + 180) % 360 <
+            normalizedCurrentTimeDegrees
+        ) {
+          return (
+            (normalizedCurrentTimeDegrees <= raw && raw <= 360) ||
+            (raw >= 0 && raw <= (normalizedCurrentTimeDegrees + 180) % 360)
+          );
+        }
+        return (
+          normalizedCurrentTimeDegrees <= raw &&
+          raw <= normalizedCurrentTimeDegrees + 180
+        );
+      }
+      const offsetAngle = isPastCurrentTimeAngle()
+        ? clockwise
+        : -counterclockwise;
+      setNewTodoDegrees({
+        start: clockHandleDegrees + offsetAngle,
+        end: null,
+      });
+    }
+    lastClickTimeRef.current = currentClickTime;
+  }
+
   const shouldTrackNewTodo = typeof newTodoDegrees.start === "number";
   const clock = (
     <>
@@ -108,70 +167,9 @@ export function ClockGraph({ drawableTodos, onFormOpen }: Props) {
 
   return (
     <div className="bg-white flex-col flex justify-center items-center">
-      <div
-        className="rounded-full"
-        onClick={(e) => {
-          if (typeof newTodoDegrees.start === "number" && drawableTodo) {
-            setNewTodoDegrees({ start: null, end: null });
-            onFormOpen?.({
-              ...drawableTodo,
-              startsAt: new Date(drawableTodo.startsAt).toISOString(),
-              due: new Date(drawableTodo.due).toISOString(),
-            });
-            return;
-          }
-          const lastClickTime = lastClickTimeRef.current;
-          const currentClickTime = new Date().getTime();
-          if (currentClickTime - lastClickTime < MAX_LAST_CLICK_DIFF_MS) {
-            const rect = e.currentTarget.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-            const dx = e.clientX - centerX;
-            const dy = e.clientY - centerY;
-            const angleRadians = Math.atan2(dx, -dy);
-            let raw = calcDegreesFrom(angleRadians, "radians");
-            if (raw < 0) raw += 360;
-
-            const normalizedCurrentTimeDegrees = clockHandleDegrees % 360;
-
-            const clockwise = (raw - normalizedCurrentTimeDegrees + 360) % 360;
-            const counterclockwise =
-              (normalizedCurrentTimeDegrees - raw + 360) % 360;
-
-            /*
-              If angle between currentTimeDegrees to 360 or 0 currentTimeDegrees + 180  
-            
-            */
-            function isPastCurrentTimeAngle() {
-              if (
-                normalizedCurrentTimeDegrees < 360 &&
-                (normalizedCurrentTimeDegrees + 180) % 360 <
-                  normalizedCurrentTimeDegrees
-              ) {
-                return (
-                  (normalizedCurrentTimeDegrees <= raw && raw <= 360) ||
-                  (raw >= 0 &&
-                    raw <= (normalizedCurrentTimeDegrees + 180) % 360)
-                );
-              }
-              return (
-                normalizedCurrentTimeDegrees <= raw &&
-                raw <= normalizedCurrentTimeDegrees + 180
-              );
-            }
-            const offsetAngle = isPastCurrentTimeAngle()
-              ? clockwise
-              : -counterclockwise;
-            setNewTodoDegrees({
-              start: clockHandleDegrees + offsetAngle,
-              end: null,
-            });
-          }
-          lastClickTimeRef.current = currentClickTime;
-        }}
-      >
+      <div className="rounded-full" onClick={handleCreateTodoClick}>
         <ClockHandle
-          startAngle={startAngle}
+          startAngle={currentTimeDegrees}
           clockGraphRadius={RADIUS}
           onChange={({ totalAngle }) => {
             setClockHandleDegrees(totalAngle);

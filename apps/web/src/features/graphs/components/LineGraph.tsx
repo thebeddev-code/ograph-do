@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { Todo } from "@/lib/types";
+import { Todo } from "@/types/api";
 
 interface Props {
   todos: Todo[];

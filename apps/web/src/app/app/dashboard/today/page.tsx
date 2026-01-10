@@ -1,5 +1,5 @@
 "use client";
-import { ClockGraph } from "@/features/graphs/ClockGraph";
+import { ClockGraph } from "@/features/graphs/components/ClockGraph/ClockGraph";
 import { useTodos } from "@/features/todos/api/getTodos";
 import { useTodoForm } from "@/features/todos/stores/todoForm.store";
 import { TodoFormWrapper } from "@/features/todos/TodoFormWrapper";
