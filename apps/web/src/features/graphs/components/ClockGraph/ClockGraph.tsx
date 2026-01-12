@@ -2,7 +2,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { drawTodos, todosToDrawables } from "../../utils/drawTodos";
 import { ClockHandle, ClockHandleStateSetters } from "./ClockHandle";
-import { calcDegreesFrom } from "../../utils/math";
+import { calcDegreesFrom, getCurrentTimeInDegrees } from "../../utils/math";
 import { Clock } from "./Clock";
 import { DEGREES_PER_HOUR } from "@/lib/utils/constants";
 import { Todo } from "@/types/api";
@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button/button";
 import { calcClosestDistToClockHandle } from "../../utils/distToClockHandle";
 import { Sunrise, Sun, Sunset, Moon } from "lucide-react";
 import e from "express";
+import { ResetIcon } from "@radix-ui/react-icons";
+import { cn } from "@/utils/cn";
 
 const RADIUS = 170;
 const MAX_LAST_CLICK_DIFF_MS = 300;
@@ -19,20 +21,13 @@ interface Props {
   onFormOpen?: (data: Pick<Todo, "startsAt" | "due" | "color">) => void;
 }
 
-const today = new Date();
-const currentTime = {
-  hours: today.getHours(),
-  minutes: today.getMinutes(),
-};
-const currentTimeDegrees =
-  calcDegreesFrom(currentTime.hours, "hours") +
-  calcDegreesFrom(currentTime.minutes / 60, "hours");
-
 export function ClockGraph({ todos, onFormOpen }: Props) {
+  const currentTimeInDegrees = getCurrentTimeInDegrees();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const lastClickTimeRef = useRef(0);
   const [clockHandleDegrees, setClockHandleDegrees] =
-    useState(currentTimeDegrees);
+    useState(currentTimeInDegrees);
+  const [hasDraggedClockHandle, setHasDraggedClockHandle] = useState(false);
   const [createTodoDegrees, setCreateTodoDegrees] = useState<{
     start: null | number;
     end: null | number;
@@ -88,16 +83,26 @@ export function ClockGraph({ todos, onFormOpen }: Props) {
     });
   }, [todos, clockHandleDegrees, newTodo]);
 
-  function handleQuickSwitchClick({
+  function handleQuickTimeSwitchClick({
     stateSetters,
-    index,
+    index = 1,
     event,
+    resetClockHandle,
   }: {
     stateSetters: ClockHandleStateSetters;
-    index: number;
+    index?: number;
     event: React.MouseEvent<HTMLButtonElement>;
+    resetClockHandle?: boolean;
   }) {
     event.stopPropagation();
+    if (resetClockHandle) {
+      const currentTimeDegrees = getCurrentTimeInDegrees();
+      stateSetters.setTotalAngle(currentTimeDegrees);
+      stateSetters.setDisplayAngle(currentTimeDegrees % 360);
+      setHasDraggedClockHandle(false);
+      return;
+    }
+    // So, we know that conversion rate of degrees to hours is 30 degrees because {360 / 12 = 30}
     const angle = 180 * index;
     setClockHandleDegrees(angle);
     stateSetters.setTotalAngle(angle);
@@ -148,20 +153,45 @@ export function ClockGraph({ todos, onFormOpen }: Props) {
     <div className="bg-white flex-col flex justify-center items-center">
       <div className="rounded-full" onClick={handleCreateTodoClick}>
         <ClockHandle
-          startAngle={currentTimeDegrees}
+          startAngle={currentTimeInDegrees}
           clockGraphRadius={RADIUS}
           onChange={({ totalAngle }) => {
             setClockHandleDegrees(totalAngle);
+            setHasDraggedClockHandle(true);
           }}
           renderButtons={(stateSetters) => (
             <div className="absolute">
-              <div className="relative flex items-center justify-center w-28 h-28 mx-auto rounded-full">
+              <div
+                className="z-20 relative flex items-center justify-center w-28 h-28 mx-auto rounded-full"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <button
-                  className="absolute translate-x-6 -translate-y-6 opacity-40 hover:opacity-100
-                    w-8 h-8 flex items-center justify-center text-gray-700 hover:text-slate-500
+                  disabled={hasDraggedClockHandle}
+                  className={cn(
+                    `absolute 
+                    w-8 h-8 flex items-center justify-center text-gray-500 hover:text-slate-500
+                    bg-white/40 rounded-full border transition-colors duration-300`,
+                    {
+                      "opacity-40 hover:opacity-100": hasDraggedClockHandle,
+                    },
+                  )}
+                  onClick={(e) =>
+                    handleQuickTimeSwitchClick({
+                      stateSetters,
+                      resetClockHandle: true,
+                      event: e,
+                    })
+                  }
+                  title="Reset clock handle"
+                >
+                  <ResetIcon className="w-5 h-5" />
+                </button>
+                <button
+                  className="absolute translate-x-7 -translate-y-7 opacity-40 hover:opacity-100
+                    w-8 h-8 flex items-center justify-center text-gray-500 hover:text-slate-500
                     bg-white/40 rounded-full border transition-colors duration-300"
                   onClick={(e) =>
-                    handleQuickSwitchClick({
+                    handleQuickTimeSwitchClick({
                       stateSetters,
                       index: 1,
                       event: e,
@@ -173,11 +203,11 @@ export function ClockGraph({ todos, onFormOpen }: Props) {
                 </button>
 
                 <button
-                  className="absolute translate-6 opacity-40 hover:opacity-100
-                    w-8 h-8 flex items-center justify-center text-gray-700 hover:text-yellow-500
+                  className="absolute translate-7 opacity-40 hover:opacity-100
+                    w-8 h-8 flex items-center justify-center text-gray-500 hover:text-yellow-500
                     bg-white/40 rounded-full border transition-colors duration-300"
                   onClick={(e) =>
-                    handleQuickSwitchClick({
+                    handleQuickTimeSwitchClick({
                       stateSetters,
                       index: 2,
                       event: e,
@@ -189,11 +219,11 @@ export function ClockGraph({ todos, onFormOpen }: Props) {
                 </button>
 
                 <button
-                  className="absolute -translate-x-6 translate-y-6 opacity-40 hover:opacity-100
-                    w-8 h-8 flex items-center justify-center text-gray-700 hover:text-purple-500
+                  className="absolute -translate-x-7 translate-y-7 opacity-40 hover:opacity-100
+                    w-8 h-8 flex items-center justify-center text-gray-500 hover:text-purple-500
                     bg-white/40 rounded-full border transition-colors duration-300"
                   onClick={(e) =>
-                    handleQuickSwitchClick({
+                    handleQuickTimeSwitchClick({
                       stateSetters,
                       index: 3,
                       event: e,
@@ -205,11 +235,11 @@ export function ClockGraph({ todos, onFormOpen }: Props) {
                 </button>
 
                 <button
-                  className="absolute -translate-6 opacity-40 hover:opacity-100
-                    w-8 h-8 flex items-center justify-center text-gray-700 hover:text-gray-800
+                  className="absolute -translate-7 opacity-40 hover:opacity-100
+                    w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-800
                     bg-white/40 rounded-full border transition-colors duration-300"
                   onClick={(e) =>
-                    handleQuickSwitchClick({
+                    handleQuickTimeSwitchClick({
                       stateSetters,
                       index: 4,
                       event: e,
