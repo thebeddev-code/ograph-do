@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { drawTodos, todosToDrawables } from "../../utils/drawTodos";
 import { ClockHandle, ClockHandleStateSetters } from "./ClockHandle";
 import { calcDegreesFrom } from "../../utils/math";
@@ -9,6 +9,8 @@ import { Todo } from "@/types/api";
 import { addHours, formatDate, set } from "date-fns";
 import { Button } from "@/components/ui/button/button";
 import { calcClosestDistToClockHandle } from "../../utils/distToClockHandle";
+import { Sunrise, Sun, Sunset, Moon } from "lucide-react";
+import e from "express";
 
 const RADIUS = 170;
 const MAX_LAST_CLICK_DIFF_MS = 300;
@@ -86,10 +88,16 @@ export function ClockGraph({ todos, onFormOpen }: Props) {
     });
   }, [todos, clockHandleDegrees, newTodo]);
 
-  function handleQuickSwitchClick(
-    stateSetters: ClockHandleStateSetters,
-    index: number,
-  ) {
+  function handleQuickSwitchClick({
+    stateSetters,
+    index,
+    event,
+  }: {
+    stateSetters: ClockHandleStateSetters;
+    index: number;
+    event: React.MouseEvent<HTMLButtonElement>;
+  }) {
+    event.stopPropagation();
     const angle = 180 * index;
     setClockHandleDegrees(angle);
     stateSetters.setTotalAngle(angle);
@@ -146,19 +154,72 @@ export function ClockGraph({ todos, onFormOpen }: Props) {
             setClockHandleDegrees(totalAngle);
           }}
           renderButtons={(stateSetters) => (
-            <div className="absolute -bottom-20 flex gap-4">
-              <Button onClick={() => handleQuickSwitchClick(stateSetters, 1)}>
-                Morning
-              </Button>
-              <Button onClick={() => handleQuickSwitchClick(stateSetters, 2)}>
-                Day
-              </Button>
-              <Button onClick={() => handleQuickSwitchClick(stateSetters, 3)}>
-                Evening
-              </Button>
-              <Button onClick={() => handleQuickSwitchClick(stateSetters, 4)}>
-                Night
-              </Button>
+            <div className="absolute">
+              <div className="relative flex items-center justify-center w-28 h-28 mx-auto rounded-full">
+                <button
+                  className="absolute translate-x-6 -translate-y-6 opacity-40 hover:opacity-100
+                    w-8 h-8 flex items-center justify-center text-gray-700 hover:text-slate-500
+                    bg-white/40 rounded-full border transition-colors duration-300"
+                  onClick={(e) =>
+                    handleQuickSwitchClick({
+                      stateSetters,
+                      index: 1,
+                      event: e,
+                    })
+                  }
+                  title="Morning"
+                >
+                  <Sunrise className="w-5 h-5" />
+                </button>
+
+                <button
+                  className="absolute translate-6 opacity-40 hover:opacity-100
+                    w-8 h-8 flex items-center justify-center text-gray-700 hover:text-yellow-500
+                    bg-white/40 rounded-full border transition-colors duration-300"
+                  onClick={(e) =>
+                    handleQuickSwitchClick({
+                      stateSetters,
+                      index: 2,
+                      event: e,
+                    })
+                  }
+                  title="Day"
+                >
+                  <Sun className="w-5 h-5" />
+                </button>
+
+                <button
+                  className="absolute -translate-x-6 translate-y-6 opacity-40 hover:opacity-100
+                    w-8 h-8 flex items-center justify-center text-gray-700 hover:text-purple-500
+                    bg-white/40 rounded-full border transition-colors duration-300"
+                  onClick={(e) =>
+                    handleQuickSwitchClick({
+                      stateSetters,
+                      index: 3,
+                      event: e,
+                    })
+                  }
+                  title="Evening"
+                >
+                  <Sunset className="w-5 h-5" />
+                </button>
+
+                <button
+                  className="absolute -translate-6 opacity-40 hover:opacity-100
+                    w-8 h-8 flex items-center justify-center text-gray-700 hover:text-gray-800
+                    bg-white/40 rounded-full border transition-colors duration-300"
+                  onClick={(e) =>
+                    handleQuickSwitchClick({
+                      stateSetters,
+                      index: 4,
+                      event: e,
+                    })
+                  }
+                  title="Night"
+                >
+                  <Moon className="w-5 h-5" />
+                </button>
+              </div>
             </div>
           )}
         >
