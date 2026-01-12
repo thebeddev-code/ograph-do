@@ -1,9 +1,11 @@
+import { DEGREES_PER_HOUR } from "@/lib/utils/constants";
+
 export function calcRadiansFrom(
   value: number,
   type: "hours" | "degrees" = "degrees",
 ) {
   let degrees = value;
-  if (type == "hours") degrees = value * 30;
+  if (type == "hours") degrees = value * DEGREES_PER_HOUR;
   // 360/2*Math.Pi = degrees/x
   // using cross multiplication to solve the proportion
   return (degrees * Math.PI) / 180;
@@ -13,7 +15,7 @@ export function calcDegreesFrom(
   value: number,
   type: "hours" | "radians" = "radians",
 ) {
-  if (type == "hours") return value * 30;
+  if (type == "hours") return value * DEGREES_PER_HOUR;
   return (value * 180) / Math.PI;
 }
 
@@ -34,9 +36,11 @@ export function getCurrentTimeInDegrees() {
   const currentTime = {
     hours: today.getHours(),
     minutes: today.getMinutes(),
+    seconds: today.getSeconds(),
   };
   const currentTimeDegrees =
     calcDegreesFrom(currentTime.hours, "hours") +
-    calcDegreesFrom(currentTime.minutes / 60, "hours");
+    calcDegreesFrom(currentTime.minutes / 60, "hours") +
+    calcDegreesFrom(currentTime.seconds / 3600, "hours");
   return currentTimeDegrees;
 }
