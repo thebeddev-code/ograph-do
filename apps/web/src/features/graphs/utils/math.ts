@@ -28,3 +28,15 @@ export function getMouseAngleInDegrees(e: React.MouseEvent<HTMLDivElement>) {
   if (angle < 0) angle += 360;
   return angle;
 }
+
+export function getCurrentTimeInDegrees() {
+  const today = new Date();
+  const currentTime = {
+    hours: today.getHours(),
+    minutes: today.getMinutes(),
+  };
+  const currentTimeDegrees =
+    calcDegreesFrom(currentTime.hours, "hours") +
+    calcDegreesFrom(currentTime.minutes / 60, "hours");
+  return currentTimeDegrees;
+}
