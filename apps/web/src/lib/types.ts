@@ -1,2 +1,5 @@
-import { Todo } from "@/types/api";
-export type DrawableTodo = Pick<Todo, "color" | "startsAt" | "due">;
+export type DrawableTodo = {
+  startTimeHours: number;
+  endTimeHours: number;
+  color: string;
+};

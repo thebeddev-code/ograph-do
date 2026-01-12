@@ -66,7 +66,7 @@ export function ClockHandle({
     ),
     "p",
   );
-  const showTooltip = mouseEnter || mouseDown;
+  const showTooltip = true;
 
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
     if (!mouseDown) return;

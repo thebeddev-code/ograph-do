@@ -1,9 +1,37 @@
 import { DrawableTodo } from "@/lib/types";
 import { calcDegreesFrom, calcRadiansFrom } from "./math";
+import { Todo } from "@/types/api";
+
+export function todosToDrawables(todos: Todo[]): DrawableTodo[] {
+  return todos
+    .filter((t) => t.startsAt && t.due)
+    .map((t) => {
+      const startsAt = new Date(t.startsAt as string);
+      const endsAt = new Date(t.due as string);
+
+      // Converting the time to hour
+      // Since 1 hours is 60 minutes, we divide by 60
+      // Same for seconds
+      const todoStartTime =
+        startsAt.getHours() +
+        startsAt.getMinutes() / 60 +
+        startsAt.getSeconds() / 3600;
+      const todoEndTime =
+        endsAt.getHours() +
+        endsAt.getMinutes() / 60 +
+        endsAt.getSeconds() / 3600;
+
+      return {
+        startTimeHours: todoStartTime,
+        endTimeHours: todoEndTime,
+        color: t.color ?? "black",
+      };
+    });
+}
 
 interface DrawTodos {
   canvas: HTMLCanvasElement;
-  todos: DrawableTodo[];
+  drawableTodos: DrawableTodo[];
   x?: number;
   y?: number;
   radius?: number;
@@ -12,9 +40,10 @@ interface DrawTodos {
     end: number;
   };
 }
+
 export function drawTodos({
   canvas,
-  todos,
+  drawableTodos,
   x,
   y,
   radius,
@@ -24,12 +53,12 @@ export function drawTodos({
   if (!ctx) return;
   const rect = canvas.getBoundingClientRect();
 
-  function drawTodo(
+  const drawTodo = (
     drawRadiansStart: number,
     drawRadiansEnd: number,
     offset: number,
     color: string,
-  ) {
+  ) => {
     if (!ctx) return;
     ctx.beginPath();
     ctx.arc(
@@ -43,45 +72,26 @@ export function drawTodos({
     ctx.fillStyle = color;
     ctx.lineWidth = 40;
     ctx.stroke();
-  }
+  };
 
-  const offsetRadians = calcRadiansFrom(90);
-
-  for (const todo of todos) {
-    if (!todo.startsAt || !todo.due) continue;
-
-    const startsAt = new Date(todo.startsAt);
-    const start = {
-      hour: startsAt.getHours(),
-      minutes: startsAt.getMinutes(),
-    };
-
-    const endsAt = new Date(todo.due);
-    const end = {
-      hour: endsAt.getHours(),
-      minutes: endsAt.getMinutes(),
-    };
-
-    const todoStartTime = start.hour + start.minutes / 60;
-    const todoEndTime = end.hour + end.minutes / 60;
-
+  for (const { startTimeHours, endTimeHours, color } of drawableTodos) {
     const drawDegreesStart = calcDegreesFrom(
-      Math.max(todoStartTime, viewHours.start),
+      Math.max(startTimeHours, viewHours.start),
       "hours",
     );
     const drawDegreesEnd = calcDegreesFrom(
-      Math.min(todoEndTime, viewHours.end),
+      Math.min(endTimeHours, viewHours.end),
       "hours",
     );
 
     const drawRadiansStart = calcRadiansFrom(drawDegreesStart);
     const drawRadiansEnd = calcRadiansFrom(drawDegreesEnd);
-    if (viewHours.start <= todoEndTime && viewHours.end >= todoStartTime)
+    if (viewHours.start <= endTimeHours && viewHours.end >= startTimeHours)
       drawTodo(
         drawRadiansStart,
         drawRadiansEnd,
-        offsetRadians,
-        todo.color ?? "magenta",
+        calcRadiansFrom(90),
+        color ?? "magenta",
       );
   }
 }

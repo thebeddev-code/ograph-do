@@ -17,7 +17,7 @@ export default function Dashboard() {
     <main className="flex-1 grid grid-cols-2">
       {status === "success" && todos && (
         <ClockGraph
-          drawableTodos={todos}
+          todos={todos}
           onFormOpen={(data) => {
             changeFormType("create", data);
           }}
