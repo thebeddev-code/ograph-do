@@ -2,7 +2,6 @@ import Cookies from "js-cookie";
 import { delay } from "msw";
 
 import { db } from "./db";
-import { UserModel } from "./utils/models";
 
 export const encode = (obj: any) => {
   const btoa =

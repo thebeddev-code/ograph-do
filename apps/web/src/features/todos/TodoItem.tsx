@@ -1,9 +1,11 @@
-import { Todo } from "@/types/api";
-import { useDeleteTodo } from "./api/deleteTodo";
-import toast from "react-hot-toast";
-import { Button } from "@/components/ui/button";
-import { X as Close, Edit } from "lucide-react";
 import { format } from "date-fns";
+import { X as Close, Edit } from "lucide-react";
+import toast from "react-hot-toast";
+
+import { Button } from "@/components/ui/button";
+import { Todo } from "@/types/api";
+
+import { useDeleteTodo } from "./api/deleteTodo";
 import { useUpdateTodo } from "./api/updateTodo";
 import { useTodoForm } from "./stores/todoForm.store";
 

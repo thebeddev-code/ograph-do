@@ -1,18 +1,17 @@
-import TodoForm from "./TodoForm";
+import { motion } from "motion/react";
+
+import { Button } from "@/components/ui/button";
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-  DrawerTrigger,
 } from "@/components/ui/drawer";
-import { Button } from "@/components/ui/button";
-import { motion, AnimatePresence } from "motion/react";
-import { Plus } from "lucide-react";
+
 import { useTodoForm } from "./stores/todoForm.store";
+import TodoForm from "./TodoForm";
 
 export function TodoFormWrapper() {
   const { formMode, todoData, changeFormType } = useTodoForm((state) => state);

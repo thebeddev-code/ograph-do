@@ -1,3 +1,5 @@
+import { addHours, formatDate, set } from "date-fns";
+import { motion, AnimatePresence } from "motion/react";
 import React, {
   Dispatch,
   ReactNode,
@@ -6,17 +8,17 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { twMerge } from "tailwind-merge";
 import { MouseEvent } from "react";
-import { motion, AnimatePresence } from "motion/react";
-import { addHours, formatDate, set } from "date-fns";
+import { twMerge } from "tailwind-merge";
+
 import { DEGREES_PER_HOUR } from "@/lib/utils/constants";
 import { cn } from "@/utils/cn";
+
 import {
-  calcDegreesFrom,
   getCurrentTimeInDegrees,
   getMouseAngleInDegrees,
 } from "../../utils/math";
+
 import { ClockHandleTools } from "./ClockHandleTools";
 
 const HANDLE_BUTTON_SIZE_PX = 21;

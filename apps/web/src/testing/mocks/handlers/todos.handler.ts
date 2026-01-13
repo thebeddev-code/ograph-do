@@ -1,11 +1,13 @@
+import { isSameDay } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 import { HttpResponse, http } from "msw";
+
 import { env } from "@/config/env";
+import { CreateTodoPayload } from "@/lib/schemas/todo.schema";
+
 import { db, persistDb } from "../db";
 import { networkDelay, requireAuth } from "../utils";
-import { CreateTodoPayload } from "@/lib/schemas/todo.schema";
 import { TodoModel, UserModel } from "../utils/models";
-import { toZonedTime } from "date-fns-tz";
-import { isSameDay } from "date-fns";
 
 export const todosHandlers = [
   http.get(`${env.API_URL}/todos`, async ({ cookies, request }) => {

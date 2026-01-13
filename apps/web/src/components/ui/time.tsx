@@ -1,5 +1,5 @@
 import { addSeconds, formatDate } from "date-fns";
-import { HTMLAttributes, Ref, useEffect, useState } from "react";
+import { HTMLAttributes, useEffect, useState } from "react";
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
   className?: string;

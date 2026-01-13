@@ -1,6 +1,7 @@
-import { useNotifications } from "@/components/ui/notifications";
-import { env } from "@/config/env";
 import toast from "react-hot-toast";
+
+import { env } from "@/config/env";
+
 
 type RequestOptions = {
   method?: string;

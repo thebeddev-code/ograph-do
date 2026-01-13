@@ -1,5 +1,6 @@
-import { Todo } from "@/types/api";
 import { create } from "zustand";
+
+import { Todo } from "@/types/api";
 
 export type TodoFormModes = "update" | "create" | "read-only" | null;
 export type TodoFormTodoData<T> = T extends "update"

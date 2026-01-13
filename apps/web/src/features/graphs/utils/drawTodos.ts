@@ -1,7 +1,9 @@
-import { DrawableTodo } from "@/lib/types";
-import { calcDegreesFrom, calcRadiansFrom } from "./math";
-import { Todo } from "@/types/api";
 import { differenceInCalendarDays } from "date-fns";
+
+import { DrawableTodo } from "@/lib/types";
+import { Todo } from "@/types/api";
+
+import { calcDegreesFrom, calcRadiansFrom } from "./math";
 
 export function todosToDrawables({
   todos,

@@ -1,8 +1,9 @@
+import { Home, LogIn, LogOut } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Link } from "@/components/ui/link";
 import { paths } from "@/config/paths";
 import { checkLoggedIn } from "@/utils/auth";
-import { Home, LogIn, LogOut } from "lucide-react";
 
 export default async function HomePage() {
   const isLoggedIn = await checkLoggedIn();

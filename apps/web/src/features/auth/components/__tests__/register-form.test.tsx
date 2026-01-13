@@ -5,7 +5,6 @@ import {
   userEvent,
   waitFor,
 } from "../../../../../examples/testing/test-utils";
-
 import { RegisterForm } from "../register-form";
 
 test("should register new user and call onSuccess cb which should navigate the user to the app", async () => {

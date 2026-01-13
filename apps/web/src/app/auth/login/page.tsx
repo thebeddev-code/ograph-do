@@ -3,6 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { paths } from "@/config/paths";
+
 import { LoginForm } from "../../../features/auth/components/login-form";
 
 const LoginPage = () => {

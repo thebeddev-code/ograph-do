@@ -1,4 +1,5 @@
 import { Collection } from "@msw/data";
+
 import { mockTodos } from "./dataGenerators";
 import { todoModel, userModel } from "./utils/models";
 

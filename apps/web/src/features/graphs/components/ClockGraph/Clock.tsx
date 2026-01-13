@@ -1,4 +1,3 @@
-import { Time } from "@/components/ui/time";
 import { Ref } from "react";
 interface Props {
   canvasRef: Ref<HTMLCanvasElement>;

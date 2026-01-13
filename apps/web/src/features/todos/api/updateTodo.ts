@@ -2,10 +2,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { api } from "@/lib/api-client";
 import { MutationConfig } from "@/lib/react-query";
+import { CreateTodoPayload } from "@/lib/schemas/todo.schema";
+import { Todo } from "@/types/api";
 
 import { getTodosQueryOptions } from "./getTodos";
-import { Todo } from "@/types/api";
-import { CreateTodoPayload } from "@/lib/schemas/todo.schema";
+
 
 export const updateTodo = (
   todoPayload: Partial<CreateTodoPayload> & { id: number },

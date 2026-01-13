@@ -1,6 +1,6 @@
-import { ClockHandleStateSetters } from "./ClockHandle";
-import { Sunrise, Sun, Sunset, Moon } from "lucide-react";
 import { ResetIcon } from "@radix-ui/react-icons";
+import { Sunrise, Sun, Sunset, Moon } from "lucide-react";
+
 import { cn } from "@/utils/cn";
 
 interface Props {

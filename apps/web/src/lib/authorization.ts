@@ -1,4 +1,3 @@
-import { User } from "@/types/api";
 
 // export const canCreateDiscussion = (user: User | null | undefined) => {
 //   return user?.role === 'ADMIN';

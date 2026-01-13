@@ -1,5 +1,6 @@
-import { calcDegreesFrom, getMouseAngleInDegrees } from "../utils/math";
 import React from "react";
+
+import { getMouseAngleInDegrees } from "../utils/math";
 
 /**
  * Calculates the closest distance from the click point to the clock handler in degrees

@@ -1,18 +1,19 @@
 "use client";
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { drawTodos, todosToDrawables } from "../../utils/drawTodos";
-import { ClockHandle, ClockHandleStateSetters } from "./ClockHandle";
-import { calcDegreesFrom, getCurrentTimeInDegrees } from "../../utils/math";
-import { Clock } from "./Clock";
+import { addHours, formatDate, set } from "date-fns";
+import React, { useEffect, useRef, useState } from "react";
+
 import { DEGREES_PER_HOUR } from "@/lib/utils/constants";
 import { Todo } from "@/types/api";
-import { addHours, formatDate, set } from "date-fns";
-import { Button } from "@/components/ui/button/button";
+
 import { calcClosestDistToClockHandle } from "../../utils/distToClockHandle";
-import { Sunrise, Sun, Sunset, Moon } from "lucide-react";
-import { ResetIcon } from "@radix-ui/react-icons";
-import { cn } from "@/utils/cn";
-import { ClockHandleTools } from "./ClockHandleTools";
+import { drawTodos, todosToDrawables } from "../../utils/drawTodos";
+import { getCurrentTimeInDegrees } from "../../utils/math";
+
+import { Clock } from "./Clock";
+import { ClockHandle } from "./ClockHandle";
+
+
+
 
 const RADIUS = 170;
 const MAX_LAST_CLICK_DIFF_MS = 300;
