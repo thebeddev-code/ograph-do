@@ -27,8 +27,10 @@ export function ClockGraph({ todos, onFormOpen }: Props) {
   const currentTimeInDegrees = getCurrentTimeInDegrees();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const lastClickTimeRef = useRef(0);
-  const [clockHandleDegrees, setClockHandleDegrees] =
-    useState(currentTimeInDegrees);
+  const [clockHandleDegrees, setClockHandleDegrees] = useState({
+    currentAngle: currentTimeInDegrees % 360,
+    totalAngle: currentTimeInDegrees,
+  });
   const [hasDraggedClockHandle, setHasDraggedClockHandle] = useState(false);
   const [createTodoDegrees, setCreateTodoDegrees] = useState<{
     start: null | number;
@@ -70,7 +72,7 @@ export function ClockGraph({ todos, onFormOpen }: Props) {
     canvas.height = rect.height * dpr;
     ctx.scale(dpr, dpr);
 
-    const viewHoursStart = clockHandleDegrees / DEGREES_PER_HOUR;
+    const viewHoursStart = clockHandleDegrees.totalAngle / DEGREES_PER_HOUR;
     const copyTodos = [...todos];
     if (newTodo) copyTodos.push(newTodo as Todo);
     const drawableTodos = todosToDrawables({ todos: copyTodos });
@@ -86,12 +88,10 @@ export function ClockGraph({ todos, onFormOpen }: Props) {
   }, [todos, clockHandleDegrees, newTodo]);
 
   function handleQuickTimeSwitchClick({
-    stateSetters,
     index = 1,
     event,
     resetClockHandle,
   }: {
-    stateSetters: ClockHandleStateSetters;
     index?: number;
     event: React.MouseEvent<HTMLButtonElement>;
     resetClockHandle?: boolean;
@@ -99,16 +99,20 @@ export function ClockGraph({ todos, onFormOpen }: Props) {
     event.stopPropagation();
     if (resetClockHandle) {
       const currentTimeDegrees = getCurrentTimeInDegrees();
-      stateSetters.setTotalAngle(currentTimeDegrees);
-      stateSetters.setDisplayAngle(currentTimeDegrees % 360);
+      setClockHandleDegrees((c) => ({
+        currentAngle: currentTimeDegrees % 360,
+        totalAngle: currentTimeDegrees,
+      }));
       setHasDraggedClockHandle(false);
       return;
     }
     // So, we know that conversion rate of degrees to hours is 30 degrees because {360 / 12 = 30}
     const angle = 180 * index;
-    setClockHandleDegrees(angle);
-    stateSetters.setTotalAngle(angle);
-    stateSetters.setDisplayAngle(angle % 360);
+    setClockHandleDegrees({ currentAngle: angle, totalAngle: angle });
+    setClockHandleDegrees((c) => ({
+      currentAngle: angle % 360,
+      totalAngle: angle,
+    }));
   }
 
   function handleCreateTodoClick(e: React.MouseEvent<HTMLDivElement>) {
@@ -128,11 +132,11 @@ export function ClockGraph({ todos, onFormOpen }: Props) {
     if (currentClickTime - lastClickTime < MAX_LAST_CLICK_DIFF_MS) {
       const offset = calcClosestDistToClockHandle({
         clickEvent: e,
-        clockHandleDegrees,
+        clockHandleDegrees: clockHandleDegrees.totalAngle,
       });
 
       setCreateTodoDegrees({
-        start: clockHandleDegrees + offset,
+        start: clockHandleDegrees.totalAngle + offset,
         end: null,
       });
     }
@@ -155,32 +159,28 @@ export function ClockGraph({ todos, onFormOpen }: Props) {
     <div className="bg-white flex-col flex justify-center items-center">
       <div className="rounded-full" onClick={handleCreateTodoClick}>
         <ClockHandle
-          startAngle={currentTimeInDegrees}
-          clockGraphRadius={RADIUS}
-          onChange={({ totalAngle }) => {
-            setClockHandleDegrees(totalAngle);
-            setHasDraggedClockHandle(true);
+          value={clockHandleDegrees}
+          onChange={(delta) => {
+            setClockHandleDegrees(({ currentAngle, totalAngle }) => ({
+              currentAngle: (currentAngle + delta) % 360,
+              totalAngle: totalAngle + delta,
+            }));
           }}
-          renderButtons={(stateSetters) => (
-            <ClockHandleTools
-              stateSetters={stateSetters}
-              onQuickTimeSwitchClick={handleQuickTimeSwitchClick}
-              hasDraggedClockHandle={hasDraggedClockHandle}
-            />
-          )}
+          clockGraphRadius={RADIUS}
         >
           {shouldTrackNewTodo && (
             <ClockHandle
-              startAngle={createTodoDegrees.start ?? 0}
+              value={{
+                currentAngle:
+                  createTodoDegrees.end ?? (createTodoDegrees.start as number),
+                totalAngle: createTodoDegrees.end ?? 0,
+              }}
               clockGraphRadius={RADIUS}
-              onChange={({ totalAngle }) => {
+              onChange={(delta) => {
                 if (!createTodoDegrees.start) return;
+                const totalAngle =
+                  (createTodoDegrees.end ?? createTodoDegrees.start) + delta;
                 if (totalAngle < createTodoDegrees.start) return;
-                if (
-                  totalAngle > clockHandleDegrees + 180 ||
-                  totalAngle < clockHandleDegrees - 180
-                )
-                  return;
                 setCreateTodoDegrees(({ start }) => ({
                   start,
                   end: totalAngle,
@@ -194,6 +194,11 @@ export function ClockGraph({ todos, onFormOpen }: Props) {
             </ClockHandle>
           )}
           {!shouldTrackNewTodo && clock}
+
+          <ClockHandleTools
+            onQuickTimeSwitchClick={handleQuickTimeSwitchClick}
+            hasDraggedClockHandle={hasDraggedClockHandle}
+          />
         </ClockHandle>
       </div>
     </div>

@@ -4,10 +4,8 @@ import { ResetIcon } from "@radix-ui/react-icons";
 import { cn } from "@/utils/cn";
 
 interface Props {
-  stateSetters: ClockHandleStateSetters;
   hasDraggedClockHandle: boolean;
   onQuickTimeSwitchClick: (args: {
-    stateSetters: ClockHandleStateSetters;
     index?: number;
     event: React.MouseEvent<HTMLButtonElement>;
     resetClockHandle?: boolean;
@@ -15,7 +13,6 @@ interface Props {
 }
 export function ClockHandleTools({
   hasDraggedClockHandle,
-  stateSetters,
   onQuickTimeSwitchClick,
 }: Props) {
   return (
@@ -36,7 +33,6 @@ export function ClockHandleTools({
           )}
           onClick={(e) =>
             onQuickTimeSwitchClick({
-              stateSetters,
               resetClockHandle: true,
               event: e,
             })
@@ -51,7 +47,6 @@ export function ClockHandleTools({
                     bg-white/40 rounded-full border transition-colors duration-300"
           onClick={(e) =>
             onQuickTimeSwitchClick({
-              stateSetters,
               index: 1,
               event: e,
             })
@@ -67,7 +62,6 @@ export function ClockHandleTools({
                     bg-white/40 rounded-full border transition-colors duration-300"
           onClick={(e) =>
             onQuickTimeSwitchClick({
-              stateSetters,
               index: 2,
               event: e,
             })
@@ -83,7 +77,6 @@ export function ClockHandleTools({
                     bg-white/40 rounded-full border transition-colors duration-300"
           onClick={(e) =>
             onQuickTimeSwitchClick({
-              stateSetters,
               index: 3,
               event: e,
             })
@@ -99,7 +92,6 @@ export function ClockHandleTools({
                     bg-white/40 rounded-full border transition-colors duration-300"
           onClick={(e) =>
             onQuickTimeSwitchClick({
-              stateSetters,
               index: 4,
               event: e,
             })

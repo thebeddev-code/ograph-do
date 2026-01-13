@@ -1,4 +1,4 @@
-import {
+import React, {
   Dispatch,
   ReactNode,
   SetStateAction,
@@ -21,18 +21,20 @@ export type ClockHandleStateSetters = {
   setTotalAngle: Dispatch<SetStateAction<number>>;
 };
 
+export type AngleValue = {
+  current: number;
+  total: number;
+};
+
 interface Props {
   children: ReactNode;
   containerClassName?: string;
   clockGraphRadius: number;
-  startAngle?: number;
-  onChange?: ({
-    totalAngle,
-    delta,
-  }: {
+  value: {
+    currentAngle: number;
     totalAngle: number;
-    delta: number;
-  }) => void;
+  };
+  onChange: (delta: number) => void;
   variant?: "minimal" | "full";
   followMouse?: boolean;
   snapDegrees?: number;
@@ -43,7 +45,7 @@ export function ClockHandle({
   children,
   containerClassName = "",
   clockGraphRadius,
-  startAngle = 0,
+  value,
   onChange,
   followMouse = false,
   variant = "full",
@@ -52,10 +54,10 @@ export function ClockHandle({
 }: Props) {
   const [mouseDown, setMouseDown] = useState(followMouse);
   const [mouseEnter, setMouseEnter] = useState(followMouse);
-  const [displayAngle, setDisplayAngle] = useState(startAngle % 360);
-  const [totalAngle, setTotalAngle] = useState(startAngle);
   const lastRawAngleRef = useRef<number | null>(null);
-  const lastSnapAngleRef = useRef<number>(startAngle);
+  const lastSnapAngleRef = useRef<number>(value.currentAngle);
+
+  const { currentAngle: displayAngle, totalAngle } = value;
 
   const timeAngle =
     typeof snapDegrees === "number" ? lastSnapAngleRef.current : totalAngle;
@@ -85,24 +87,21 @@ export function ClockHandle({
 
     lastRawAngleRef.current = mouseDegrees;
     const newTotalAngle = totalAngle + delta;
-    setTotalAngle(newTotalAngle);
 
-    if (
-      typeof snapDegrees === "number" &&
-      Math.abs((lastSnapAngleRef.current ?? 0) - newTotalAngle) < snapDegrees
-    ) {
-      return;
-    }
-
-    setDisplayAngle(mouseDegrees);
-    onChange?.({ totalAngle: newTotalAngle, delta });
+    // if (
+    //   typeof snapDegrees === "number" &&
+    //   Math.abs((lastSnapAngleRef.current ?? 0) - newTotalAngle) < snapDegrees
+    // ) {
+    //   return;
+    // }
+    onChange?.(delta);
     lastSnapAngleRef.current = newTotalAngle;
   };
 
   useEffect(() => {
     const intervalId = setInterval(() => {
       if (mouseDown) return;
-      setTotalAngle((prev) => prev + DEGREES_PER_HOUR / 3600);
+      onChange(DEGREES_PER_HOUR / 3600);
     }, 1000);
 
     return () => clearInterval(intervalId);
@@ -128,9 +127,7 @@ export function ClockHandle({
           transformOrigin: "50% 50%",
           width: `${clockGraphRadius * 2 + HANDLE_BUTTON_SIZE_PX}px`,
         }}
-        className={cn("z-10 absolute flex justify-start items-center", {
-          "transition duration-500": !mouseDown,
-        })}
+        className={cn("z-10 absolute flex justify-start items-center")}
       >
         <div
           onMouseDown={() => setMouseDown(true)}
@@ -181,9 +178,7 @@ export function ClockHandle({
         />
         {/* <div className="bg-slate-900 h-2 w-2 rounded-full cursor-grab" /> */}
       </div>
-
       {children}
-      {renderButtons?.({ setDisplayAngle, setTotalAngle })}
     </div>
   );
 }
