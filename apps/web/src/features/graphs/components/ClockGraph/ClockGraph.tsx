@@ -16,6 +16,8 @@ import { ClockHandleTools } from "./ClockHandleTools";
 
 const RADIUS = 170;
 const MAX_LAST_CLICK_DIFF_MS = 300;
+const VIEW_HOURS = 6;
+
 interface Props {
   todos: Todo[];
   onFormOpen?: (data: Pick<Todo, "startsAt" | "due" | "color">) => void;
@@ -68,17 +70,17 @@ export function ClockGraph({ todos, onFormOpen }: Props) {
     canvas.height = rect.height * dpr;
     ctx.scale(dpr, dpr);
 
-    const viewHoursStart = (clockHandleDegrees / DEGREES_PER_HOUR) % 24;
+    const viewHoursStart = clockHandleDegrees / DEGREES_PER_HOUR;
     const copyTodos = [...todos];
     if (newTodo) copyTodos.push(newTodo as Todo);
-    const drawableTodos = todosToDrawables(copyTodos);
+    const drawableTodos = todosToDrawables({ todos: copyTodos });
     drawTodos({
       canvas,
       drawableTodos: drawableTodos,
       radius: RADIUS,
       viewHours: {
-        start: Math.max(viewHoursStart - 6, 0),
-        end: Math.min(24, viewHoursStart + 6),
+        start: viewHoursStart - VIEW_HOURS,
+        end: viewHoursStart + VIEW_HOURS,
       },
     });
   }, [todos, clockHandleDegrees, newTodo]);
@@ -110,7 +112,7 @@ export function ClockGraph({ todos, onFormOpen }: Props) {
   }
 
   function handleCreateTodoClick(e: React.MouseEvent<HTMLDivElement>) {
-    // On the second double click we open the form
+    // On the second double click we open the form and pass down the data
     if (typeof createTodoDegrees.start === "number" && newTodo) {
       setCreateTodoDegrees({ start: null, end: null });
       onFormOpen?.({

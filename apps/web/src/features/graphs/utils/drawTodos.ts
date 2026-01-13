@@ -1,8 +1,15 @@
 import { DrawableTodo } from "@/lib/types";
 import { calcDegreesFrom, calcRadiansFrom } from "./math";
 import { Todo } from "@/types/api";
+import { differenceInCalendarDays } from "date-fns";
 
-export function todosToDrawables(todos: Todo[]): DrawableTodo[] {
+export function todosToDrawables({
+  todos,
+  now = new Date(),
+}: {
+  todos: Todo[];
+  now?: Date;
+}): DrawableTodo[] {
   return todos
     .filter((t) => t.startsAt && t.due)
     .map((t) => {
@@ -12,14 +19,18 @@ export function todosToDrawables(todos: Todo[]): DrawableTodo[] {
       // Converting the time to hour
       // Since 1 hours is 60 minutes, we divide by 60
       // Same for seconds
-      const todoStartTime =
+      let todoStartTime =
         startsAt.getHours() +
         startsAt.getMinutes() / 60 +
         startsAt.getSeconds() / 3600;
-      const todoEndTime =
+      todoStartTime += 24 * differenceInCalendarDays(startsAt, now);
+
+      let todoEndTime =
         endsAt.getHours() +
         endsAt.getMinutes() / 60 +
         endsAt.getSeconds() / 3600;
+      // In todo spans today and the next day
+      todoEndTime += 24 * differenceInCalendarDays(endsAt, now);
 
       return {
         startTimeHours: todoStartTime,
