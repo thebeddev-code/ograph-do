@@ -128,7 +128,9 @@ export function ClockHandle({
           transformOrigin: "50% 50%",
           width: `${clockGraphRadius * 2 + HANDLE_BUTTON_SIZE_PX}px`,
         }}
-        className="z-10 absolute flex justify-start items-center transition duration-500"
+        className={cn("z-10 absolute flex justify-start items-center", {
+          "transition duration-500": !mouseDown,
+        })}
       >
         <div
           onMouseDown={() => setMouseDown(true)}
