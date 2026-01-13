@@ -4,7 +4,7 @@ A To-Do app that makes todos management feel more intuitive and natural, by visu
 ## Features
 
 - [ ] Visualization of todos on clock-graph
-- [ ] Todo CRUD
+- Todo CRUD
 - [ ] Responsive design works on desktop and mobile
 - [ ] Persisted state using local storage
 
