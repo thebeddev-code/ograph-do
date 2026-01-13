@@ -14,8 +14,9 @@ export default async function HomePage() {
         <ul className="flex items-center gap-4">
           <li>
             <Link href={paths.app.dashboard.getHref()}>
-              <Button variant="outline" icon={<Home className="" />}>
+              <Button variant="outline">
                 Dashboard
+                <Home className="" />
               </Button>
             </Link>
           </li>
@@ -23,14 +24,18 @@ export default async function HomePage() {
           {isLoggedIn ? (
             <li>
               <Link href={paths.auth.logout.getHref()}>
-                <Button icon={<LogOut />}>Logout</Button>
+                <Button>
+                  Logout
+                  <LogOut />
+                </Button>
               </Link>
             </li>
           ) : (
             <li>
               <Link href={paths.auth.register.getHref()}>
-                <Button variant="ghost" icon={<LogIn />}>
+                <Button variant="ghost">
                   Sign Up
+                  <LogIn />
                 </Button>
               </Link>
             </li>
