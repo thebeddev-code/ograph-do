@@ -12,7 +12,12 @@ import { motion, AnimatePresence } from "motion/react";
 import { addHours, formatDate, set } from "date-fns";
 import { DEGREES_PER_HOUR } from "@/lib/utils/constants";
 import { cn } from "@/utils/cn";
-import { calcDegreesFrom, getMouseAngleInDegrees } from "../../utils/math";
+import {
+  calcDegreesFrom,
+  getCurrentTimeInDegrees,
+  getMouseAngleInDegrees,
+} from "../../utils/math";
+import { ClockHandleTools } from "./ClockHandleTools";
 
 const HANDLE_BUTTON_SIZE_PX = 21;
 
@@ -22,23 +27,20 @@ export type ClockHandleStateSetters = {
 };
 
 export type AngleValue = {
-  current: number;
-  total: number;
+  currentAngle: number;
+  totalAngle: number;
 };
 
 interface Props {
   children: ReactNode;
   containerClassName?: string;
   clockGraphRadius: number;
-  value: {
-    currentAngle: number;
-    totalAngle: number;
-  };
+  value: AngleValue;
+  resetValue?: (v: AngleValue) => void;
   onChange: (delta: number) => void;
   variant?: "minimal" | "full";
   followMouse?: boolean;
   snapDegrees?: number;
-  renderButtons?: (stateSetters: ClockHandleStateSetters) => ReactNode;
 }
 
 export function ClockHandle({
@@ -50,7 +52,7 @@ export function ClockHandle({
   followMouse = false,
   variant = "full",
   snapDegrees,
-  renderButtons,
+  resetValue,
 }: Props) {
   const [mouseDown, setMouseDown] = useState(followMouse);
   const [mouseEnter, setMouseEnter] = useState(followMouse);
@@ -69,6 +71,7 @@ export function ClockHandle({
     "p",
   );
   const showTooltip = true;
+  // Handle resetting the last raw angle after clock handle reset
 
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
     if (!mouseDown) return;
@@ -80,7 +83,6 @@ export function ClockHandle({
     }
 
     let delta = mouseDegrees - lastRawAngleRef.current;
-
     // Fix wrap at 0/360
     if (delta > 180) delta -= 360;
     if (delta < -180) delta += 360;
@@ -97,6 +99,34 @@ export function ClockHandle({
     onChange?.(delta);
     lastSnapAngleRef.current = newTotalAngle;
   };
+
+  function handleQuickTimeSwitchClick({
+    index = 1,
+    event,
+    resetClockHandle,
+  }: {
+    index?: number;
+    event: React.MouseEvent<HTMLButtonElement>;
+    resetClockHandle?: boolean;
+  }) {
+    event.stopPropagation();
+    if (resetClockHandle) {
+      const currentTimeDegrees = getCurrentTimeInDegrees();
+      resetValue?.({
+        currentAngle: currentTimeDegrees % 360,
+        totalAngle: currentTimeDegrees,
+      });
+      // Resetting the last raw angle, very important
+      lastRawAngleRef.current = null;
+      return;
+    }
+    // So, we know that conversion rate of degrees to hours is 30 degrees because {360 / 12 = 30}
+    const angle = 180 * index;
+    resetValue?.({
+      currentAngle: angle % 360,
+      totalAngle: angle,
+    });
+  }
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -179,6 +209,7 @@ export function ClockHandle({
         {/* <div className="bg-slate-900 h-2 w-2 rounded-full cursor-grab" /> */}
       </div>
       {children}
+      <ClockHandleTools onQuickTimeSwitchClick={handleQuickTimeSwitchClick} />
     </div>
   );
 }

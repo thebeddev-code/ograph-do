@@ -4,17 +4,13 @@ import { ResetIcon } from "@radix-ui/react-icons";
 import { cn } from "@/utils/cn";
 
 interface Props {
-  hasDraggedClockHandle: boolean;
   onQuickTimeSwitchClick: (args: {
     index?: number;
     event: React.MouseEvent<HTMLButtonElement>;
     resetClockHandle?: boolean;
   }) => void;
 }
-export function ClockHandleTools({
-  hasDraggedClockHandle,
-  onQuickTimeSwitchClick,
-}: Props) {
+export function ClockHandleTools({ onQuickTimeSwitchClick }: Props) {
   return (
     <div className="absolute">
       <div
@@ -22,14 +18,10 @@ export function ClockHandleTools({
         onClick={(e) => e.stopPropagation()}
       >
         <button
-          disabled={hasDraggedClockHandle}
           className={cn(
             `absolute 
                     w-8 h-8 flex items-center justify-center text-gray-500 hover:text-slate-500
                     bg-white/40 rounded-full border transition-colors duration-300`,
-            {
-              "opacity-40 hover:opacity-100": hasDraggedClockHandle,
-            },
           )}
           onClick={(e) =>
             onQuickTimeSwitchClick({
@@ -37,7 +29,7 @@ export function ClockHandleTools({
               event: e,
             })
           }
-          title="Reset clock handle"
+          title="Reset clock"
         >
           <ResetIcon className="w-5 h-5" />
         </button>

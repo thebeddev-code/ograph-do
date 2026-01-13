@@ -31,7 +31,6 @@ export function ClockGraph({ todos, onFormOpen }: Props) {
     currentAngle: currentTimeInDegrees % 360,
     totalAngle: currentTimeInDegrees,
   });
-  const [hasDraggedClockHandle, setHasDraggedClockHandle] = useState(false);
   const [createTodoDegrees, setCreateTodoDegrees] = useState<{
     start: null | number;
     end: null | number;
@@ -87,34 +86,6 @@ export function ClockGraph({ todos, onFormOpen }: Props) {
     });
   }, [todos, clockHandleDegrees, newTodo]);
 
-  function handleQuickTimeSwitchClick({
-    index = 1,
-    event,
-    resetClockHandle,
-  }: {
-    index?: number;
-    event: React.MouseEvent<HTMLButtonElement>;
-    resetClockHandle?: boolean;
-  }) {
-    event.stopPropagation();
-    if (resetClockHandle) {
-      const currentTimeDegrees = getCurrentTimeInDegrees();
-      setClockHandleDegrees((c) => ({
-        currentAngle: currentTimeDegrees % 360,
-        totalAngle: currentTimeDegrees,
-      }));
-      setHasDraggedClockHandle(false);
-      return;
-    }
-    // So, we know that conversion rate of degrees to hours is 30 degrees because {360 / 12 = 30}
-    const angle = 180 * index;
-    setClockHandleDegrees({ currentAngle: angle, totalAngle: angle });
-    setClockHandleDegrees((c) => ({
-      currentAngle: angle % 360,
-      totalAngle: angle,
-    }));
-  }
-
   function handleCreateTodoClick(e: React.MouseEvent<HTMLDivElement>) {
     // On the second double click we open the form and pass down the data
     if (typeof createTodoDegrees.start === "number" && newTodo) {
@@ -166,6 +137,7 @@ export function ClockGraph({ todos, onFormOpen }: Props) {
               totalAngle: totalAngle + delta,
             }));
           }}
+          resetValue={(v) => setClockHandleDegrees(v)}
           clockGraphRadius={RADIUS}
         >
           {shouldTrackNewTodo && (
@@ -194,11 +166,6 @@ export function ClockGraph({ todos, onFormOpen }: Props) {
             </ClockHandle>
           )}
           {!shouldTrackNewTodo && clock}
-
-          <ClockHandleTools
-            onQuickTimeSwitchClick={handleQuickTimeSwitchClick}
-            hasDraggedClockHandle={hasDraggedClockHandle}
-          />
         </ClockHandle>
       </div>
     </div>
