@@ -42,7 +42,6 @@ interface Props {
   onChange: (delta: number) => void;
   variant?: "minimal" | "full";
   followMouse?: boolean;
-  snapDegrees?: number;
 }
 
 export function ClockHandle({
@@ -53,22 +52,18 @@ export function ClockHandle({
   onChange,
   followMouse = false,
   variant = "full",
-  snapDegrees,
   resetValue,
 }: Props) {
   const [mouseDown, setMouseDown] = useState(followMouse);
   const [mouseEnter, setMouseEnter] = useState(followMouse);
   const lastRawAngleRef = useRef<number | null>(null);
-  const lastSnapAngleRef = useRef<number>(value.currentAngle);
 
   const { currentAngle: displayAngle, totalAngle } = value;
 
-  const timeAngle =
-    typeof snapDegrees === "number" ? lastSnapAngleRef.current : totalAngle;
   const time = formatDate(
     addHours(
       set(new Date(), { hours: 0, minutes: 0, seconds: 0 }),
-      timeAngle / DEGREES_PER_HOUR,
+      totalAngle / DEGREES_PER_HOUR,
     ),
     "p",
   );
@@ -90,16 +85,7 @@ export function ClockHandle({
     if (delta < -180) delta += 360;
 
     lastRawAngleRef.current = mouseDegrees;
-    const newTotalAngle = totalAngle + delta;
-
-    // if (
-    //   typeof snapDegrees === "number" &&
-    //   Math.abs((lastSnapAngleRef.current ?? 0) - newTotalAngle) < snapDegrees
-    // ) {
-    //   return;
-    // }
     onChange?.(delta);
-    lastSnapAngleRef.current = newTotalAngle;
   };
 
   function handleQuickTimeSwitchClick({

@@ -7,13 +7,15 @@ import { Todo } from "@/types/api";
 
 import { calcClosestDistToClockHandle } from "../../utils/distToClockHandle";
 import { drawTodos, todosToDrawables } from "../../utils/drawTodos";
-import { getCurrentTimeInDegrees } from "../../utils/math";
+import {
+  calcDegreesFrom,
+  getCurrentTimeInDegrees,
+  snapToStep,
+} from "../../utils/math";
 
 import { Clock } from "./Clock";
 import { ClockHandle } from "./ClockHandle";
-
-
-
+import { degreesToDate } from "../../utils/date";
 
 const RADIUS = 170;
 const MAX_LAST_CLICK_DIFF_MS = 300;
@@ -46,14 +48,8 @@ export function ClockGraph({ todos, onFormOpen }: Props) {
     typeof createTodoDegrees.end === "number"
   ) {
     newTodo = {
-      startsAt: addHours(
-        set(new Date(), { hours: 0, minutes: 0, seconds: 0 }),
-        createTodoDegrees.start / DEGREES_PER_HOUR,
-      ).toString(),
-      due: addHours(
-        set(new Date(), { hours: 0, minutes: 0, seconds: 0 }),
-        createTodoDegrees.end / DEGREES_PER_HOUR,
-      ).toString(),
+      startsAt: degreesToDate(createTodoDegrees.start).toString(),
+      due: degreesToDate(createTodoDegrees.end).toString(),
       color: "#000000",
     };
   }
@@ -89,13 +85,21 @@ export function ClockGraph({ todos, onFormOpen }: Props) {
 
   function handleCreateTodoClick(e: React.MouseEvent<HTMLDivElement>) {
     // On the second double click we open the form and pass down the data
-    if (typeof createTodoDegrees.start === "number" && newTodo) {
-      setCreateTodoDegrees({ start: null, end: null });
+    if (
+      typeof createTodoDegrees.start === "number" &&
+      typeof createTodoDegrees.end === "number" &&
+      newTodo
+    ) {
+      const hours = createTodoDegrees.end / DEGREES_PER_HOUR;
+      const step = 15 / 60;
       onFormOpen?.({
         ...newTodo,
         startsAt: new Date(newTodo.startsAt as string).toISOString(),
-        due: new Date(newTodo.due as string).toISOString(),
+        due: degreesToDate(
+          calcDegreesFrom(snapToStep(hours, step), "hours"),
+        ).toISOString(),
       });
+      setCreateTodoDegrees({ start: null, end: null });
       return;
     }
 
@@ -106,9 +110,10 @@ export function ClockGraph({ todos, onFormOpen }: Props) {
         clickEvent: e,
         clockHandleDegrees: clockHandleDegrees.totalAngle,
       });
-
+      const hours = (clockHandleDegrees.totalAngle + offset) / DEGREES_PER_HOUR;
+      const step = 15 / 60; // 15 minutes
       setCreateTodoDegrees({
-        start: clockHandleDegrees.totalAngle + offset,
+        start: calcDegreesFrom(snapToStep(hours, step), "hours"),
         end: null,
       });
     }
@@ -154,6 +159,7 @@ export function ClockGraph({ todos, onFormOpen }: Props) {
                 const totalAngle =
                   (createTodoDegrees.end ?? createTodoDegrees.start) + delta;
                 if (totalAngle < createTodoDegrees.start) return;
+
                 setCreateTodoDegrees(({ start }) => ({
                   start,
                   end: totalAngle,
@@ -161,7 +167,6 @@ export function ClockGraph({ todos, onFormOpen }: Props) {
               }}
               followMouse={shouldTrackNewTodo}
               variant="minimal"
-              snapDegrees={DEGREES_PER_HOUR * (1 / 60) * 5}
             >
               {clock}
             </ClockHandle>
