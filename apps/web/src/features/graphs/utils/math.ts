@@ -44,3 +44,7 @@ export function getCurrentTimeInDegrees() {
     calcDegreesFrom(currentTime.seconds / 3600, "hours");
   return currentTimeDegrees;
 }
+
+export function snapToStep(val: number, step: number) {
+  return Math.round(val / step) * step;
+}
