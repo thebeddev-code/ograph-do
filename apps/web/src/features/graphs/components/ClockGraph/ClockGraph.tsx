@@ -16,18 +16,28 @@ import {
 import { Clock } from "./Clock";
 import { ClockHandle } from "./ClockHandle";
 import { degreesToDate } from "../../utils/date";
+import { ChevronUp } from "lucide-react";
 
 const RADIUS = 170;
 const MAX_LAST_CLICK_DIFF_MS = 300;
 const VIEW_HOURS = 6;
+// once it's reached we can set the date to next
+const MAX_TOTAL_DEGREES = 360 * 2;
 
 interface Props {
   todos: Todo[];
   onFormOpen?: (data: Pick<Todo, "startsAt" | "due" | "color">) => void;
+  onMoveDate?: (days: number) => void;
+  currentDate?: Date;
 }
 
-export function ClockGraph({ todos, onFormOpen }: Props) {
-  const currentTimeInDegrees = getCurrentTimeInDegrees();
+export function ClockGraph({
+  todos,
+  onFormOpen,
+  onMoveDate,
+  currentDate,
+}: Props) {
+  const currentTimeInDegrees = getCurrentTimeInDegrees(currentDate);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const lastClickTimeRef = useRef(0);
   const [clockHandleDegrees, setClockHandleDegrees] = useState({
@@ -83,6 +93,24 @@ export function ClockGraph({ todos, onFormOpen }: Props) {
     });
   }, [todos, clockHandleDegrees, newTodo]);
 
+  function handleMoveDateClick(days: number) {
+    const isMoveForward = days > 0;
+    if (isMoveForward) {
+      setClockHandleDegrees({
+        currentAngle: 0,
+        totalAngle: 0,
+      });
+      onMoveDate?.(1);
+    }
+    if (!isMoveForward) {
+      setClockHandleDegrees({
+        currentAngle: MAX_TOTAL_DEGREES % 360,
+        totalAngle: MAX_TOTAL_DEGREES,
+      });
+      onMoveDate?.(-1);
+    }
+  }
+
   function handleCreateTodoClick(e: React.MouseEvent<HTMLDivElement>) {
     // On the second double click we open the form and pass down the data
     if (
@@ -123,10 +151,22 @@ export function ClockGraph({ todos, onFormOpen }: Props) {
   const shouldTrackNewTodo = typeof createTodoDegrees.start === "number";
   const clock = (
     <>
-      <div className="absolute -top-12 left-1/2 -translate-x-1/2">
+      <div className="flex flex-row items-center gap-4  absolute -top-12 left-1/2 -translate-x-1/2">
+        <button
+          onClick={() => handleMoveDateClick(-1)}
+          className="text-center h-5 w-5 rounded-full bg-muted text-xs font-medium text-muted-foreground select-none"
+        >
+          <ChevronUp className="-rotate-90" size={16} />
+        </button>
         <div className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground select-none">
-          {formatDate(new Date(), "PP")}
+          {formatDate(currentDate ?? new Date(), "PP")}
         </div>
+        <button
+          onClick={() => handleMoveDateClick(1)}
+          className="text-center h-5 w-5 rounded-full bg-muted text-xs font-medium text-muted-foreground select-none"
+        >
+          <ChevronUp className="rotate-90" size={16} />
+        </button>
       </div>
       <Clock canvasRef={canvasRef} />
     </>
@@ -138,6 +178,18 @@ export function ClockGraph({ todos, onFormOpen }: Props) {
         <ClockHandle
           value={clockHandleDegrees}
           onChange={(delta) => {
+            const { totalAngle } = clockHandleDegrees;
+            const newTotalAngle = totalAngle + delta;
+            // Move to the next day
+            if (newTotalAngle > MAX_TOTAL_DEGREES) {
+              handleMoveDateClick(1);
+              return;
+            }
+            // Move to the previous day
+            if (newTotalAngle < 0) {
+              handleMoveDateClick(-1);
+              return;
+            }
             setClockHandleDegrees(({ currentAngle, totalAngle }) => ({
               currentAngle: (currentAngle + delta) % 360,
               totalAngle: totalAngle + delta,

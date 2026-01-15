@@ -42,6 +42,7 @@ interface Props {
   onChange: (delta: number) => void;
   variant?: "minimal" | "full";
   followMouse?: boolean;
+  shouldUpdateTime?: boolean;
 }
 
 export function ClockHandle({

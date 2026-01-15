@@ -31,8 +31,8 @@ export function getMouseAngleInDegrees(e: React.MouseEvent<HTMLDivElement>) {
   return angle;
 }
 
-export function getCurrentTimeInDegrees() {
-  const today = new Date();
+export function getCurrentTimeInDegrees(overrideDate = new Date()) {
+  const today = overrideDate;
   const currentTime = {
     hours: today.getHours(),
     minutes: today.getMinutes(),
