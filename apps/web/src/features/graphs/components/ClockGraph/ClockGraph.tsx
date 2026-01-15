@@ -14,6 +14,7 @@ import {
 } from "../../utils/math";
 
 import { Clock } from "./Clock";
+import { ColorDisk } from "./ColorDisk";
 import { ClockHandle } from "./ClockHandle";
 import { degreesToDate } from "../../utils/date";
 import { ChevronUp } from "lucide-react";
@@ -173,8 +174,8 @@ export function ClockGraph({
   );
 
   return (
-    <div className="bg-white flex-col flex justify-center items-center">
-      <div className="rounded-full" onClick={handleCreateTodoClick}>
+    <div className="mt-20 bg-white flex-col flex justify-center items-center">
+      <div className="relative rounded-full" onClick={handleCreateTodoClick}>
         <ClockHandle
           value={clockHandleDegrees}
           onChange={(delta) => {
@@ -225,6 +226,15 @@ export function ClockGraph({
           )}
           {!shouldTrackNewTodo && clock}
         </ClockHandle>
+        <ColorDisk
+          degrees={clockHandleDegrees.totalAngle}
+          config={{
+            "#F9D7A4": 180 * 2, // Morning – Soft sunrise yellow
+            "#A8D8EA": 180 * 3, // Day – Clear sky blue
+            "#E29578": 180 * 4, // Evening – Warm sunset coral
+            "#2D3142": 180 * 1, // Night – Deep night blue-gray
+          }}
+        />
       </div>
     </div>
   );
