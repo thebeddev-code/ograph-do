@@ -112,9 +112,12 @@ export function ClockHandle({
     }
     // So, we know that conversion rate of degrees to hours is 30 degrees because {360 / 12 = 30}
     const angle = 180 * index;
+
+    // Small offset to correctly calculate part of the day
+    const offset = DEGREES_PER_HOUR * (1 / 60 / 60);
     resetValue?.({
       currentAngle: angle % 360,
-      totalAngle: angle,
+      totalAngle: angle + offset,
     });
 
     // Do not increase the clock handle angle with time passage
