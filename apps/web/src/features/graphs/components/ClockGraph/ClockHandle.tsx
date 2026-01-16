@@ -67,7 +67,7 @@ export function ClockHandle({
   const lastRawAngleRef = useRef<number | null>(null);
   const [hasUsedQuickSwitch, setHasUsedQuickSwitch] = useState(false);
   const { currentAngle, totalAngle } = value;
-  const t = controlled ? handleDegrees.total : totalAngle;
+  const t = controlled ? totalAngle : handleDegrees.total;
   const time = formatDate(
     addHours(
       set(new Date(), { hours: 0, minutes: 0, seconds: 0 }),

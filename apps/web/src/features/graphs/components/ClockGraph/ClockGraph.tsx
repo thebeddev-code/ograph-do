@@ -122,6 +122,7 @@ export function ClockGraph({
     ) {
       const hours = createTodoDegrees.end / DEGREES_PER_HOUR;
       const step = 15 / 60;
+      // FIXME: doesn't take in calculation the currently set date 
       onFormOpen?.({
         ...newTodo,
         startsAt: new Date(newTodo.startsAt as string).toISOString(),
