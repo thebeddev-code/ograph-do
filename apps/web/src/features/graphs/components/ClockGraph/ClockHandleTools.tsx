@@ -84,7 +84,7 @@ export function ClockHandleTools({ onQuickTimeSwitchClick }: Props) {
                     bg-white/40 rounded-full border transition-colors duration-300"
           onClick={(e) =>
             onQuickTimeSwitchClick({
-              index: 4,
+              index: 0,
               event: e,
             })
           }
