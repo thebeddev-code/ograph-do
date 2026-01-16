@@ -153,7 +153,7 @@ export function ClockGraph({
   const shouldTrackNewTodo = typeof createTodoDegrees.start === "number";
   const clock = (
     <>
-      <div className="flex flex-row items-center gap-4  absolute -top-12 left-1/2 -translate-x-1/2">
+      <div className="flex flex-row items-center gap-4  absolute -top-20 left-1/2 -translate-x-1/2">
         <button
           onClick={() => handleMoveDateClick(-1)}
           className="text-center h-5 w-5 rounded-full bg-muted text-xs font-medium text-muted-foreground select-none"
@@ -228,7 +228,12 @@ export function ClockGraph({
           {!shouldTrackNewTodo && clock}
         </ClockHandle>
         <ColorDisk
-          degrees={clockHandleDegrees.totalAngle}
+          degrees={
+            // Normalizing degrees to avoid an edge case of unmatched value
+            clockHandleDegrees.totalAngle > 360 * 2
+              ? 0
+              : clockHandleDegrees.totalAngle
+          }
           config={{
             // Night
             [180 * 1]: {
