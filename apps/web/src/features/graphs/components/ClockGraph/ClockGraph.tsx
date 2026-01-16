@@ -18,6 +18,7 @@ import { ColorDisk } from "./ColorDisk";
 import { ClockHandle } from "./ClockHandle";
 import { degreesToDate } from "../../utils/date";
 import { ChevronUp } from "lucide-react";
+import { Sunrise, Sun, Sunset, Moon } from "lucide-react";
 
 const RADIUS = 170;
 const MAX_LAST_CLICK_DIFF_MS = 300;
@@ -61,7 +62,7 @@ export function ClockGraph({
     newTodo = {
       startsAt: degreesToDate(createTodoDegrees.start).toString(),
       due: degreesToDate(createTodoDegrees.end).toString(),
-      color: "#000000",
+      color: "#6F456E",
     };
   }
 
@@ -229,10 +230,40 @@ export function ClockGraph({
         <ColorDisk
           degrees={clockHandleDegrees.totalAngle}
           config={{
-            "#F9D7A4": 180 * 2, // Morning – Soft sunrise yellow
-            "#A8D8EA": 180 * 3, // Day – Clear sky blue
-            "#E29578": 180 * 4, // Evening – Warm sunset coral
-            "#2D3142": 180 * 1, // Night – Deep night blue-gray
+            // Night
+            [180 * 1]: {
+              color: "#191970",
+              icon: (
+                <Moon className=" text-white bg-slate-600 rounded-full shadow-sm h-8 w-8 p-1" />
+              ),
+            },
+            // Morning
+            [180 * 2]: {
+              color: "#FFD700",
+              icon: (
+                <Sunrise
+                  className="text-yellow-400 bg-white rounded-full shadow-sm h-8 w-8 p-1"
+                  size={20}
+                />
+              ),
+            },
+            // Day
+            [180 * 3]: {
+              color: "#87CEEB",
+              icon: (
+                <Sun className="text-amber-500 bg-white rounded-full shadow-sm h-8 w-8 p-1" />
+              ),
+            },
+            // Evening
+            [180 * 4]: {
+              color: "#FF7F50",
+              icon: (
+                <Sunset
+                  className="text-purple-500 bg-white rounded-full shadow-sm h-8 w-8 p-1"
+                  size={20}
+                />
+              ),
+            },
           }}
         />
       </div>

@@ -1,12 +1,20 @@
-import { useEffect, useRef } from "react";
+import { ReactNode, useEffect, useRef } from "react";
 import { calcRadiansFrom } from "../../utils/math";
 
 interface Props {
   degrees: number;
-  config: Record<string, number>;
+  config: Record<
+    string,
+    {
+      color: string;
+      icon: string | ReactNode;
+    }
+  >;
 }
+
 export function ColorDisk({ config, degrees: currentDegrees }: Props) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -19,12 +27,13 @@ export function ColorDisk({ config, degrees: currentDegrees }: Props) {
     canvas.width = rect.width * dpr;
     canvas.height = rect.height * dpr;
     ctx.scale(dpr, dpr);
+
     const drawArc = (
       degreesStart: number,
       degreesEnd: number,
       offset: number,
       color: string,
-      opacity: number = 1,
+      opacity: number = 0.9,
     ) => {
       if (!ctx) return;
 
@@ -46,14 +55,20 @@ export function ColorDisk({ config, degrees: currentDegrees }: Props) {
       ctx.restore();
     };
 
-    const marks = Object.entries(config).sort((a, b) => a[1] - b[1]);
+    const marks = Object.entries(config).sort(([d1Str], [d2Str]) => {
+      const d1 = Number.parseFloat(d1Str) as number;
+      const d2 = Number.parseFloat(d2Str) as number;
+      if (!Number.isFinite(d1) || !Number.isFinite(d2)) return -1;
+      return d1 - d2;
+    });
     // opacity for the past 6 hours time window
-    const opacity = 0.5;
     // Think of this as a multicolor line segment, with start and end degrees
     for (let i = 0; i < marks.length; ++i) {
       // this is the end
-      let [color, degreesEnd] = marks[i];
-      //   this is the start
+      let [degreesEndString, { color }] = marks[i];
+      let degreesEnd = Number.parseFloat(degreesEndString);
+      if (!Number.isFinite(degreesEnd)) continue;
+      //  this is the start
       let degreesStart = degreesEnd - 180;
       if (degreesStart <= currentDegrees && currentDegrees <= degreesEnd) {
         degreesStart = degreesStart % 360;
@@ -65,28 +80,53 @@ export function ColorDisk({ config, degrees: currentDegrees }: Props) {
         // the right half side (after the clock handle)
         drawArc(currentDegrees, degreesEnd, 90, color);
 
-        // The other halfs ... think of this as number
+        // The other halfs ... think of this as multicolor line segment
         // the left half side (before the clock handle)
         drawArc(
           currentDegrees - 180,
           degreesStart,
           90,
-          marks[i - 1]?.[0] ?? marks.at(-1)?.[0],
+          marks[i - 1]?.[1].color ?? marks.at(-1)?.[1].color,
         );
         // the right half side (after the clock handle)
         drawArc(
           degreesEnd,
           (currentDegrees + 180) % 360,
           90,
-          marks[(i + 1) % marks.length]?.[0] ?? "cyan",
+          marks[(i + 1) % marks.length]?.[1].color ?? "cyan",
         );
+        // Very important
+        return;
       }
     }
   }, [currentDegrees]);
 
+  const icon =
+    Object.entries(config).find(([degrees]) => {
+      const d = Number.parseFloat(degrees);
+      if (!Number.isFinite(d)) return;
+      return d - 180 <= currentDegrees && currentDegrees <= d;
+    })?.[1].icon ?? "🙂";
+
   return (
-    <div className=" left-0 top-0 translate-1/2 absolute h-50 w-50 rounded-full">
+    <div className="left-0 top-0 translate-1/2 absolute h-50 w-50 rounded-full">
       <canvas ref={canvasRef} className="w-full h-full rounded-full" />
+      <div className="flex justify-center items-center left-0 top-0 absolute w-full h-full rounded-full">
+        <div
+          style={{
+            transform: `rotate(${(currentDegrees % 360) + 180}deg) translateY(80px)`,
+          }}
+        >
+          <div
+            className="select-none rounded-full shadow-md flex justify-center items-center"
+            style={{
+              transform: `rotate(${-((currentDegrees % 360) + 180)}deg)`,
+            }}
+          >
+            {icon}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
