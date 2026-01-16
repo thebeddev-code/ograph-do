@@ -239,7 +239,12 @@ export function ClockGraph({
             [180 * 1]: {
               color: "#191970",
               icon: (
-                <Moon className=" text-white bg-slate-600 rounded-full shadow-sm h-8 w-8 p-1" />
+                <Moon
+                  className=" text-white bg-[#191970] rounded-full shadow-sm h-8 w-8 p-1"
+                  style={{
+                    willChange: "transform",
+                  }}
+                />
               ),
             },
             // Morning
@@ -247,8 +252,11 @@ export function ClockGraph({
               color: "#FFD700",
               icon: (
                 <Sunrise
-                  className="text-yellow-400 bg-white rounded-full shadow-sm h-8 w-8 p-1"
+                  className="text-white border border-white  bg-linear-to-br bg-[#FFD700] rounded-full shadow-sm h-8 w-8 p-1"
                   size={20}
+                  style={{
+                    willChange: "transform",
+                  }}
                 />
               ),
             },
@@ -256,7 +264,12 @@ export function ClockGraph({
             [180 * 3]: {
               color: "#87CEEB",
               icon: (
-                <Sun className="text-amber-500 bg-white rounded-full shadow-sm h-8 w-8 p-1" />
+                <Sun
+                  className="text-amber-500 bg-white rounded-full shadow-sm h-8 w-8 p-1"
+                  style={{
+                    willChange: "transform",
+                  }}
+                />
               ),
             },
             // Evening
@@ -264,8 +277,11 @@ export function ClockGraph({
               color: "#FF7F50",
               icon: (
                 <Sunset
-                  className="text-purple-500 bg-white rounded-full shadow-sm h-8 w-8 p-1"
+                  className="text-white bg-linear-to-br from-[#FF7F50] to-[#87CEEB] rounded-full shadow-sm h-8 w-8 p-1"
                   size={20}
+                  style={{
+                    willChange: "transform",
+                  }}
                 />
               ),
             },
