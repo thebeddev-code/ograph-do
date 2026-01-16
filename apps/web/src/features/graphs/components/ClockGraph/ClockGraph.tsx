@@ -204,23 +204,23 @@ export function ClockGraph({
             <ClockHandle
               value={{
                 currentAngle:
-                  createTodoDegrees.end ?? (createTodoDegrees.start as number),
-                totalAngle: createTodoDegrees.end ?? 0,
+                  createTodoDegrees.start as number,
+                totalAngle: createTodoDegrees.start ?? 0,
               }}
               clockGraphRadius={RADIUS}
-              onChange={(delta) => {
+              onChange={(_, total) => {
+                if (!total) return
                 if (!createTodoDegrees.start) return;
-                const totalAngle =
-                  (createTodoDegrees.end ?? createTodoDegrees.start) + delta;
-                if (totalAngle < createTodoDegrees.start) return;
-
+                if (total < createTodoDegrees.start) return;
+                //
                 setCreateTodoDegrees(({ start }) => ({
                   start,
-                  end: totalAngle,
+                  end: total,
                 }));
               }}
               followMouse={shouldTrackNewTodo}
               variant="minimal"
+              controlled={false}
             >
               {clock}
             </ClockHandle>

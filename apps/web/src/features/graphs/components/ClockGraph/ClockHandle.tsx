@@ -39,10 +39,12 @@ interface Props {
   clockGraphRadius: number;
   value: AngleValue;
   resetValue?: (v: AngleValue) => void;
-  onChange: (delta: number) => void;
+  // TODO: rewrite to accept an object instead
+  onChange: (delta: number, total?: number) => void;
   variant?: "minimal" | "full";
   followMouse?: boolean;
   shouldUpdateTime?: boolean;
+  controlled?: boolean
 }
 
 export function ClockHandle({
@@ -54,17 +56,22 @@ export function ClockHandle({
   followMouse = false,
   variant = "full",
   resetValue,
+  controlled = true
 }: Props) {
+  const [handleDegrees, setHandleDegrees] = useState({
+    total: value.totalAngle,
+    mouse: value.totalAngle % 360
+  })
   const [mouseDown, setMouseDown] = useState(followMouse);
   const [mouseEnter, setMouseEnter] = useState(followMouse);
   const lastRawAngleRef = useRef<number | null>(null);
   const [hasUsedQuickSwitch, setHasUsedQuickSwitch] = useState(false);
-  const { currentAngle: displayAngle, totalAngle } = value;
-
+  const { currentAngle, totalAngle } = value;
+  const t = controlled ? handleDegrees.total : totalAngle;
   const time = formatDate(
     addHours(
       set(new Date(), { hours: 0, minutes: 0, seconds: 0 }),
-      totalAngle / DEGREES_PER_HOUR,
+      t / DEGREES_PER_HOUR,
     ),
     "p",
   );
@@ -86,7 +93,16 @@ export function ClockHandle({
     if (delta < -180) delta += 360;
 
     lastRawAngleRef.current = mouseDegrees;
-    onChange?.(delta);
+
+    const newTotal = handleDegrees.total + delta;
+    if (!controlled) {
+      setHandleDegrees({
+        mouse: mouseDegrees,
+        total: newTotal,
+      })
+    }
+    onChange?.(delta, newTotal);
+
   };
 
   function handleQuickTimeSwitchClick({
@@ -133,6 +149,7 @@ export function ClockHandle({
     return () => clearInterval(intervalId);
   }, [mouseDown, hasUsedQuickSwitch]);
 
+  const displayAngle = controlled ? currentAngle : handleDegrees.total;
   return (
     <div
       className={twMerge(
@@ -205,7 +222,7 @@ export function ClockHandle({
         {/* <div className="bg-slate-900 h-2 w-2 rounded-full cursor-grab" /> */}
       </div>
       {children}
-      <ClockHandleTools onQuickTimeSwitchClick={handleQuickTimeSwitchClick} />
+      {variant === "full" && <ClockHandleTools onQuickTimeSwitchClick={handleQuickTimeSwitchClick} />}
     </div>
   );
 }
